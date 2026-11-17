@@ -1,4 +1,5 @@
-// Owner 07.11: «сайт работает с 9 до 18» — orders are accepted only inside the city's order hours (Ахалкалаки time).
+// Owner 07.11: «сайт работает с 9 до 18»; owner 17.11: the site is always open — orders are taken at ANY time, only the delivery runs 09:00–18:00 (Ахалкалаки time).
+// The stored value 'from-to' now means the delivery window of ordinary goods: its last slot is `to` minus the slot gap.
 // Stored in app_config as 'from-to' minutes; no row = no limit. Tests run with BAZAR_IGNORE_ORDER_HOURS=1.
 const q=(db,sql,...p)=>db.prepare(sql).bind(...p);
 export const ORDER_HOURS_KEY='order_hours';
@@ -12,3 +13,6 @@ export const readyFoodTo=1170;   // 19:30
 // Owner 11.11 (later): cakes from the same bakery are ordered in the evening too.
 export const isReadyCat=c=>String(c||'').startsWith('rf_')||c==='cakes';
 export const readyOpen=(h,minute)=>!h||globalThis.process?.env?.BAZAR_IGNORE_ORDER_HOURS==='1'||(minute>=h.from&&minute<Math.max(h.to,readyFoodTo));
+
+// Owner 17.11: the latest delivery slot (minutes) the order hours allow for ordinary goods, or null (no limit; also under test).
+export async function deliveryCap(db,gap=20){if(globalThis.process?.env?.BAZAR_IGNORE_ORDER_HOURS==='1')return null;const h=await orderHours(db);return h?h.to-gap:null}

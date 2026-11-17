@@ -14,6 +14,6 @@ export async function sourceReport(db,city,days=30,at=Date.now()){
  for(const o of rows){const key=digits(o.phone),first=!!key&&!seen.has(key);if(key)seen.add(key);if(o.created_at<since||o.status==='CANCELLED')continue;
   const s=o.source||'direct',r=by.get(s)||{source:s,orders:0,completed:0,revenue:0,new_customers:0};r.orders++;if(first)r.new_customers++;if(o.status==='COMPLETED'){r.completed++;r.revenue+=o.total}by.set(s,r)}
  // Owner 30.10: the funnel before the order — people who came by the link, put something in the cart, opened checkout (src/traffic.mjs).
- const t=await trafficReport(db,city,days,at),blank={visitors:0,visits:0,cart:0,checkout:0};for(const [src,v]of t.by){if(!by.has(src))by.set(src,{source:src,orders:0,completed:0,revenue:0,new_customers:0})}
- for(const r of by.values())Object.assign(r,blank,t.by.get(r.source)||{});
+ const t=await trafficReport(db,city,days,at),blank={visitors:0,visits:0,view:0,cart:0,checkout:0};for(const [src,v]of t.by){if(!by.has(src))by.set(src,{source:src,orders:0,completed:0,revenue:0,new_customers:0})}
+ for(const r of by.values()){Object.assign(r,blank,t.by.get(r.source)||{});r.repeat=r.orders-r.new_customers}// owner 17.11: product views and repeat orders join the funnel
  return {days,langs:t.langs,devices:t.devices,sources:[...by.values()].sort((a,b)=>b.new_customers-a.new_customers||b.orders-a.orders||b.visitors-a.visitors||a.source.localeCompare(b.source))}}
