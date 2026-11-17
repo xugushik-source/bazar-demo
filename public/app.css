@@ -141,3 +141,15 @@ html.big body{zoom:1.2}
  .tools select#city{max-width:150px;min-height:44px;font-size:15px;padding:0 8px}
  .tools .staff{display:none}
 }
+/* Owner 17.11: first screen on a phone = logo, cart, search and the section tiles; notices move below (the delivery price stays as one slim line). */
+@media(max-width:700px){
+ .lang-chip,.size-btn{min-width:44px;padding:0 8px;font-size:14px}.lang-chips{gap:4px}.tools-sub{gap:6px;flex-wrap:nowrap}.tools select#city{max-width:112px;min-width:0}.tools-sub .sound,.tools-sub [data-sound],.tools-sub button[aria-label*="вук"]{display:none}
+ main{display:flex;flex-direction:column}main>*{order:5}
+ main>#live-orders,main>#closed-banner{order:0}
+ main>.terms-line:not(.area-line){order:1;padding:6px 10px;font-size:14px;line-height:1.3;border-radius:10px;margin:6px 0}
+ main>section#catalog{order:2}
+ main>.catalog-grid{order:4}
+ main>.area-line{order:8}main>.install-banner{order:9}
+}
+.search input,#search{border:2px solid var(--green);border-radius:14px;padding:0 16px;background:#fff;width:100%}
+@media(max-width:700px){.tools select#city{max-width:128px;font-size:14px}}
