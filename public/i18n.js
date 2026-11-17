@@ -163,3 +163,7 @@ Object.assign(words.ka,{recentOrders:'ბოლო სატელეფონ�
 Object.assign(words.ru,{callUs:'Позвонить',callOrder:'Удобнее по телефону? Позвоните — оформим заказ за вас:'});
 Object.assign(words.hy,{callUs:'Զանգահարել',callOrder:'Հեշտ է հեռախոսով՞։ Զանգահարեք՝ պատվերը կձևակերպենք ձեր փոխարեն․'});
 Object.assign(words.ka,{callUs:'დარეკვა',callOrder:'ტელეფონით უფრო მოსახერხებელია? დაგვირეკეთ — შეკვეთას ჩვენ გავაფორმებთ:'});
+
+Object.assign(words.ru,{toCart:'В корзину',bigText:'Крупный шрифт'});
+Object.assign(words.hy,{toCart:'Զամբյուղ',bigText:'Խոշոր տառեր'});
+Object.assign(words.ka,{toCart:'კალათაში',bigText:'დიდი შრიფტი'});
