@@ -153,3 +153,5 @@ html.big body{zoom:1.2}
 }
 .search input,#search{border:2px solid var(--green);border-radius:14px;padding:0 16px;background:#fff;width:100%}
 @media(max-width:700px){.tools select#city{max-width:128px;font-size:14px}}
+.zone-hint{display:none}
+@media(max-width:700px){.call-fab{right:10px;bottom:76px;padding:9px 13px;font-size:14px;opacity:.96}.call-fab span:first-child{font-size:16px}main{padding-bottom:150px}}
