@@ -148,7 +148,7 @@ test('owner 11.11: ready food is ordered until 19:30 and delivered up to the sup
   assert.equal(last(await slots(DB,cid,day,'akhalkalaki--rf_pizza_02,akhalkalaki--rf_pizza_05')),1200,'pizza alone: 20:00');
   assert.equal(last(await slots(DB,cid,day,'akhalkalaki--rf_pizza_02,akhalkalaki--cakes_01')),1200,'owner 11.11: cakes count as evening food');assert.ok(last(await slots(DB,cid,day,'akhalkalaki--rf_pizza_02,akhalkalaki--artur_hh_160'))<=1180,'with other goods: the usual gap before closing');
   const c=await call({DB},'catalog?city='+cid);assert.equal(c.city.ready_to,1170);
-  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.ok(app.includes('ordersOpen(basketReady())'));for(const k of ['readyEvening','readyOnlyNow'])assert.equal((i18n.match(new RegExp(k+':','g'))||[]).length,3,k)}finally{DB.close()}});
+  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.ok(app.includes('readyEvening()')&&!app.includes('ordersOpen(basketReady())'),'owner 17.11: checkout is never blocked by the hour');for(const k of ['readyEvening','readyOnlyNow'])assert.equal((i18n.match(new RegExp(k+':','g'))||[]).length,3,k)}finally{DB.close()}});
 
 test('owner 12.11: a copy served by a Cloudflare Worker (bazar.xugushik.workers.dev) uses its own API; only the GitHub copy follows deployment.json',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
  assert.ok(app.includes("if(u.origin!==location.origin&&!location.hostname.endsWith('.workers.dev'))apiBase=u.origin"))});
@@ -159,3 +159,16 @@ test('owner 13.11: migration 0110 leaves «Выпечка с любовью» on
  DB.exec(fs.readFileSync(new URL('../migrations/0110_vypechka_fix_closures.sql',import.meta.url),'utf8'));
  const c=await call({DB},'catalog?city='+cid),on=c.products.filter(p=>p.vendor_id==='akhalkalaki-vypechka').map(p=>p.id);
  assert.equal(on.length,ids.length-3);assert.ok(three.every(id=>!on.includes(id)));assert.ok(on.includes('akhalkalaki--rf_pizza_02')&&on.includes('akhalkalaki--rf_pizza_05'))}finally{DB.close()}});
+
+test('owner 17.11: the source report counts product views and repeat orders next to visits, cart and checkout',async()=>{const {recordHit}=await import('../src/traffic.mjs'),{sourceReport}=await import('../src/sources.mjs'),DB=new LocalD1();migrate(DB);await seed(DB);try{
+ for(const event of ['visit','view','view','cart'])await recordHit(DB,{city_id:'akhalkalaki',event,src:'ig_test',lang:'ru',device:'phone',first:true});
+ const r=(await sourceReport(DB,'akhalkalaki',30)).sources.find(s=>s.source==='ig_test');assert.ok(r);assert.deepEqual([r.visitors,r.view,r.cart,r.checkout,r.repeat],[1,2,1,0,0]);
+ await assert.rejects(recordHit(DB,{city_id:'akhalkalaki',event:'purchase',src:'x'}),/INVALID_INPUT/)}finally{DB.close()}});
+test('owner 17.11: the storefront search matches section names and names in every language',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
+ assert.ok(app.includes('searchHay(p).includes(')&&/const searchHay=p=>/.test(app)&&app.includes("t('group_'+g[0])")&&app.includes('Object.values(p.names||{})'))});
+
+test('owner 17.11: a «Позвонить» button (tel: link) is on every storefront screen and in the checkout, in three languages',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8'),css=fs.readFileSync(new URL('../public/app.css',import.meta.url),'utf8');
+ assert.ok(app.includes('class="call-fab" href="tel:+${BAZAR_PHONE}"')&&app.includes("t('callOrder')")&&css.includes('.call-fab{'));for(const k of['callUs','callOrder'])assert.equal((i18n.match(new RegExp(k+':','g'))||[]).length,3,k)});
+
+test('owner 17.11 (audit): the language switch keeps a readable width on phones and the install banner is compact',async()=>{const fs=await import('node:fs'),css=fs.readFileSync(new URL('../public/app.css',import.meta.url),'utf8');
+ assert.ok(css.includes('.tools select#language{min-width:60px')&&css.includes('.install-banner{padding:8px 10px')&&css.includes('.call-fab{padding:10px 14px'))});
