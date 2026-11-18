@@ -13,7 +13,10 @@ function days(lines){const map=new Map();for(const l of lines){const d=map.get(l
 export async function balance(db,vendor){const s=await q(db,"SELECT COALESCE(SUM(CASE WHEN state='AGREED' THEN amount END),0) agreed,COALESCE(SUM(CASE WHEN state='PROPOSED' THEN amount END),0) pending FROM vendor_statements WHERE vendor_id=?",vendor).first(),p=await q(db,'SELECT COALESCE(SUM(CASE WHEN reverses IS NULL THEN amount ELSE -amount END),0) paid FROM vendor_payments WHERE vendor_id=?',vendor).first();return {agreed:s.agreed,pending:s.pending,paid:p.paid,debt:s.agreed-p.paid}}
 export async function ledgerView(db,user,city){if(!user)fail('LOGIN_REQUIRED',401);const vendors=(await q(db,'SELECT * FROM vendors WHERE city_id=? ORDER BY id',city).all()).results.filter(v=>user.owner||member(user,v.id)),out=[];
  for(const v of vendors){const statements=(await q(db,'SELECT * FROM vendor_statements WHERE vendor_id=? ORDER BY day DESC,created_at DESC LIMIT 120',v.id).all()).results.map(s=>({...s,lines:parse(s.lines,[])})),payments=(await q(db,'SELECT * FROM vendor_payments WHERE vendor_id=? ORDER BY at DESC LIMIT 200',v.id).all()).results;
-  out.push({id:v.id,names:parse(v.names),open_days:days(await unsettled(db,v.id)),statements,payments,balance:await balance(db,v.id)})}
+  const open_days=days(await unsettled(db,v.id)),bal=await balance(db,v.id);
+  // Owner 18.11: a switched-off supplier («Ферма Базара», «Сад Базара») with nothing on the books does not clutter the settlements
+  if(!v.active&&!statements.length&&!payments.length&&!open_days.length)continue;
+  out.push({id:v.id,names:parse(v.names),open_days,statements,payments,balance:bal})}
  return {owner:!!user.owner,vendors:out}}
 async function once(db,user,b,run){const command=text(b.command,80,true),fp=await sha(JSON.stringify(b)),old=await q(db,'SELECT * FROM commands WHERE id=?',command).first();if(old){if(old.actor!==user.id||old.fingerprint!==fp)fail('IDEMPOTENCY_CONFLICT',409);return parse(old.result)}const {result,st}=await run(command);await db.batch([...st,q(db,'INSERT INTO commands(id,actor,fingerprint,result) VALUES(?,?,?,?)',command,user.id,fp,JSON.stringify(result))]);return result}
 export async function fixDay(db,b,user){if(!user?.owner)fail('FORBIDDEN',403);await vendorOf(db,user,b.vendor_id);const day=text(b.day,10,true);if(!/^\d{4}-\d{2}-\d{2}$/.test(day))fail('INVALID_INPUT');
