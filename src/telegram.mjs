@@ -1,7 +1,7 @@
 import {stuckTick}from './stuck-orders.mjs';import {ownerActions,ownerCallback,ownerRows,supplierReceipt,costTexts,costTotal,ctlWords}from './owner-control.mjs';import {q,parse,orderView,capability,action,approve,confirmCollection,clock,own,supplierDelivered,bySupplier,simpleFlow}from './commerce.mjs';
 import {fail,Problem,integer,text,uuid,token,sha,constant,now,teamRole,teamOf}from './security.mjs';
 import {staffUser,driverCity,onShift,shift,cashReport,cashReview}from './couriers.mjs';
-import {botWords}from './bot-words.mjs';import {supplierBotUser}from './supplier-bot.mjs';import {supplierActions,supplierCallback,supplierDialog,supplierCheckTick,supplierList}from './supplier-check.mjs';import {answerDay,balance}from './vendor-ledger.mjs';import {ledgerTick,itemLines}from './ledger-auto.mjs';import {startSteps,stepAnswer,stepFinish}from './weigh-steps.mjs';import {afterClaim,dispAnswer,pickupAsk,pickupPhoto,carAnswer,dispPick}from './dispatch.mjs';
+import {botWords}from './bot-words.mjs';import {supplierBotUser}from './supplier-bot.mjs';import {supplierActions,supplierCallback,supplierDialog,supplierCheckTick,supplierList,askMenu}from './supplier-check.mjs';import {answerDay,balance}from './vendor-ledger.mjs';import {ledgerTick,itemLines}from './ledger-auto.mjs';import {startSteps,stepAnswer,stepFinish}from './weigh-steps.mjs';import {afterClaim,dispAnswer,pickupAsk,pickupPhoto,carAnswer,dispPick}from './dispatch.mjs';
 import {courierActions,courierCallback,joinPrompt,courierList,rollCallTick,postRollCall}from './courier-bot.mjs';
 import {statuses,words as commerceWords}from '../public/i18n.js';import {weightPrice}from './weight-policy.mjs';import {missActions,missingPicker,missCallback}from './missing-pick.mjs';
 const json=(v,status=200)=>Response.json(v,{status,headers:{'Cache-Control':'no-store'}}),words=l=>botWords[l]||botWords.ru;
@@ -76,6 +76,7 @@ export async function telegramWebhook(req,env){if(req.method!=='POST'||!configur
  // Courier group: /courier asks to join, /smena re-posts today's roll call; owner's chat: /couriers; a courier's «Старт» unblocks his chat.
  if(l?.kind==='DRIVER'&&/^\/(courier|kurier)\b/i.test(cmd)){if(!user)await joinPrompt(db,env,telegramCall,l,m.from)}
  else if(l?.kind==='DRIVER'&&/^\/(smena|smena@\w+)\b/i.test(cmd))await postRollCall(db,env,telegramCall,l);
+ else if(l?.kind==='OWNER'&&user?.owner&&/^\/(ask|sprosit)(@\w+)?\b/i.test(cmd))await askMenu(db,env,telegramCall,l);// owner 18.11: ask a supplier again
  else if(l?.kind==='OWNER'&&user?.owner&&/^\/couriers\b/i.test(cmd))await courierList(db,env,telegramCall,l);
  else if(l?.kind==='SUPPLIER'&&/^\/(list|tovary)(@\w+)?\b/i.test(cmd))await supplierList(db,env,telegramCall,l);
  else if(l?.kind==='PERSONAL'&&m.chat.type==='private'&&/^\/start$/i.test(cmd)){await q(db,'UPDATE tg_jobs SET next_at=0,attempts=0,last_error=NULL WHERE link_id=?',l.id).run();await q(db,'UPDATE tg_links SET last_error=NULL WHERE id=?',l.id).run();await telegramCall(env,'sendMessage',{chat_id:m.chat.id,text:words(l.lang).startOk})}
