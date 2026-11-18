@@ -162,3 +162,25 @@ test('owner 13.11: the morning list says to page through and «Готово» / 
  await press(await btn(p=>p.action==='sc_list'&&p.page===1));assert.match(last().text,/стр\. 2 из/);assert.ok(last().reply_markup.inline_keyboard.flat().some(b=>b.text==='◀ Назад'));
  await press(await btn(p=>p.action==='sc_done_ok'));assert.match(last().text,/Принято/);assert.equal((await q(f.DB,'SELECT COUNT(*) n FROM supplier_checks WHERE link_id=? AND answered_at IS NOT NULL',g.id).first()).n,1,'answered after the second question');
  const {botWords}=await import('../src/bot-words.mjs');for(const k of ['scPrev','scNext','scPagesHint','scAllAsk','scAllYes','scDoneAsk','scNotSeen','scDoneYes','scBackToList','scOpenMissed'])for(const lang of ['ru','hy','ka'])assert.ok(botWords[lang][k],lang+' '+k)}finally{f.DB.close()}});
+test('owner 18.11: our purchase price next to every line (supplier: only his own, owner: all + total); the owner weighs and closes an item for the supplier',async()=>{const f=await fixture();try{f.DB.exec('UPDATE cities SET simple_flow=1');
+ f.DB.exec("UPDATE products SET cost=400 WHERE id='akhalkalaki--apple_loose'");f.DB.exec("UPDATE products SET cost=300 WHERE id='akhalkalaki--pear_loose'");
+ const g=await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200),ol=await bind(f,f.owner,1,'OWNER');const o=await order(f);await act(f,o,'confirm');await drain(f);
+ const lastTo=chat=>f.sent.filter(x=>x.chat_id===String(chat)&&x.text).at(-1).text;
+ const sup=lastTo(g.chat_id);assert.match(sup,/закуп 4\.00\/кг = ≈4\.00/,'the supplier sees our purchase price and the line sum');assert.ok(!sup.includes('закуп 3.00'),'never another supplier\'s price');assert.match(sup,/Чек для БАЗАРА: ≈4\.00 GEL/);
+ const own=lastTo(ol.chat_id);assert.match(own,/закуп 4\.00\/кг = ≈4\.00/);assert.match(own,/закуп 3\.00\/кг = ≈3\.00/);assert.match(own,/Закуп всего: ≈7\.00 GEL/);
+ // the owner's buttons: weigh / «нет» / «готово» — one set for each supplier
+ const buttons=async a=>(await q(f.DB,'SELECT * FROM tg_buttons WHERE link_id=? AND order_id=? ORDER BY rowid DESC',ol.id,o.id).all()).results.filter(b=>JSON.parse(b.payload).action===a);
+ const press=async(link,b,tg)=>assert.equal((await webhook(f,{update_id:++f.update,callback_query:{id:'cb'+f.update,data:'bz:'+b.id,from:{id:tg},message:{message_id:100,chat:{id:Number(link.chat_id)}}}})).status,200);
+ const say=async text=>assert.equal((await webhook(f,{update_id:++f.update,message:{message_id:f.update,text,chat:{id:Number(ol.chat_id),type:'private'},from:{id:1}}})).status,200);
+ const weighBtn=(await buttons('own_weigh')).find(b=>JSON.parse(b.payload).vendor_id==='akhalkalaki-garden');assert.ok(weighBtn,'«Взвесить за» the supplier');assert.ok((await buttons('own_missing')).length>=2);assert.ok((await buttons('force_ready')).length>=2);
+ await press(ol,weighBtn,1);assert.match(lastTo(ol.chat_id),/1\/1 · Яблоки/,'the owner weighs item by item, as the supplier would');
+ await say('1,05');assert.match(lastTo(ol.chat_id),/✅ Яблоки: 1,05 кг — в допуске/);await press(ol,(await buttons('weigh_ok'))[0],1);assert.match(lastTo(ol.chat_id),/Вес записан/);
+ const w=JSON.parse((await q(f.DB,'SELECT weighing FROM orders WHERE id=?',o.id).first()).weighing);assert.deepEqual(w.map(a=>[a.line_id,a.net_g]),[['akhalkalaki--apple_loose',1050]]);
+ await drain(f);assert.match(lastTo(g.chat_id),/закуп 4\.00\/кг = 4\.20/,'after weighing the line sum is exact');assert.match(lastTo(g.chat_id),/Чек для БАЗАРА: 4\.20 GEL/);
+ // the owner closes an item for the other supplier
+ const farm=(await buttons('own_missing')).find(b=>JSON.parse(b.payload).vendor_id==='akhalkalaki-farm');assert.ok(farm);await press(ol,farm,1);
+ const pick=(await q(f.DB,'SELECT * FROM tg_buttons WHERE link_id=? ORDER BY rowid DESC',ol.id).all()).results.find(b=>JSON.parse(b.payload).action==='miss_line');assert.ok(pick,'the owner picks the item');await press(ol,pick,1);
+ assert.ok(await q(f.DB,"SELECT 1 x FROM day_closures WHERE product_id='akhalkalaki--pear_loose'").first(),'the item is closed for the day');
+ // a supplier can never press the owner\'s buttons: the button belongs to the owner\'s chat
+ const outsider=await webhook(f,{update_id:++f.update,callback_query:{id:'x'+f.update,data:'bz:'+weighBtn.id,from:{id:777},message:{message_id:1,chat:{id:Number(g.chat_id)}}}});assert.equal(outsider.status,200);const ans=f.sent.filter(x=>x.method==='answerCallbackQuery').at(-1);assert.equal(ans.show_alert,true,'refused: the owner\'s button does nothing in the supplier\'s chat');assert.equal((await q(f.DB,"SELECT count(*) n FROM tg_dialogs WHERE telegram_user='777'").first()).n,0,'no weighing dialog was opened for him');
+}finally{f.DB.close()}});

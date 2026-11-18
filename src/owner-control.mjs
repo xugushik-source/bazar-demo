@@ -6,6 +6,9 @@ export const ctlWords={
  ru:{assign:'🚚 Назначить курьера',reassign:'🔁 Сменить курьера',pick:'Кого назначить на заказ {id}?',onShift:'на смене',none:'В этом городе нет курьеров',assigned:'Заказ {id} назначен: {name}',forReady:'✋ Готово за: {v}',forPickup:'✋ За курьера: забрал',forDepart:'✋ За курьера: выехал',forDeliver:'✋ За курьера: доставил',nudgeSupplier:'⏰ Заказ {id} ждёт вас {m} мин. Взвесьте и нажмите «Готово» (или «Нет»).',nudgeGroup:'⏰ Заказ {id} готов уже {m} мин, а курьера нет. Нажмите «Беру».',nudgeCourier:'⏰ Заказ {id} ждёт вас {m} мин: {step}.',stepPickup:'заберите и нажмите «Забрал»',stepDepart:'нажмите «Выехал»',stepDeliver:'передайте покупателю и нажмите «Передал»'},
  hy:{assign:'🚚 Նշանակել առաքիչ',reassign:'🔁 Փոխել առաքիչին',pick:'Ո՞ւմ նշանակել {id} պատվերին',onShift:'հերթափոխում',none:'Այս քաղաքում առաքիչներ չկան',assigned:'{id} պատվերը նշանակված է՝ {name}',forReady:'✋ Պատրաստ է՝ {v}-ի փոխարեն',forPickup:'✋ Առաքիչի փոխարեն՝ վերցրեց',forDepart:'✋ Առաքիչի փոխարեն՝ ճանապարհ ընկավ',forDeliver:'✋ Առաքիչի փոխարեն՝ առաքեց',nudgeSupplier:'⏰ {id} պատվերը ձեզ է սպասում {m} րոպե։ Կշռեք և սեղմեք «Պատրաստ է» (կամ «Չկա»)։',nudgeGroup:'⏰ {id} պատվերը պատրաստ է արդեն {m} րոպե, իսկ առաքիչ չկա։ Սեղմեք «Վերցնում եմ»։',nudgeCourier:'⏰ {id} պատվերը ձեզ է սպասում {m} րոպե՝ {step}։',stepPickup:'վերցրեք և սեղմեք «Վերցրի»',stepDepart:'սեղմեք «Ճանապարհ ընկա»',stepDeliver:'հանձնեք գնորդին և սեղմեք «Հանձնեցի»'},
  ka:{assign:'🚚 კურიერის დანიშვნა',reassign:'🔁 კურიერის შეცვლა',pick:'ვინ დავნიშნოთ შეკვეთაზე {id}?',onShift:'ცვლაზე',none:'ამ ქალაქში კურიერები არ არიან',assigned:'შეკვეთა {id} დაენიშნა: {name}',forReady:'✋ მზადაა — {v}-ის ნაცვლად',forPickup:'✋ კურიერის ნაცვლად: აიღო',forDepart:'✋ კურიერის ნაცვლად: გავიდა',forDeliver:'✋ კურიერის ნაცვლად: მიიტანა',nudgeSupplier:'⏰ შეკვეთა {id} გელოდებათ {m} წთ. აწონეთ და დააჭირეთ „მზადაა“ (ან „არ არის“).',nudgeGroup:'⏰ შეკვეთა {id} უკვე {m} წთ მზადაა, კურიერი კი არ არის. დააჭირეთ „ვიღებ“.',nudgeCourier:'⏰ შეკვეთა {id} გელოდებათ {m} წთ: {step}.',stepPickup:'აიღეთ და დააჭირეთ „ავიღე“',stepDepart:'დააჭირეთ „გავედი“',stepDeliver:'გადაეცით მყიდველს და დააჭირეთ „გადავეცი“'}};
+Object.assign(ctlWords.ru,{forWeigh:'⚖️ Взвесить за: {v}',forMissing:'✋ Нет в наличии за: {v}',cost:'закуп',perKg:'кг',perPc:'шт',costTotal:'Закуп всего'});
+Object.assign(ctlWords.hy,{forWeigh:'⚖️ Կշռել՝ {v}-ի փոխարեն',forMissing:'✋ Չկա՝ {v}-ի փոխարեն',cost:'գնում',perKg:'կգ',perPc:'հատ',costTotal:'Գնումը ընդամենը'});
+Object.assign(ctlWords.ka,{forWeigh:'⚖️ აწონვა — {v}-ის ნაცვლად',forMissing:'✋ არ არის — {v}-ის ნაცვლად',cost:'შესყიდვა',perKg:'კგ',perPc:'ც',costTotal:'შესყიდვა სულ'});
 const W=l=>ctlWords[l]||ctlWords.ru;
 export const ownerActions=['ctl_pick','ctl_assign','force_ready','own_pickup','own_depart','own_deliver'];
 const courierStep={READY:'pickup',PICKED_UP:'depart',OUT_FOR_DELIVERY:'deliver'};
@@ -15,7 +18,11 @@ export async function driversFor(db,city){const c=clock('Asia/Tbilisi'),list=(aw
 // The owner's control buttons for one order (his order card and the 6-minute reminder). `o` is the order row or its view.
 export async function ownerRows(db,l,o,addButton){const w=W(l.lang),rows=[],btn=async(a,label,x={})=>rows.push([await addButton(db,l,o,a,label,x)]);if(['COMPLETED','CANCELLED'].includes(o.status))return rows;
  if(o.fulfillment==='delivery'&&!['PICKED_UP','OUT_FOR_DELIVERY'].includes(o.status))await btn('ctl_pick',o.driver_id?w.reassign:w.assign);
- if(o.confirmed&&['WEIGHING','ASSEMBLING'].includes(o.status))for(const g of(await q(db,"SELECT g.vendor_id,v.names FROM order_groups g JOIN vendors v ON v.id=g.vendor_id WHERE g.order_id=? AND g.status NOT IN('READY','MISSING') ORDER BY v.id",o.id).all()).results){const n=parse(g.names,{});await btn('force_ready',w.forReady.replace('{v}',n[l.lang]||n.ru||g.vendor_id),{vendor_id:g.vendor_id})}
+ if(o.confirmed&&['WEIGHING','ASSEMBLING'].includes(o.status)){const arr=v=>Array.isArray(v)?v:parse(v,[])||[],quotes=arr(o.quotes),avail=typeof o.availability==='string'?parse(o.availability,{}):o.availability||{},done=new Set([...arr(o.actuals),...arr(o.weighing)].map(a=>a.line_id));// a view (arrays) or a raw order row (JSON text) — the reminders pass the row
+ for(const g of(await q(db,"SELECT g.vendor_id,v.names FROM order_groups g JOIN vendors v ON v.id=g.vendor_id WHERE g.order_id=? AND g.status NOT IN('READY','MISSING') ORDER BY v.id",o.id).all()).results){const n=parse(g.names,{}),vn=n[l.lang]||n.ru||g.vendor_id;
+  // Owner 18.11: the supplier weighs on the scale and tells the owner — the owner enters it for him, one item at a time, and can close an item for him
+  if(quotes.some(x=>x.vendor_id===g.vendor_id&&['WEIGHED','WHOLE_BY_WEIGHT'].includes(x.mode)&&avail[x.line_id]!=='MISSING'&&!done.has(x.line_id)))await btn('own_weigh',w.forWeigh.replace('{v}',vn),{vendor_id:g.vendor_id});
+  await btn('own_missing',w.forMissing.replace('{v}',vn),{vendor_id:g.vendor_id});await btn('force_ready',w.forReady.replace('{v}',n[l.lang]||n.ru||g.vendor_id),{vendor_id:g.vendor_id})}}
  const step=o.fulfillment==='delivery'&&o.driver_id&&courierStep[o.status];if(step)await btn('own_'+step,w[{pickup:'forPickup',depart:'forDepart',deliver:'forDeliver'}[step]]);
  return rows}
 // A courier named by the owner: a dispatcher (taxi firm) is asked in his own chat for the courier's name and the car, as after «Беру».
@@ -34,9 +41,15 @@ export const receiptWords={ru:{exact:'🧾 Чек для БАЗАРА: {sum}',ap
  hy:{exact:'🧾 Կտրոն ԲԱԶԱՐ-ի համար՝ {sum}',approx:'🧾 Կտրոն ԲԱԶԱՐ-ի համար՝ ≈{sum} (ճշգրիտ գումարը՝ կշռելուց հետո)',unknown:'🧾 Կտրոնի գումարը ճշտեք ԲԱԶԱՐ-ից'},
  ka:{exact:'🧾 ჩეკი ბაზრისთვის: {sum}',approx:'🧾 ჩეკი ბაზრისთვის: ≈{sum} (ზუსტი თანხა — აწონვის შემდეგ)',unknown:'🧾 ჩეკის თანხა დააზუსტეთ ბაზართან'}};
 const WEIGHED_MODES=['WEIGHED','WHOLE_BY_WEIGHT','PREWEIGHED'];
-export async function supplierReceipt(db,order,vendor,lang){const w=receiptWords[lang]||receiptWords.ru,rows=(await q(db,'SELECT line_id,cost,reserved,quote FROM order_lines WHERE order_id=? AND vendor_id=?',order.id,vendor).all()).results;if(!rows.length)return null;
- const done=[].concat(order.actuals||[],order.weighing||[]);let sum=0,exact=true;
- for(const r of rows){const x=parse(r.quote,{}),a=done.find(a=>a.line_id===r.line_id),weighed=WEIGHED_MODES.includes(x.mode);let qty=weighed?(x.mode==='WHOLE_BY_WEIGHT'?x.each_estimate_g*x.count:x.target_g)??r.reserved:x.count??r.reserved;// approximate = what was ordered
-  if(a)qty=weighed?(a.each_net_g?a.each_net_g.reduce((n,v)=>n+v,0):a.net_g??qty):a.count??qty;else exact=false;
-  const amount=lineCost(x.mode,r.cost,qty);if(amount===null)return w.unknown;sum+=amount}
+// Our purchase price of every line of the order (the supplier sees only his own lines): approximate = what was ordered,
+// exact = what was weighed. Unknown cost stays null (AGENTS.md).
+async function costRows(db,order,vendor){const rows=(await q(db,'SELECT line_id,cost,reserved,quote FROM order_lines WHERE order_id=?'+(vendor?' AND vendor_id=?':'')+' ORDER BY rowid',...(vendor?[order.id,vendor]:[order.id])).all()).results,done=[].concat(order.actuals||[],order.weighing||[]);
+ return rows.map(r=>{const x=parse(r.quote,{}),a=done.find(a=>a.line_id===r.line_id),weighed=WEIGHED_MODES.includes(x.mode);let qty=weighed?(x.mode==='WHOLE_BY_WEIGHT'?x.each_estimate_g*x.count:x.target_g)??r.reserved:x.count??r.reserved;// approximate = what was ordered
+  if(a)qty=weighed?(a.each_net_g?a.each_net_g.reduce((n,v)=>n+v,0):a.net_g??qty):a.count??qty;
+  return {line_id:r.line_id,weighed,rate:r.cost,amount:lineCost(x.mode,r.cost,qty),exact:!!a}})}
+export async function supplierReceipt(db,order,vendor,lang){const w=receiptWords[lang]||receiptWords.ru,rows=await costRows(db,order,vendor);if(!rows.length)return null;
+ if(rows.some(r=>r.amount===null))return w.unknown;const sum=rows.reduce((n,r)=>n+r.amount,0),exact=rows.every(r=>r.exact);
  return w[exact?'exact':'approx'].replace('{sum}',(sum/100).toFixed(2)+' '+(order.currency||'GEL'))}
+// Owner 18.11: our purchase price written next to every line — «закуп 3.30/кг = ≈4.62» — for the supplier (his own lines) and for the owner.
+export async function costTexts(db,order,vendor,lang){const w=W(lang),m=new Map();for(const r of await costRows(db,order,vendor))if(r.amount!==null&&r.rate!==null&&r.rate!==undefined)m.set(r.line_id,' · '+w.cost+' '+(r.rate/100).toFixed(2)+'/'+(r.weighed?w.perKg:w.perPc)+' = '+(r.exact?'':'≈')+(r.amount/100).toFixed(2));return m}
+export async function costTotal(db,order,lang){const rows=await costRows(db,order,null);if(!rows.length||rows.some(r=>r.amount===null))return null;return W(lang).costTotal+': '+(rows.every(r=>r.exact)?'':'≈')+(rows.reduce((n,r)=>n+r.amount,0)/100).toFixed(2)+' '+(order.currency||'GEL')}
