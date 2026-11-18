@@ -172,3 +172,24 @@ test('owner 17.11: a «Позвонить» button (tel: link) is on every store
 
 test('owner 17.11 (audit): the language switch keeps a readable width on phones and the install banner is compact',async()=>{const fs=await import('node:fs'),css=fs.readFileSync(new URL('../public/app.css',import.meta.url),'utf8');
  assert.ok(css.includes('.tools select#language{min-width:60px')&&css.includes('.install-banner{padding:8px 10px')&&css.includes('.call-fab{padding:10px 14px'))});
+
+test('owner 18.11: an order made in the evening for the morning is repeated once at the start of the working day, as a new message with a note, to the team only',async()=>{const e=await env();try{
+ const {backfill}=await import('../src/telegram.mjs'),{morningTick}=await import('../src/morning-repeat.mjs'),{mock}=await import('node:test');
+ const o=await order(e);await act(e,o,'confirm');const day=(await q(e.DB,'SELECT day FROM orders WHERE id=?',o.id).first()).day;
+ e.DB.exec("INSERT INTO app_config(key,value) VALUES('order_hours','540-1080') ON CONFLICT(key) DO UPDATE SET value=excluded.value");
+ e.DB.exec(`INSERT INTO tg_links(id,kind,ref_id,chat_id,title,created_at,active) VALUES('own','OWNER','${e.owner.id}','100','Owner','x',1)`);e.DB.exec(`INSERT INTO tg_links(id,kind,ref_id,chat_id,title,created_at,active) VALUES('sup','SUPPLIER','${vendor}','200','Garden','x',1)`);
+ e.DB.exec(`INSERT INTO tg_links(id,kind,ref_id,chat_id,title,created_at,active) VALUES('buy','CUSTOMER','${o.id}','300','Buyer','x',1)`);
+ await backfill(e.DB);e.DB.exec('UPDATE tg_jobs SET message_id=50,done_revision=revision');
+ const at=h=>new Date(day+'T'+h+':00+04:00'),jobs=async()=>(await q(e.DB,'SELECT link_id,message_id,revision,done_revision FROM tg_jobs WHERE order_id=? ORDER BY link_id',o.id).all()).results;
+ assert.equal(await morningTick(e.DB,at('08:30')),0,'before the start of the day nothing is repeated');assert.ok((await jobs()).every(j=>j.message_id===50&&j.revision===j.done_revision));
+ assert.equal(await morningTick(e.DB,at('09:05')),1,'at the start of the day the evening order comes again');
+ const after=await jobs();for(const j of after.filter(j=>['own','sup'].includes(j.link_id)))assert.ok(j.message_id===null&&j.revision>j.done_revision,j.link_id+': a NEW message, not an edit');
+ assert.ok(after.filter(j=>j.link_id==='buy').every(j=>j.message_id===50&&j.revision===j.done_revision),'the buyer is not bothered');
+ assert.equal(await morningTick(e.DB,at('09:30')),0,'only once');
+ mock.timers.enable({apis:['Date'],now:at('09:05').getTime()});try{
+  for(const id of ['own','sup']){const l=await q(e.DB,'SELECT * FROM tg_links WHERE id=?',id).first(),t=(await renderMessage(e.DB,l,o.id,'https://bazar.test')).text;assert.match(t.split('\n')[0],/^🌅 Заказ сделан вчера в \d\d:\d\d — напоминаем к началу рабочего дня\. Доставка сегодня в 10:00\.$/,id+': the note is the first line')}
+  const b=await q(e.DB,"SELECT * FROM tg_links WHERE id='buy'").first();assert.ok(!(await renderMessage(e.DB,b,o.id,'https://bazar.test')).text.includes('🌅'),'no note for the buyer')}finally{mock.timers.reset()}
+ // an order made after the start of the day, or already on its way, or of another day, is not repeated
+ const o2=await order(e);e.DB.exec(`UPDATE orders SET created_at='${day}T09:30:00+04:00' WHERE id='${o2.id}'`);const o3=await order(e);e.DB.exec(`UPDATE orders SET status='READY' WHERE id='${o3.id}'`);
+ assert.equal(await morningTick(e.DB,at('10:00')),0,'made during the day / already ready: nothing to repeat');
+ e.DB.exec("UPDATE app_config SET value='540-1080' WHERE key='order_hours'");assert.equal(await morningTick(e.DB,at('19:00')),0,'after the working day nobody is woken')}finally{e.DB.close()}});
