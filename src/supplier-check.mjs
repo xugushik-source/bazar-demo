@@ -5,7 +5,7 @@
 import {q,parse,clock,own}from './commerce.mjs';import {fail,uuid,now,token,text}from './security.mjs';import {botWords}from './bot-words.mjs';
 import {retailFor,retailOnCost}from './price-rules.mjs';import {journalPrice}from './price-journal.mjs';import {closedToday,FOREVER}from './supplier-day.mjs';
 const TZ='Asia/Tbilisi',PAGE=8,W=l=>botWords[l]||botWords.ru,money=n=>n==null?'—':(n/100).toFixed(2)+' ₾';
-export const supplierActions=['sc_all','sc_all_ok','sc_list','sc_close','sc_price','sc_done','sc_done_ok','pr_ok','pr_no','pr_own'];
+export const supplierActions=['ask_supplier','sc_all','sc_all_ok','sc_list','sc_close','sc_price','sc_done','sc_done_ok','pr_ok','pr_no','pr_own'];
 const weighted=p=>['WEIGHED','WHOLE_BY_WEIGHT','PREWEIGHED'].includes(parse(p.profile,{}).mode);
 const label=(p,lang)=>{const n=parse(p.names,{});return n[lang]||n.ru||p.id};
 const unit=(p,lang)=>weighted(p)?W(lang).perKg:W(lang).perPiece;
@@ -23,6 +23,21 @@ export async function morning(db,env,call,l){const w=W(l.lang),vendor=await vend
  for(let i=0,cur=[];i<=rows.length;i++){if(i===rows.length||cur.join('\n').length+rows[i].length>3500){if(cur.length)chunks.push(cur);cur=[]}if(i<rows.length)cur.push(rows[i])}
  for(const [i,c]of chunks.entries())await call(env,'sendMessage',{chat_id:l.chat_id,text:w.scFullHead.replace('{vendor}',vendor).replace('{day}',day).replace('{p}',i+1).replace('{n}',chunks.length)+'\n'+c.join('\n')});
  return call(env,'sendMessage',{chat_id:l.chat_id,text:w.scMorning.replace('{vendor}',vendor).replace('{until}',until),reply_markup:{inline_keyboard:[[await button(db,l,w.scAll,{action:'sc_all'}),await button(db,l,w.scList,{action:'sc_list',page:0})]]}})}
+
+// Owner 18.11: «направь Каро ещё раз весь список, чтобы обновили цены и что есть / чего нет». The morning question is sent once a day by
+// itself; the owner can ask a supplier again at any time: `/ask` in his chat shows a button per supplier, pressing it sends that supplier's
+// group the full list and the buttons again. Today's answer is reset, so «Готово» has to be pressed again after looking at every page.
+const askWords={ru:{menu:'Кого спросить ещё раз? Поставщик получит весь список цен и кнопки «есть / нет».',sent:'📨 Отправил заново: {v}',none:'Нет подключённых групп поставщиков'},
+ hy:{menu:'Ո՞ւմ նորից հարցնել։ Մատակարարը կստանա գների ամբողջ ցանկը և «կա / չկա» կոճակները։',sent:'📨 Նորից ուղարկվեց՝ {v}',none:'Մատակարարների միացված խմբեր չկան'},
+ ka:{menu:'ვის ვკითხოთ ხელახლა? მომწოდებელი მიიღებს ფასების სრულ სიას და „არის / არ არის“ ღილაკებს.',sent:'📨 ხელახლა გაიგზავნა: {v}',none:'მომწოდებლების ჯგუფები არ არის მიერთებული'}};
+const AW=l=>askWords[l]||askWords.ru;
+export async function askMenu(db,env,call,l){const vendors=[...new Set((await q(db,"SELECT ref_id FROM tg_links WHERE kind='SUPPLIER' AND active=1").all()).results.map(r=>r.ref_id))],rows=[];
+ for(const v of vendors)rows.push([await button(db,l,'📨 '+await vendorName(db,v,l.lang),{action:'ask_supplier',vendor_id:v})]);
+ return call(env,'sendMessage',{chat_id:l.chat_id,text:rows.length?AW(l.lang).menu:AW(l.lang).none,...(rows.length?{reply_markup:{inline_keyboard:rows}}:{})})}
+export async function askSupplierNow(db,env,call,vendorId,at=new Date()){const day=clock(TZ,at).day;let sent=0;
+ for(const l of(await q(db,"SELECT * FROM tg_links WHERE kind='SUPPLIER' AND active=1 AND ref_id=?",vendorId).all()).results){const m=await morning(db,env,call,l);
+  await q(db,'INSERT INTO supplier_checks(link_id,day,message_id) VALUES(?,?,?) ON CONFLICT(link_id,day) DO UPDATE SET message_id=excluded.message_id,answered_by=NULL,answered_at=NULL',l.id,day,m.message_id).run();
+  try{await q(db,'DELETE FROM supplier_pages_seen WHERE link_id=? AND day=?',l.id,day).run()}catch{/* before migration 0109 */}sent++}return sent}
 // Owner 13.11: one full-width button per product — the name was cut off. 🟢 on sale / 🔴 hidden; pressing switches it.
 // Costs are changed in a separate mode («💲 Изменить цену»), so switching a product and changing a price cannot be confused.
 async function listBody(db,l,page,mode='toggle'){const w=W(l.lang),price=mode==='price',all=await goods(db,l.ref_id),pages=Math.max(1,Math.ceil(all.length/PAGE)),n=Math.min(Math.max(0,page|0),pages-1),closed=await closedToday(db,clock(TZ).day),pending=new Set((await q(db,"SELECT product_id FROM price_requests WHERE vendor_id=? AND state='PROPOSED'",l.ref_id).all()).results.map(r=>r.product_id)),slice=all.slice(n*PAGE,n*PAGE+PAGE),rows=[];
@@ -37,6 +52,7 @@ const edit=async(env,call,c,body)=>call(env,'editMessageText',{chat_id:c.message
 const dialogFor=(db,c,l,target,action,ms)=>q(db,'INSERT INTO tg_dialogs(telegram_user,link_id,order_id,version,action,expires) VALUES(?,?,?,0,?,?) ON CONFLICT(telegram_user) DO UPDATE SET link_id=excluded.link_id,order_id=excluded.order_id,version=excluded.version,action=excluded.action,expires=excluded.expires',String(c.from.id),l.id,target,action,Date.now()+ms).run();
 async function hiddenNames(db,l,day){const closed=await closedToday(db,day),names=(await goods(db,l.ref_id)).filter(p=>closed.has(p.id)).map(p=>label(p,l.lang));return names.length>15?names.slice(0,15).join(', ')+' …':names.join(', ')}
 export async function supplierCallback(db,env,call,c,l,p,user){const w=W(l.lang);
+ if(p.action==='ask_supplier'){if(l.kind!=='OWNER'||!user?.owner)fail('FORBIDDEN',403);const n=await askSupplierNow(db,env,call,p.vendor_id),name=await vendorName(db,p.vendor_id,l.lang);await call(env,'sendMessage',{chat_id:l.chat_id,text:n?AW(l.lang).sent.replace('{v}',name):AW(l.lang).none});return {ok:true}}
  if(p.action.startsWith('pr_')){if(l.kind!=='OWNER'||!user?.owner)fail('FORBIDDEN',403);const r=await q(db,'SELECT * FROM price_requests WHERE id=?',p.id).first();if(!r)fail('NOT_FOUND',404);
   if(r.state!=='PROPOSED'){await call(env,'sendMessage',{chat_id:l.chat_id,text:w.prDecided});return {ok:true}}
   if(p.action==='pr_ok'){if(r.new_price==null)fail('INVALID_INPUT');return decide(db,env,call,r,r.new_price,user)}
