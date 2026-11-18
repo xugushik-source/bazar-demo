@@ -352,6 +352,8 @@ test('Owner 18.11: all MADO goods are closed Wed 18.11 – Sun 22.11 and back on
 
 test('Owner 18.11: promo banana — a 3 kg pack at 12 ₾ (cost 10 ₾), 16 packs, «Вечерний базар» for 3 days, then closed; the ordinary banana is untouched',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB},{mock}=await import('node:test'),fs=await import('node:fs');try{
  const sql=fs.readFileSync(new URL('../migrations/0114_banana_promo.sql',import.meta.url),'utf8').split('\n').filter(l=>!l.startsWith('--')&&!l.startsWith('ALTER TABLE')).join('\n');DB.exec(sql);DB.exec(sql);// the second run changes nothing
+ // the Karo / fruit-veg markup rules run again (every release): the promo price must stay 12.00, not become cost +25 % = 12.50
+ const {karoCost1106Sql}=await import('../src/karo-1106.mjs'),{fruitVegSql}=await import('../src/fruit-veg.mjs');for(const x of [...karoCost1106Sql(),...fruitVegSql(),...karoCost1106Sql()])DB.exec(x);assert.equal((await q(DB,"SELECT price FROM products WHERE id='akhalkalaki--banana_promo_3kg'").first()).price,1200,'the promo price survives the markup rules');
  const promo=cid+'--banana_promo_3kg',reg=cid+'--banana_loose',at=d=>new Date(d+'T10:00:00+04:00').getTime();
  mock.timers.enable({apis:['Date'],now:at('2026-11-19')});try{
   const c=await call(e,'catalog?city='+cid),p=c.products.find(x=>x.id===promo),b=c.products.find(x=>x.id===reg);
@@ -376,3 +378,5 @@ test('Owner 18.11: «Ферма Базара» — a switched-off supplier with 
  const mig=fs.readFileSync(new URL('../migrations/0115_farm_to_karo.sql',import.meta.url),'utf8').split('\n').filter(l=>!l.startsWith('--')).join('\n');DB.exec(mig);
  assert.equal((await q(DB,"SELECT COUNT(*) n FROM products WHERE vendor_id='akhalkalaki-farm' AND active=1").first()).n,0,'nothing active is left under the farm');assert.ok((await q(DB,"SELECT COUNT(*) n FROM products WHERE vendor_id='akhalkalaki-karo' AND active=1").first()).n>0);
  const v=(await ledgerView(DB,owner,cid)).vendors.map(x=>x.id);assert.ok(!v.includes(cid+'-farm'),'the farm is gone from the settlements');assert.ok(v.includes(cid+'-karo'),'Karo stays');DB.exec(mig)}finally{DB.close()}});
+
+test('Owner 18.11: the product card crosses out a regular price only when there is one (a fixed-price promotion has none — no «не число GEL»)',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(app.includes("p.promotion_id&&p.regular_price!=null?`<del>${money(p.regular_price)}</del>"));assert.ok(!app.includes("${p.promotion_id?`<del>"));assert.ok(app.includes("${p.fixed?'':`<p>${esc(opText(lang,34))}: ${p.percent}%</p>`}"),'no «Скидка: 1%» for a fixed-price promotion')});

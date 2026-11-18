@@ -7,6 +7,10 @@ INSERT INTO products(id,vendor_id,names,category,art,profile,price,cost,stock)
 SELECT 'akhalkalaki--banana_promo_3kg','akhalkalaki-karo','{"ru":"Бананы спелые, упаковка 3 кг (акция)","hy":"Հասած բանան, 3 կգ փաթեթ (ակցիա)","ka":"მწიფე ბანანი, 3 კგ შეკვრა (აქცია)"}',category,art,'{"mode":"FIXED_PACK","policy_version":1,"declared_net_g":3000}',1200,1000,16
 FROM products WHERE id='akhalkalaki--banana_loose' AND EXISTS(SELECT 1 FROM vendors WHERE id='akhalkalaki-karo')
 ON CONFLICT(id) DO NOTHING;
+-- The Karo markup rules (karo-1106 «+25 %», fruit-veg «+25 %») mark every Karo product and lift a lower price to cost +25 % (12.50). The promo price is
+-- deliberate: an unusable marker (delta -1, as for the cherry tomatoes) keeps both rules away from it, now and whenever the rules run again.
+INSERT INTO inventory(id,product_id,at,actor,delta,reason) SELECT 'k1106-'||id,id,'2026-11-18T06:00:00.000Z','owner',-1,'CATALOG: promo banana — fixed promo price, kept out of the Karo markup rules' FROM products WHERE id='akhalkalaki--banana_promo_3kg' ON CONFLICT(id) DO NOTHING;
+INSERT INTO inventory(id,product_id,at,actor,delta,reason) SELECT 'fv25-'||id,id,'2026-11-18T06:00:00.000Z','owner',-1,'CATALOG: promo banana — fixed promo price, kept out of the fruit/veg markup rule' FROM products WHERE id='akhalkalaki--banana_promo_3kg' ON CONFLICT(id) DO NOTHING;
 INSERT INTO promotions(id,city_id,names,terms,kind,percent,starts_at,ends_at,active,fixed,actor,at)
 SELECT 'banana-evening-1118','akhalkalaki','{"ru":"Спелые бананы 3 кг — специальное предложение","hy":"Հասած բանան 3 կգ — հատուկ առաջարկ","ka":"მწიფე ბანანი 3 კგ — სპეციალური შეთავაზება"}',
 '{"ru":"Спелые бананы: лучше съесть в ближайшие дни или взять для выпечки и смузи. Упаковка 3 кг — 12 ₾. Количество ограничено.","hy":"Հասած բանան՝ լավ է մի քանի օրում ուտել կամ օգտագործել թխվածքի ու սմուզիի համար։ 3 կգ փաթեթ՝ 12 ₾։ Քանակը սահմանափակ է։","ka":"მწიფე ბანანი: უმჯობესია უახლოეს დღეებში მიირთვათ ან გამოიყენოთ ცომეულისა და სმუზისთვის. 3 კგ შეკვრა — 12 ₾. რაოდენობა შეზღუდულია."}',
