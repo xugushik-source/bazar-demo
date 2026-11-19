@@ -404,3 +404,13 @@ test('Owner 19.11: greens at Karo — five weighed products, cost 10.00, price 1
   assert.equal(ru.length,new Set(ru).size)}finally{DB.close()}});
 
 test('Owner 19.11: a weighed product may start below 1 kg (profile.default_g) — greens start at 200 g, everything else as before',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(app.includes("Math.max(p.profile.minimum_g,p.profile.default_g||(['dried','nuts'].includes(p.category)?250:p.category==='grains'?500:1000))"))});
+
+test('Owner 19.11: each green has its own photo (not the one shared «herbs» picture); migration equals the generator; every photo file exists, is registered and has a recorded source',async()=>{const fs=await import('node:fs'),{greensPhotoSql,greensPhotos}=await import('../src/greens-photos-1119.mjs'),{greensSql}=await import('../src/greens-1119.mjs'),{mediaVersions}=await import('../public/media-versions.js');
+ assert.equal(fs.readFileSync(new URL('../migrations/0117_greens_photos.sql',import.meta.url),'utf8').split('\n').slice(1).filter(Boolean).join('\n'),greensPhotoSql().join('\n'));
+ const sources=JSON.parse(fs.readFileSync(new URL('../docs/PHOTO_SOURCES.json',import.meta.url),'utf8'));
+ for(const [k,art] of greensPhotos){const f=new URL('../public/media/'+art+'.jpg',import.meta.url);assert.ok(fs.existsSync(f),art+' file');assert.ok(fs.statSync(f).size>20000&&fs.statSync(f).size<200000,art+' size');assert.ok(mediaVersions[art],art+' has a version, so the site shows it and not the section picture');
+  const s=sources.find(x=>x.key===art);assert.ok(s&&/pexels\.com\/license/.test(s.license)&&/^https:\/\/www\.pexels\.com\/photo\//.test(s.source),art+' source recorded');assert.equal(s.file,'public/media/'+art+'.jpg')}
+ assert.equal(new Set(greensPhotos.map(x=>x[1])).size,5,'five different photos');
+ const DB=new LocalD1();migrate(DB);await seed(DB);try{for(const x of greensSql())DB.exec(x);for(const x of [...greensPhotoSql(),...greensPhotoSql()])DB.exec(x);// the second run changes nothing
+  for(const [k,art] of greensPhotos)assert.equal((await q(DB,'SELECT art FROM products WHERE id=?',cid+'--greens_'+k).first()).art,art);
+  const v=(await q(DB,"SELECT version FROM products WHERE id=?",cid+'--greens_dill').first()).version;for(const x of greensPhotoSql())DB.exec(x);assert.equal((await q(DB,"SELECT version FROM products WHERE id=?",cid+'--greens_dill').first()).version,v,'not bumped twice')}finally{DB.close()}});
