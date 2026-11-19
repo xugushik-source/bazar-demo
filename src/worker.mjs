@@ -3,7 +3,7 @@ import {advertising,saveAdvertising}from './advertising.mjs';import {sourceRepor
 import {listPromotions,savePromotion,referralInfo,referralManage}from './promotions.mjs';
 import {configured,telegramWebhook,telegramManage,botInvite,drainTelegram,notifyStatement,notifyPayment}from './telegram.mjs';import {botDomain}from './supplier-bot.mjs';import {savePhoto,listPhotos,photoFile}from './order-photos.mjs';
 import {courierSummary,shift,cashReport,cashReview,remit}from './couriers.mjs';
-import {ledgerView,fixDay,answerDay,payVendor,reversePayment,resendPayment}from './vendor-ledger.mjs';
+import {ledgerView,fixDay,answerDay,payVendor,reversePayment,resendPayment,resendStatement}from './vendor-ledger.mjs';
 import {publicAPI}from './public-api.mjs';
 import {catalogAdmin}from './catalog-admin.mjs';
 import {weightPrice} from './weight-policy.mjs';
@@ -61,6 +61,7 @@ export async function handle(req,env){try{
  if(p==='/api/manage/ledger/fix'&&b){const r=await fixDay(db,b,user);if(configured(env))await notifyStatement(db,env,r.id).catch(()=>{});return reply(r)}
  if(p==='/api/manage/ledger/answer'&&b)return reply(await answerDay(db,b,user));
  if(p==='/api/manage/ledger/pay'&&b){const r=await payVendor(db,b,user);if(configured(env)&&r.id)await notifyPayment(db,env,r.id).catch(()=>{});return reply(r)}
+ if(p==='/api/manage/ledger/resend-statement'&&b){const r=await resendStatement(db,b,user);let sent=0;if(configured(env))sent=(await notifyStatement(db,env,r.id).catch(()=>({sent:0}))).sent;return reply({ok:true,sent})}
  if(p==='/api/manage/ledger/resend'&&b){const r=await resendPayment(db,b,user);let sent=0;if(configured(env))sent=(await notifyPayment(db,env,r.id).catch(()=>({sent:0}))).sent;return reply({ok:true,sent})}
  if(p==='/api/manage/ledger/reverse'&&b)return reply(await reversePayment(db,b,user));
  if(p==='/api/manage/action'&&b)return reply(await action(db,b,user));
