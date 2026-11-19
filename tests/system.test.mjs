@@ -388,3 +388,19 @@ test('Owner 18.11: on the phone the offers and «Вечерний базар» c
 test('Owner 18.11: a link can open the shop with a search already typed (?q=) or on a category (?cat=) and scrolls to the catalogue — for a giveaway, a story, a post',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
  assert.ok(app.includes("const sp=new URLSearchParams(location.search),qv=(sp.get('q')||'').trim().slice(0,60),cv=sp.get('cat')||'';if(qv){search=qv;deepLink=true}else if(/^[a-z]{3,20}$/.test(cv)&&chipGroups.some(([g])=>g===cv)){filter=cv;deepLink=true}"),'?q= is length-limited, ?cat= must be a real category group');
  assert.ok(app.includes("(deepLink?'catalog':'')"),'a deep link scrolls to the catalogue when there is no #anchor');assert.ok(app.includes('value="${esc(search)}"'),'the typed search is escaped when drawn (no HTML from a link)')});
+
+test('Owner 19.11: greens at Karo — five weighed products, cost 10.00, price 12.50 per kg, from 200 g in 100 g steps; the markup rules never lift the price; migration equals the generator',async()=>{const fs=await import('node:fs'),{greensSql,greens,greensId}=await import('../src/greens-1119.mjs'),{karoCost1106Sql}=await import('../src/karo-1106.mjs'),{fruitVegSql}=await import('../src/fruit-veg.mjs');
+ const file=fs.readFileSync(new URL('../migrations/0116_greens.sql',import.meta.url),'utf8').split('\n').slice(1).filter(Boolean).join('\n');assert.equal(file,greensSql().join('\n'));
+ const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
+  for(const x of greensSql())DB.exec(x);for(const x of [...karoCost1106Sql(),...fruitVegSql(),...greensSql(),...karoCost1106Sql(),...fruitVegSql()])DB.exec(x);// the rules run again at every release
+  assert.equal(greens.length,5);const ru=[];
+  for(const [k,names] of greens){const p=await q(DB,'SELECT * FROM products WHERE id=?',greensId(k)).first();assert.ok(p,k);assert.equal(p.vendor_id,cid+'-karo');assert.equal(p.cost,1000);assert.equal(p.price,1250,k+': 12.50 per kg, not lifted by the markup rules');assert.equal(p.category,'vegetables');assert.equal(p.active,1);
+   const prof=JSON.parse(p.profile);assert.equal(prof.mode,'WEIGHED');assert.equal(prof.minimum_g,200);assert.equal(prof.order_step_g,100);assert.equal(prof.default_g,200,'«+» starts at 200 g');for(const l of ['ru','hy','ka'])assert.ok(names[l]&&JSON.parse(p.names)[l]===names[l],k+' '+l);ru.push(names.ru)}
+  assert.deepEqual(ru,['Лук зелёный','Котем','Петрушка','Укроп','Кинза']);
+  const c=await call(e,'catalog?city='+cid),shown=c.products.filter(p=>p.id.includes('greens_'));assert.equal(shown.length,5);assert.ok(shown.every(p=>!('cost'in p)&&p.price===1250&&p.profile.minimum_g===200&&p.profile.order_step_g===100),'the buyer sees the price and the step, never the cost');
+  const quote=g=>call(e,'quote',{city_id:cid,items:[{product_id:greensId('dill'),selection:{grams:g}}],fulfillment:'pickup'});
+  assert.equal((await quote(200)).http,200,'the minimum');assert.equal((await quote(300)).http,200,'a 100 g step');assert.notEqual((await quote(100)).http,200,'below the minimum');assert.notEqual((await quote(250)).http,200,'not a multiple of the step');
+  assert.equal((await quote(200)).estimate_minor??(await quote(200)).total-(await quote(200)).delivery_fee,250,'200 g of dill = 2.50');
+  assert.equal(ru.length,new Set(ru).size)}finally{DB.close()}});
+
+test('Owner 19.11: a weighed product may start below 1 kg (profile.default_g) — greens start at 200 g, everything else as before',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(app.includes("Math.max(p.profile.minimum_g,p.profile.default_g||(['dried','nuts'].includes(p.category)?250:p.category==='grains'?500:1000))"))});
