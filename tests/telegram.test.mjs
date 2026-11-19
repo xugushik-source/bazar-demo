@@ -227,3 +227,37 @@ test('owner 19.11: the owner sees whether the supplier confirmed the money (cabi
  await press(ok);assert.equal(toOwner().length,1,'a second press does not repeat the note');
  // a confirmed payment cannot be sent again; only the owner may send
  await assert.rejects(()=>resendPayment(f.DB,{payment_id:pay.id},f.owner),/CONFLICT/);const sup=await member(f,'SUPPLIER','x');await assert.rejects(()=>resendPayment(f.DB,{payment_id:pay.id},sup),/FORBIDDEN/)}finally{f.DB.close()}});
+test('owner 19.11: a statement the supplier has not answered can be sent to his group again (a group made after the day was fixed); an answered one cannot; only the owner may',async()=>{const f=await fixture();try{
+ const {resendStatement}=await import('../src/vendor-ledger.mjs'),{notifyStatement}=await import('../src/telegram.mjs');const o=await order(f);
+ await q(f.DB,"INSERT INTO vendor_statements(id,vendor_id,day,amount,lines,created_by,created_at,command) VALUES('st1','akhalkalaki-garden','2026-11-18',5640,?,?,?,'c-st1')",JSON.stringify([{order_id:o.id,line_id:'x',amount:5640}]),f.owner.id,new Date().toISOString()).run();
+ // the day was fixed before the supplier's group existed: nobody got it
+ assert.equal((await notifyStatement(f.DB,f.env,'st1')).sent,0);
+ const g=await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200);f.sent.length=0;
+ const r=await resendStatement(f.DB,{statement_id:'st1'},f.owner);assert.equal((await notifyStatement(f.DB,f.env,r.id)).sent,1);const m=f.sent.find(x=>x.chat_id==='-200');assert.match(m.text,/56\.40 GEL/);assert.equal(m.reply_markup.inline_keyboard[0].length,2,'«согласен» and «не согласен»');
+ const press=async data=>webhook(f,{update_id:++f.update,callback_query:{id:'cb'+f.update,data,from:{id:777,first_name:'Вови'},message:{message_id:101,chat:{id:-200}}}});await press(m.reply_markup.inline_keyboard[0][0].callback_data);assert.equal((await q(f.DB,"SELECT state FROM vendor_statements WHERE id='st1'").first()).state,'AGREED','the supplier agreed in his group');
+ await assert.rejects(()=>resendStatement(f.DB,{statement_id:'st1'},f.owner),/CONFLICT/);const sup=await member(f,'SUPPLIER','y');await assert.rejects(()=>resendStatement(f.DB,{statement_id:'st1'},sup),/FORBIDDEN/);await assert.rejects(()=>resendStatement(f.DB,{statement_id:'nope'},f.owner),/NOT_FOUND/)}finally{f.DB.close()}});
+test('owner 19.11: «я оплатил» in Telegram — after the supplier agrees, and via /pay: ask once, record the whole debt, the supplier gets «Деньги получили?»; never twice, never above the debt',async()=>{const f=await fixture();try{
+ const g=await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200),ol=await bind(f,f.owner,1,'OWNER');const o=await order(f);const {notifyStatement}=await import('../src/telegram.mjs');
+ await q(f.DB,"INSERT INTO vendor_statements(id,vendor_id,day,amount,lines,created_by,created_at,command) VALUES('st1','akhalkalaki-garden','2026-11-18',5640,?,?,?,'c-st1')",JSON.stringify([{order_id:o.id,line_id:'x',amount:5640}]),f.owner.id,new Date().toISOString()).run();
+ const to=chat=>f.sent.filter(x=>x.chat_id===String(chat)&&x.method==='sendMessage'&&x.text),tap=async(buttonData,tg,chat)=>webhook(f,{update_id:++f.update,callback_query:{id:'cb'+f.update,data:buttonData,from:{id:tg,first_name:'X'},message:{message_id:101,chat:{id:Number(chat)}}}});
+ const say=async(text,chat,from)=>webhook(f,{update_id:++f.update,message:{message_id:f.update,text,chat:{id:chat,type:chat>0?'private':'supergroup'},from:{id:from}}});
+ // before any agreement /pay has nothing to offer
+ await say('/pay',Number(ol.chat_id),1);assert.match(to(ol.chat_id).at(-1).text,/Нет согласованного долга/);
+ // the supplier agrees → the owner's bot offers the payment buttons at once
+ f.sent.length=0;await notifyStatement(f.DB,f.env,'st1');await tap(f.sent.find(x=>x.chat_id==='-200').reply_markup.inline_keyboard[0][0].callback_data,777,-200);
+ const offer=to(ol.chat_id).at(-1);assert.match(offer.text,/сверка за 2026-11-18 согласована — 56\.40 GEL/);const kb=offer.reply_markup.inline_keyboard.flat();assert.equal(kb.length,2);assert.match(kb[0].text,/56\.40 GEL наличными/);assert.match(kb[1].text,/переводом/);
+ // a tap only asks; nothing is recorded yet
+ f.sent.length=0;await tap(kb[0].callback_data,1,ol.chat_id);const ask=to(ol.chat_id).at(-1);assert.match(ask.text,/Записать оплату:.*56\.40 GEL/);assert.equal((await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n,0,'asked, not recorded');
+ const [yes]=ask.reply_markup.inline_keyboard[0];f.sent.length=0;await tap(yes.callback_data,1,ol.chat_id);
+ const pay=await q(f.DB,'SELECT * FROM vendor_payments').first();assert.deepEqual([pay.amount,pay.method,pay.vendor_id],[5640,'cash','akhalkalaki-garden']);assert.match(to(ol.chat_id).at(-1).text,/✅ Оплата записана/);
+ const notice=to(-200).at(-1);assert.match(notice.text,/56\.40 GEL/);assert.equal(notice.reply_markup.inline_keyboard[0].length,2,'the supplier gets «Получил / Не получил»');
+ // the same «Да» pressed again records nothing more; the debt is now zero, so /pay offers nothing
+ await tap(yes.callback_data,1,ol.chat_id);assert.equal((await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n,1,'never twice');await say('/pay',Number(ol.chat_id),1);assert.match(to(ol.chat_id).at(-1).text,/Нет согласованного долга/);
+ // a debt agreed earlier is reachable through /pay; a stale button (the debt changed) records nothing
+ await q(f.DB,"INSERT INTO vendor_statements(id,vendor_id,day,amount,lines,created_by,created_at,command,state) VALUES('st2','akhalkalaki-garden','2026-11-19',1000,'[]',?,?,'c-st2','AGREED')",f.owner.id,new Date().toISOString()).run();
+ await say('/pay',Number(ol.chat_id),1);const menu=to(ol.chat_id).at(-1);assert.match(menu.reply_markup.inline_keyboard[1][0].text,/10\.00 GEL переводом/);
+ f.sent.length=0;await tap(menu.reply_markup.inline_keyboard[1][0].callback_data,1,ol.chat_id);const ask2=to(ol.chat_id).at(-1);
+ await q(f.DB,"INSERT INTO vendor_statements(id,vendor_id,day,amount,lines,created_by,created_at,command,state) VALUES('st3','akhalkalaki-garden','2026-11-20',500,'[]',?,?,'c-st3','AGREED')",f.owner.id,new Date().toISOString()).run();
+ f.sent.length=0;await tap(ask2.reply_markup.inline_keyboard[0][0].callback_data,1,ol.chat_id);assert.match(to(ol.chat_id).at(-1).text,/Долг изменился \(сейчас 15\.00 GEL\)/);assert.equal((await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n,1,'a stale amount is never recorded');
+ // a supplier can neither see nor press the owner's buttons
+ await tap(kb[0].callback_data,777,-200);assert.equal(f.sent.filter(x=>x.method==='answerCallbackQuery').at(-1).show_alert,true);const n=(await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n;await say('/pay',-200,777);assert.equal((await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n,n,'/pay in a supplier group does nothing')}finally{f.DB.close()}});
