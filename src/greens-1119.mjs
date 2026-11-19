@@ -7,7 +7,7 @@
 export const greensCost=1000,greensPrice=1250,greensProfile={mode:'WEIGHED',policy_version:1,minimum_g:200,order_step_g:100,default_g:200,tolerance_bps:2000,tolerance_cap_g:200};// default_g: «+» puts 200 g in the basket, not the usual 1 kg
 export const greens=[
  ['spring_onion',{ru:'Лук зелёный',hy:'Կանաչ սոխ',ka:'მწვანე ხახვი'},'herbs'],
- ['kotem',{ru:'Котем',hy:'Կոտեմ',ka:'კოტემი'},'herbs'],
+ ['kotem',{ru:'Котем',hy:'Կոթեմ',ka:'კოტემი'},'herbs'],
  ['parsley',{ru:'Петрушка',hy:'Մաղադանոս',ka:'ოხრახუში'},'herbs'],
  ['dill',{ru:'Укроп',hy:'Սամիթ',ka:'კამა'},'dill'],
  ['cilantro',{ru:'Кинза',hy:'Համեմ',ka:'ქინძი'},'herbs']];
