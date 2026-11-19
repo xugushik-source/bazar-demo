@@ -10,7 +10,7 @@ export const greens=[
  ['kotem',{ru:'Котем',hy:'Կոտեմ',ka:'კოტემი'},'herbs'],
  ['parsley',{ru:'Петрушка',hy:'Մաղադանոս',ka:'ოხრახუში'},'herbs'],
  ['dill',{ru:'Укроп',hy:'Սամիթ',ka:'კამა'},'dill'],
- ['cilantro',{ru:'Кинза',hy:'Կինձ',ka:'ქინძი'},'herbs']];
+ ['cilantro',{ru:'Кинза',hy:'Համեմ',ka:'ქინძი'},'herbs']];
 const s=x=>"'"+String(x).replaceAll("'","''")+"'",j=x=>s(JSON.stringify(x));
 export const greensId=k=>'akhalkalaki--greens_'+k;
 export function greensSql(){const out=[];
