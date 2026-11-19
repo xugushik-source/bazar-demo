@@ -69,6 +69,9 @@ Object.assign(botWords.ka,{scMorning:'🌅 დილა მშვიდობი
 Object.assign(botWords.ru,{payNotice:'💵 БАЗАР оплатил: {amount} ({method}).\nОстаток долга: {debt}.\nДеньги получили?',payOk:'✅ Получил',payNo:'❌ Не получил',payCash:'наличные',payTransfer:'перевод',payThanks:'✅ Принято, спасибо · {name}. Остаток долга: {debt}.',payNotReceived:'❗ {vendor}: оплату {amount} не получили · {name}. Проверьте перевод.',kgShort:'кг'});
 Object.assign(botWords.hy,{payNotice:'💵 ԲԱԶԱՐ-ը վճարել է՝ {amount} ({method})։\nՊարտքի մնացորդ՝ {debt}։\nՓողը ստացա՞ք։',payOk:'✅ Ստացա',payNo:'❌ Չստացա',payCash:'կանխիկ',payTransfer:'փոխանցում',payThanks:'✅ Ընդունված է, շնորհակալություն · {name}։ Պարտքի մնացորդ՝ {debt}։',payNotReceived:'❗ {vendor}՝ {amount} վճարումը չեն ստացել · {name}։ Ստուգեք փոխանցումը։',kgShort:'կգ'});
 Object.assign(botWords.ka,{payNotice:'💵 ბაზარმა გადაიხადა: {amount} ({method}).\nდავალიანების ნაშთი: {debt}.\nთანხა მიიღეთ?',payOk:'✅ მივიღე',payNo:'❌ არ მიმიღია',payCash:'ნაღდი',payTransfer:'გადარიცხვა',payThanks:'✅ მიღებულია, მადლობა · {name}. დავალიანების ნაშთი: {debt}.',payNotReceived:'❗ {vendor}: გადახდა {amount} არ მიუღიათ · {name}. შეამოწმეთ გადარიცხვა.',kgShort:'კგ'});
+Object.assign(botWords.ru,{payReceivedOwner:'✅ {vendor}: оплату {amount} получили · {name}.'});
+Object.assign(botWords.hy,{payReceivedOwner:'✅ {vendor}․ {amount} վճարումը ստացվել է · {name}։'});
+Object.assign(botWords.ka,{payReceivedOwner:'✅ {vendor}: გადახდა {amount} მიღებულია · {name}.'});
 
 Object.assign(botWords.ru,{dispRecent:'Или выберите из тех, кого уже отправляли:'});
 Object.assign(botWords.hy,{dispRecent:'Կամ ընտրեք նրանցից, ում արդեն ուղարկել եք՝'});

@@ -207,3 +207,23 @@ test('owner 18.11: «/ask» in the owner\'s chat — a button per supplier; pres
  // the supplier cannot press the owner's button, and a supplier's «/ask» does nothing
  const out=await webhook(f,{update_id:++f.update,callback_query:{id:'x'+f.update,data:'bz:'+btn.id,from:{id:777},message:{message_id:1,chat:{id:Number(g.chat_id)}}}});assert.equal(out.status,200);assert.equal(f.sent.filter(x=>x.method==='answerCallbackQuery').at(-1).show_alert,true);
  const n2=to(g.chat_id).length;await say('/ask',Number(g.chat_id),777);assert.equal(to(g.chat_id).length,n2,'a supplier cannot ask suppliers')}finally{f.DB.close()}});
+test('owner 19.11: the owner sees whether the supplier confirmed the money (cabinet status + a Telegram note once), and can send the «деньги получили?» notice again if Telegram did not deliver it',async()=>{const f=await fixture();try{
+ const {payVendor,resendPayment,ledgerView}=await import('../src/vendor-ledger.mjs'),{notifyPayment,notifyStatement}=await import('../src/telegram.mjs');
+ const g=await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200),ol=await bind(f,f.owner,1,'OWNER');const o=await order(f);
+ await q(f.DB,"INSERT INTO vendor_statements(id,vendor_id,day,amount,lines,created_by,created_at,command) VALUES('st1','akhalkalaki-garden','2026-11-18',5000,?,?,?,'c-st1')",JSON.stringify([{order_id:o.id,line_id:'x',amount:5000}]),f.owner.id,new Date().toISOString()).run();
+ const press=async(data,tg=777)=>webhook(f,{update_id:++f.update,callback_query:{id:'cb'+f.update,data,from:{id:tg,first_name:'Каро'},message:{message_id:101,chat:{id:-200}}}});
+ f.sent.length=0;await notifyStatement(f.DB,f.env,'st1');await press(f.sent.find(x=>x.chat_id==='-200').reply_markup.inline_keyboard[0][0].callback_data);assert.equal((await q(f.DB,"SELECT state FROM vendor_statements WHERE id='st1'").first()).state,'AGREED','the supplier agreed');
+ // Telegram is down for the supplier's group at the moment the owner records the payment
+ const orig=f.env.TELEGRAM_FETCH;let down=true;f.env.TELEGRAM_FETCH=async(url,init)=>{if(down&&JSON.parse(init.body).chat_id==='-200')throw new Error('down');return orig(url,init)};
+ const pay=await payVendor(f.DB,{vendor_id:'akhalkalaki-garden',amount:2000,method:'cash',reason:'отдал наличными',command:'pay-1'},f.owner);
+ assert.equal((await notifyPayment(f.DB,f.env,pay.id)).sent,0,'not delivered');
+ const row=async()=>(await ledgerView(f.DB,f.owner,'akhalkalaki')).vendors.find(v=>v.id==='akhalkalaki-garden').payments.find(p=>p.id===pay.id);
+ const r1=await row();assert.equal(r1.notified_at,null,'the cabinet can say «не доставлено»');assert.equal(r1.confirmed_at,null);
+ // the owner presses «Отправить поставщику ещё раз» (Telegram is back)
+ down=false;f.sent.length=0;const again=await resendPayment(f.DB,{payment_id:pay.id},f.owner);assert.equal((await notifyPayment(f.DB,f.env,again.id)).sent,1);
+ const notice=f.sent.find(x=>x.chat_id==='-200');assert.match(notice.text,/20\.00 GEL/);const [ok]=notice.reply_markup.inline_keyboard[0].map(b=>b.callback_data);assert.ok((await row()).notified_at,'now «ждёт подтверждения»');
+ // the supplier presses «Получил»: the owner is told once
+ f.sent.length=0;await press(ok);const toOwner=()=>f.sent.filter(x=>x.chat_id===String(ol.chat_id)&&/получили/.test(x.text||''));assert.equal(toOwner().length,1,'the owner is told the money was received');assert.match(toOwner()[0].text,/Сад Базара/);assert.match(toOwner()[0].text,/20\.00 GEL/);assert.ok((await row()).confirmed_at,'the cabinet says «получено»');
+ await press(ok);assert.equal(toOwner().length,1,'a second press does not repeat the note');
+ // a confirmed payment cannot be sent again; only the owner may send
+ await assert.rejects(()=>resendPayment(f.DB,{payment_id:pay.id},f.owner),/CONFLICT/);const sup=await member(f,'SUPPLIER','x');await assert.rejects(()=>resendPayment(f.DB,{payment_id:pay.id},sup),/FORBIDDEN/)}finally{f.DB.close()}});
