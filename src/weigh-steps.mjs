@@ -15,8 +15,17 @@ export async function startSteps(db,env,call,l,o,from,vendor=null){const steps=s
  await call(env,'sendMessage',{chat_id:l.chat_id,text:prompt(o,l,state),reply_markup:{force_reply:true,selective:true}});return {ok:true}}
 async function button(db,l,o,version,caption,payload){const id=token().slice(0,32);await q(db,'INSERT INTO tg_buttons(id,link_id,order_id,version,payload,expires) VALUES(?,?,?,?,?,?)',id,l.id,o.id,version,JSON.stringify(payload),Date.now()+3600000).run();return {text:caption,callback_data:'bz:'+id}}
 function check(x,g){const [min,max]=x.mode==='WHOLE_BY_WEIGHT'?[x.each_min_g,x.each_max_g]:[x.min_g,x.max_g];return {ok:g>=min&&g<=max,min,max}}
-export async function stepAnswer(db,env,call,m,l,d,o){const w=W(l.lang),state=parse(d.state,{steps:[],answers:[]}),g=grams(m.text);
- if(!g){await call(env,'sendMessage',{chat_id:l.chat_id,text:w.wsBad,reply_markup:{force_reply:true,selective:true}});return true}
+// Owner 20.11: once the order is ready (or its weighing was closed some other way) the bot forgets the question —
+// otherwise it answered «Не понял число» to anything written in the group, even a photo of the transfer.
+async function stale(db,o,state){const row=await q(db,'SELECT status,weighing FROM orders WHERE id=?',o.id).first();if(!row||!['WEIGHING','ASSEMBLING'].includes(row.status))return true;
+ const done=new Set(parse(row.weighing,[]).map(a=>a.line_id)),lines=[...new Set(state.steps.map(s=>s.line_id))];if(lines.every(id=>done.has(id)))return true;
+ const vendors=[...new Set(lines.map(id=>o.quotes?.find(x=>x.line_id===id)?.vendor_id).filter(Boolean))];if(!vendors.length)return true;
+ for(const v of vendors){const g=await q(db,'SELECT status FROM order_groups WHERE order_id=? AND vendor_id=?',o.id,v).first();if(g&&!['READY','MISSING'].includes(g.status))return false}return true}
+export async function stepAnswer(db,env,call,m,l,d,o){const w=W(l.lang),state=parse(d.state,{steps:[],answers:[]});
+ if(await stale(db,o,state)){await q(db,"DELETE FROM tg_dialogs WHERE telegram_user=? AND action='weigh_step'",String(m.from.id)).run();return false}
+ const g=grams(m.text);
+ // a photo, a sticker or a remark that is not an answer to the weight question is left alone
+ if(!g){if(!m.text||!m.reply_to_message?.from?.is_bot)return true;await call(env,'sendMessage',{chat_id:l.chat_id,text:w.wsBad,reply_markup:{force_reply:true,selective:true}});return true}
  const s=state.steps[state.answers.length];if(!s)return true;const x=o.quotes.find(x=>x.line_id===s.line_id);if(!x)fail('STALE_VERSION',409);state.answers.push(g);const r=check(x,g);
  const note=(r.ok?w.wsOk:w.wsOut).replace('{name}',nameOf(x,l.lang)).replace('{got}',kg(g,l.lang)).replace('{min}',kg(r.min,l.lang)).replace('{max}',kg(r.max,l.lang));await save(db,m.from.id,l,o,d.version,state);
  if(state.answers.length<state.steps.length){await call(env,'sendMessage',{chat_id:l.chat_id,text:note+'\n\n'+prompt(o,l,state),reply_markup:{force_reply:true,selective:true}});return true}

@@ -97,15 +97,27 @@ test('owner 04.11: every order message tells couriers and suppliers to call Ар
 }finally{f.DB.close()}});
 test('owner 06.11: the supplier weighs item by item in the bot (kg or grams), sees the tolerance at once, confirms the summary; out of tolerance goes to the buyer',async()=>{const f=await fixture();try{f.DB.exec('UPDATE cities SET simple_flow=1');
  const g=await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200);await bind(f,f.owner,1,'OWNER');const o=await order(f);await act(f,o,'confirm');await drain(f);
- const last=()=>f.sent.filter(x=>x.method==='sendMessage').at(-1),say=async text=>{const data={update_id:++f.update,message:{message_id:f.update,text,chat:{id:-200,type:'supergroup'},from:{id:777,first_name:'Каро'}}};assert.equal((await webhook(f,data)).status,200)};
+ const last=()=>f.sent.filter(x=>x.method==='sendMessage').at(-1),say=async (text,extra={})=>{const data={update_id:++f.update,message:{message_id:f.update,...(text==null?{}:{text}),chat:{id:-200,type:'supergroup'},from:{id:777,first_name:'Каро'},...extra}};assert.equal((await webhook(f,data)).status,200)};
+ const reply={reply_to_message:{message_id:1,from:{id:42,is_bot:true,first_name:'Базар'}}},count=()=>f.sent.filter(x=>x.method==='sendMessage').length;
  await click(f,g,o,'weigh',777);assert.match(last().text,/1\/1 · Яблоки — заказано 1 кг/);
- await say('абв');assert.match(last().text,/Не понял число/);
+ // owner 20.11: a photo or a remark that is not a reply to the weight question gets no «Не понял число»
+ let n=count();await say(null,{photo:[{file_id:'chek',width:10,height:10}]});await say('Ок, понял');assert.equal(count(),n,'the bot keeps quiet');
+ await say('абв',reply);assert.match(last().text,/Не понял число/);
  await say('1,05');assert.match(last().text,/✅ Яблоки: 1,05 кг — в допуске/);assert.match(last().text,/Проверьте вес/);
  await click(f,g,o,'weigh_redo',777);assert.match(last().text,/1\/1 · Яблоки/);
  await say('1500');assert.match(last().text,/⚠️ Яблоки: 1,5 кг — вне допуска \(0,8 кг–1,2 кг\)/);
  await click(f,g,o,'weigh_ok',777);assert.match(last().text,/Вес записан/);
  const w=JSON.parse((await q(f.DB,'SELECT weighing FROM orders WHERE id=?',o.id).first()).weighing);assert.deepEqual(w.map(a=>[a.line_id,a.net_g]),[['akhalkalaki--apple_loose',1500]]);
  await drain(f);await click(f,g,o,'ready',777);assert.equal((await q(f.DB,"SELECT status FROM order_groups WHERE order_id=? AND vendor_id='akhalkalaki-garden'",o.id).first()).status,'READY')}finally{f.DB.close()}});
+test('owner 20.11: when the supplier\'s part is ready the bot forgets the weight question and answers nothing until the next order',async()=>{const f=await fixture();try{f.DB.exec('UPDATE cities SET simple_flow=1');
+ const g=await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200);await bind(f,f.owner,1,'OWNER');const o=await order(f);await act(f,o,'confirm');await drain(f);
+ const count=()=>f.sent.filter(x=>x.method==='sendMessage').length,say=async (text,extra={})=>{const data={update_id:++f.update,message:{message_id:f.update,...(text==null?{}:{text}),chat:{id:-200,type:'supergroup'},from:{id:777,first_name:'Каро'},...extra}};assert.equal((await webhook(f,data)).status,200)};
+ await click(f,g,o,'weigh',777);assert.ok(await q(f.DB,"SELECT 1 FROM tg_dialogs WHERE action='weigh_step'").first());
+ // the part is closed another way (the owner's «Готово за поставщика»)
+ await act(f,o,'force_ready',f.owner,{vendor_id:'akhalkalaki-garden'});
+ const n=count();await say('Нет денег');await say(null,{photo:[{file_id:'chek',width:10,height:10}]});await say('абв',{reply_to_message:{message_id:1,from:{id:42,is_bot:true,first_name:'Базар'}}});
+ assert.ok(!f.sent.slice(n).some(x=>/Не понял число/.test(x.text||'')),'no «Не понял число» after the order is ready');
+ assert.equal(await q(f.DB,"SELECT 1 FROM tg_dialogs WHERE action='weigh_step'").first(),null,'the question is forgotten')}finally{f.DB.close()}});
 test('owner 06.11: out of tolerance the buyer sees every item ordered → weighed with its sum; the courier sees «ждём подтверждения», after the buyer agrees the courier\'s chat gets a new message',async()=>{const f=await fixture();try{const {renderMessage}=await import('../src/telegram.mjs');
  const o=await order(f);await act(f,o,'confirm');await act(f,o,'weigh',f.owner,{actuals:[{line_id:'akhalkalaki--apple_loose',net_g:1500},{line_id:'akhalkalaki--pear_loose',net_g:1000}]});
  assert.equal((await q(f.DB,'SELECT status FROM orders WHERE id=?',o.id).first()).status,'AWAITING_APPROVAL');
