@@ -167,3 +167,9 @@ Object.assign(words.ka,{callUs:'დარეკვა',callOrder:'ტელე�
 Object.assign(words.ru,{toCart:'В корзину',bigText:'Крупный шрифт'});
 Object.assign(words.hy,{toCart:'Զամբյուղ',bigText:'Խոշոր տառեր'});
 Object.assign(words.ka,{toCart:'კალათაში',bigText:'დიდი შრიფტი'});
+Object.assign(words.ru,{askNote:'Бывает ограниченное количество. Напишите или позвоните нам — уточним наличие и привезём.',askWa:'Узнать наличие'});
+Object.assign(words.hy,{askNote:'Քանակը սահմանափակ է։ Գրեք կամ զանգահարեք մեզ՝ կճշտենք առկայությունը և կբերենք։',askWa:'Ճշտել առկայությունը'});
+Object.assign(words.ka,{askNote:'რაოდენობა შეზღუდულია. მოგვწერეთ ან დაგვირეკეთ — დავაზუსტებთ არსებობას და მოგიტანთ.',askWa:'ხელმისაწვდომობის დაზუსტება'});
+Object.assign(words.ru,{shiftRequired:'Сначала отметьтесь на смену, потом берите заказы.'});
+Object.assign(words.hy,{shiftRequired:'Սկզբում նշեք հերթափոխը, հետո վերցրեք պատվերները։'});
+Object.assign(words.ka,{shiftRequired:'ჯერ აღნიშნეთ ცვლა, შემდეგ აიღეთ შეკვეთები.'});
