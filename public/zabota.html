@@ -16,6 +16,12 @@
   .z legend{font-weight:700;padding:0 6px}
   .z label{display:block;margin:8px 0 4px;font-weight:600}
   .z input[type=text],.z input[type=tel],.z input[type=number],.z input[type=date],.z select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  #products details{border:1px solid #d9d4c2;border-radius:12px;margin:8px 0;background:#fff}
+  #products summary{display:flex;justify-content:space-between;gap:8px;padding:12px 14px;font-weight:700;cursor:pointer;min-height:44px;align-items:center}
+  #products summary .cnt{color:#254637}
+  #products details .row{margin:0;padding:8px 14px;border-top:1px solid #eee}
+  #products .row .hint{background:none;padding:0;margin:2px 0 0}
+  #psearch{width:100%;margin:8px 0;font-size:16px}
   .z .check{display:flex;gap:10px;align-items:flex-start;font-weight:400;margin:10px 0}
   .z .check input{width:22px;height:22px;flex:0 0 auto;margin-top:2px}
   .z .row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
@@ -75,6 +81,7 @@
     <fieldset data-step="3">
       <legend id="s3-title"></legend>
       <div class="hint" id="h-products"></div>
+      <input id="psearch" type="search" autocomplete="off">
       <div id="products"></div>
     </fieldset>
 
@@ -167,7 +174,7 @@ ru:{title:'Забота о близких',sub:'Выбирайте продук�
  steps:n=>`Шаг ${n} из 6`,prev:'Назад',next:'Далее',send:'Оформить программу',
  s1:'Кому доставляем?',rname:'Имя получателя',rphone:'Телефон получателя',
  s2:'Куда доставляем?',zone:'Населённый пункт',address:'Адрес',addrHint:'Улица, дом, подъезд, ориентир.',
- s3:'Какие товары?',prodHint:'Выберите товары из каталога. Количество меняется шагом товара.',
+ s3:'Какие товары?',psearch:'🔍 Найти товар по названию',noFound:'Ничего не найдено.',prodHint:'Выберите товары по разделам или найдите по названию. Количество меняется шагом товара.',
  s4:'Когда доставляем?',sched:'Как часто',weekly:'В определённые дни недели',every:'Каждые N дней',dates:'Конкретные даты',
  days:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],rfrom:'С какой даты (необязательно)',runtil:'До какой даты (включительно)',rhint:'После этого дня доставок не будет. По умолчанию — месяц, максимум — 120 дней.',everyN:'Каждые сколько дней',start:'Начиная с',dateAdd:'Добавить дату',dateBtn:'Добавить',time:'Время доставки',
  s5:'Бюджет и правила',budget:'Максимум на одну доставку, ₾',budgetHint:'Если стоимость товаров станет выше, мы не спишем деньги без вашего подтверждения.',
@@ -189,7 +196,7 @@ hy:{title:'Հոգատարություն մերձավորների համար',sub
  steps:n=>`Քայլ ${n} 6-ից`,prev:'Հետ',next:'Հաջորդ',send:'Ձևակերպել ծրագիրը',
  s1:'Ում ենք առաքում?',rname:'Ստացողի անունը',rphone:'Ստացողի հեռախոսը',
  s2:'Ուր ենք առաքում?',zone:'Բնակավայր',address:'Հասցե',addrHint:'Փողոց, տուն, մուտք, orientir։',
- s3:'Ի՞նչ ապրանքներ',prodHint:'Ընտրեք ապրանքներ կատալոգից։ Քանակը փոխվում է ապրանքի քայլով։',
+ s3:'Ի՞նչ ապրանքներ',psearch:'🔍 Գտնել ապրանքը անունով',noFound:'Ոչինչ չի գտնվել։',prodHint:'Ընտրեք ապրանքներ կատալոգից։ Քանակը փոխվում է ապրանքի քայլով։',
  s4:'Ե՞րբ ենք առաքում',sched:'Որքան հաճախ',weekly:'Շաբաթվա որոշ օրերին',every:'Յուրաքանչյուր N օրը',dates:'Կոնկրետ ամսաթվեր',
  days:['Երկ','Երք','Չրք','Հնգ','Ուրբ','Շբթ','Կիր'],rfrom:'Սկսած (ըստ ցանկության)',runtil:'Մինչև (ներառյալ)',rhint:'Այս օրից հետո առաքումներ չեն լինի։ Սովորաբար՝ մեկ ամիս, առավելագույնը՝ 120 օր։',everyN:'Յուրաքանչյուր քանի օրը',start:'Սկսած',dateAdd:'Ավելացնել ամսաթիվ',dateBtn:'Ավելացնել',time:'Առաքման ժամը',
  s5:'Բյուջե և կանոններ',budget:'Առավելագույնը մեկ առաքման համար, ₾',budgetHint:'Եթե ապրանքների արժեքը բարձրանա, գումար չենք գանձի ձեր հաստատման առանց։',
@@ -211,7 +218,7 @@ ka:{title:'ზრუნვა ახლობლებზე',sub:'აირჩ�
  steps:n=>`ნაბიჯი ${n} 6-დან`,prev:'უკან',next:'შემდეგი',send:'პროგრამის გაფორმება',
  s1:'ვისთვის ვაწვდით?',rname:'მიმღების სახელი',rphone:'მიმღების ტელეფონი',
  s2:'სად ვაწვდით?',zone:'დასახლება',address:'მისამართი',addrHint:'ქუჩა, სახლი, სადარბაზო, ორიენტირი.',
- s3:'რა პროდუქტები?',prodHint:'აირჩიეთ კატალოგიდან. რაოდენობა იცვლება პროდუქტის ნაბიჯით.',
+ s3:'რა პროდუქტები?',psearch:'🔍 პროდუქტის მოძებნა სახელით',noFound:'ვერაფერი მოიძებნა.',prodHint:'აირჩიეთ კატალოგიდან. რაოდენობა იცვლება პროდუქტის ნაბიჯით.',
  s4:'როდის ვაწვდით?',sched:'როგორ ხშირად',weekly:'კვირის გარკვეულ დღეებში',every:'ყოველ N დღეში',dates:'კონკრეტული თარიღები',
  days:['ორშ','სამშ','ოთხ','ხუთ','პარ','შაბ','კვი'],rfrom:'დაწყებული (არასავალდებულო)',runtil:'ბოლო თარიღი (ჩათვლით)',rhint:'ამ დღის შემდეგ მიწოდება აღარ იქნება. ჩვეულებრივ — ერთი თვე, მაქსიმუმ 120 დღე.',everyN:'ყოველ რამდენ დღეში',start:'დაწყებული',dateAdd:'თარიღის დამატება',dateBtn:'დამატება',time:'მიტანის დრო',
  s5:'ბიუჯეტი და წესები',budget:'მაქსიმუმი ერთ მიტანაზე, ₾',budgetHint:'თუ პროდუქტების ღირებულება გაიზრდება, თანხას თქვენი დადასტურების გარეშე არ ჩამოვწერთ.',
@@ -242,7 +249,7 @@ const CITY='akhalkalaki';
 const SLOTS=[];for(let m=540;m<=1170;m+=30)SLOTS.push(m);
 const MIN_TOWN_MINOR=3000;
 
-const state={step:1,zones:[],products:[],basket:{},days:new Set(),dates:[],quote:null};
+const state={step:1,zones:[],products:[],categories:[],open:new Set(),basket:{},days:new Set(),dates:[],quote:null};
 
 function fmt(minor){return (minor/100).toFixed(2).replace('.',',')+' '+t().wpart}
 function hhmm(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
@@ -260,15 +267,18 @@ async function api(path,body){
 }
 
 function isWeighed(p){const m=p.profile?.mode;return m==='WEIGHED'}
-function isCounted(p){const m=p.profile?.mode;return m==='FIXED_PACK'||m==='UNIT'||!m||m==='PIECE'}
-function supported(p){return isWeighed(p)||isCounted(p)}
+function isCounted(p){const m=p.profile?.mode;return m==='FIXED_PACK'||m==='EACH'||m==='BUNCH'||m==='UNIT'||!m||m==='PIECE'}
+// Предлагаем всё, что можно заказать обычным количеством или граммами. Не предлагаем: «скоро» и «по запросу» (их нельзя заказать),
+// целиком по весу и заранее взвешенные (нужен выбор размера), вино и крепкие напитки (в программе нет подтверждения 18+).
+const HIDE_CATEGORIES=new Set(['alcohol']);
+function supported(p){const m=p.profile?.mode;return (m==='WEIGHED'||isCounted(p))&&m!=='SOON'&&m!=='REQUEST'&&!HIDE_CATEGORIES.has(p.category)}
 
 function renderStatic(){
   document.documentElement.lang=lang;
   $('t-title').textContent=t().title;$('t-sub').textContent=t().sub;
   $('s1-title').textContent=t().s1;$('l-rname').textContent=t().rname;$('l-rphone').textContent=t().rphone;
   $('s2-title').textContent=t().s2;$('l-zone').textContent=t().zone;$('l-address').textContent=t().address;$('h-address').textContent=t().addrHint;
-  $('s3-title').textContent=t().s3;$('h-products').textContent=t().prodHint;
+  $('s3-title').textContent=t().s3;$('h-products').textContent=t().prodHint;$('psearch').placeholder=t().psearch;
   $('s4-title').textContent=t().s4;$('l-sched').textContent=t().sched;
   $('l-from').textContent=t().rfrom;$('l-until').textContent=t().runtil;$('h-range').textContent=t().rhint;$('l-every').textContent=t().everyN;$('l-start').textContent=t().start;$('l-dates').textContent=t().dateAdd;$('dbtn').textContent=t().dateBtn;
   $('l-time').textContent=t().time;
@@ -298,31 +308,48 @@ function renderZones(){
   z.value=keep;
 }
 
+function rowFor(p){
+  const row=document.createElement('div');row.className='row';
+  const name=document.createElement('div');name.textContent=p.names[lang]||p.names.ru;
+  const step=isWeighed(p)?(p.profile.order_step_g||100):1;
+  const unit=isWeighed(p)?(lang==='ru'?'г':lang==='hy'?'գ':'გ'):(lang==='ru'?'шт':lang==='hy'?'հատ':'ც');
+  const price=document.createElement('div');price.className='hint';
+  price.textContent=isWeighed(p)?fmt(p.price)+' / kg':fmt(p.price);
+  const st=document.createElement('div');st.className='stepper';
+  const minus=document.createElement('button');minus.type='button';minus.textContent='−';minus.setAttribute('aria-label','−');
+  const val=document.createElement('span');
+  const plus=document.createElement('button');plus.type='button';plus.textContent='+';plus.setAttribute('aria-label','+');
+  const min=isWeighed(p)?(p.profile.minimum_g||step):1;
+  const cur=()=>state.basket[p.id]||0;
+  val.textContent=cur()+' '+unit;
+  const set=v=>{if(v<=0)delete state.basket[p.id];else state.basket[p.id]=v;val.textContent=(cur()||0)+' '+unit;updateBadges();updateSummary()};
+  // Уменьшаем шагом товара; у минимума — убираем товар полностью.
+  minus.onclick=()=>{const v=cur();if(v<=min){set(0);return}set(v-step)};
+  plus.onclick=()=>{const v=cur();set(v===0?min:v+step)};
+  st.append(minus,val,plus);
+  const left=document.createElement('div');left.append(name,price);
+  row.append(left,st);return row;
+}
+const catName=id=>{const c=(state.categories||[]).find(x=>x.id===id);return c?(c.names[lang]||c.names.ru):id};
+function updateBadges(){document.querySelectorAll('#products details').forEach(d=>{const n=[...d.querySelectorAll('[data-pid]')].filter(r=>state.basket[r.dataset.pid]).length;const b=d.querySelector('.cnt');b.textContent=n?'✓ '+n:'';b.hidden=!n})}
 function renderProducts(){
   const box=$('products');box.innerHTML='';
-  const list=state.products.filter(supported).filter(p=>p.active!==false);
-  for(const p of list){
-    const row=document.createElement('div');row.className='row';
-    const name=document.createElement('div');name.textContent=p.names[lang]||p.names.ru;
-    const step=isWeighed(p)?(p.profile.order_step_g||100):1;
-    const unit=isWeighed(p)?(lang==='ru'?'г':lang==='hy'?'գ':'გ'):(lang==='ru'?'шт':lang==='hy'?'հատ':'ც');
-    const price=document.createElement('div');price.className='hint';
-    price.textContent=isWeighed(p)?fmt(p.price)+' / kg':fmt(p.price);
-    const st=document.createElement('div');st.className='stepper';
-    const minus=document.createElement('button');minus.type='button';minus.textContent='−';minus.setAttribute('aria-label','−');
-    const val=document.createElement('span');val.textContent='0 '+unit;
-    const plus=document.createElement('button');plus.type='button';plus.textContent='+';plus.setAttribute('aria-label','+');
-    const min=isWeighed(p)?(p.profile.minimum_g||step):1;
-    const cur=()=>state.basket[p.id]||0;
-    const set=v=>{if(v<=0)delete state.basket[p.id];else state.basket[p.id]=v;val.textContent=(cur()||0)+' '+unit;updateSummary()};
-    // Уменьшаем шагом товара; у минимума — убираем товар полностью.
-    minus.onclick=()=>{const v=cur();if(v<=min){set(0);return}set(v-step)};
-    plus.onclick=()=>{const v=cur();set(v===0?min:v+step)};
-    st.append(minus,val,plus);
-    const left=document.createElement('div');left.append(name,price);
-    row.append(left,st);box.appendChild(row);
+  const q=($('psearch')?.value||'').toLocaleLowerCase().trim();
+  const all=state.products.filter(supported).filter(p=>p.active!==false);
+  const list=q?all.filter(p=>Object.values(p.names||{}).some(n=>String(n).toLocaleLowerCase().includes(q))):all;
+  const groups=new Map();for(const p of list){if(!groups.has(p.category))groups.set(p.category,[]);groups.get(p.category).push(p)}
+  const order=(state.categories||[]).map(c=>c.id),ids=[...groups.keys()].sort((a,b)=>{const x=order.indexOf(a),y=order.indexOf(b);return (x<0?999:x)-(y<0?999:y)});
+  for(const id of ids){
+    const items=groups.get(id),d=document.createElement('details');d.dataset.cat=id;
+    // с поиском раскрываем всё найденное; без поиска раскрыто то, что человек открыл сам или где уже есть выбранное
+    d.open=!!q||state.open.has(id)||items.some(p=>state.basket[p.id]);
+    d.addEventListener('toggle',()=>{if(q)return;d.open?state.open.add(id):state.open.delete(id)});
+    const sum=document.createElement('summary');const t1=document.createElement('span');t1.textContent=catName(id)+' · '+items.length;const cnt=document.createElement('b');cnt.className='cnt';cnt.hidden=true;sum.append(t1,cnt);d.appendChild(sum);
+    for(const p of items){const r=rowFor(p);r.dataset.pid=p.id;d.appendChild(r)}
+    box.appendChild(d);
   }
-  if(!list.length)box.textContent='—';
+  if(!list.length)box.textContent=q?t().noFound:'—';
+  updateBadges();
 }
 
 function renderSchedule(){
@@ -438,8 +465,9 @@ async function init(){
   document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem('zabota-lang',lang);renderStatic();updateSummary()});
   try{
     const c=await api('catalog?city='+CITY);
-    state.zones=c.city.zones||[];state.products=c.products||[];
+    state.zones=c.city.zones||[];state.products=c.products||[];state.categories=(c.categories||[]).filter(x=>x.active!==0);
     renderStatic();
+    $('psearch').oninput=renderProducts;
   }catch(e){$('err').textContent=say(e.code)}
   if(!(await showStatus())){}
   window.addEventListener('hashchange',()=>{showStatus()});
