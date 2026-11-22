@@ -268,10 +268,11 @@ async function api(path,body){
 
 function isWeighed(p){const m=p.profile?.mode;return m==='WEIGHED'}
 function isCounted(p){const m=p.profile?.mode;return m==='FIXED_PACK'||m==='EACH'||m==='BUNCH'||m==='UNIT'||!m||m==='PIECE'}
-// Предлагаем всё, что можно заказать обычным количеством или граммами. Не предлагаем: «скоро» и «по запросу» (их нельзя заказать),
-// целиком по весу и заранее взвешенные (нужен выбор размера), вино и крепкие напитки (в программе нет подтверждения 18+).
-const HIDE_CATEGORIES=new Set(['alcohol']);
-function supported(p){const m=p.profile?.mode;return (m==='WEIGHED'||isCounted(p))&&m!=='SOON'&&m!=='REQUEST'&&!HIDE_CATEGORIES.has(p.category)}
+// Предлагаем всё, что можно заказать сейчас: на вес, штучное, упаковки, пучки и тушки целиком (одним размером товара).
+// Не предлагаем: «скоро» и «по запросу» (их нельзя заказать), товары без остатка, заранее взвешенные (у них нет выбора количества).
+// Закрытые на сегодня товары и разделы каталог уже не отдаёт.
+function isWhole(p){return p.profile?.mode==='WHOLE_BY_WEIGHT'&&Array.isArray(p.profile.ranges)&&p.profile.ranges.length>0}
+function supported(p){const m=p.profile?.mode;return (m==='WEIGHED'||isCounted(p)||isWhole(p))&&m!=='SOON'&&m!=='REQUEST'&&p.available>0}
 
 function renderStatic(){
   document.documentElement.lang=lang;
@@ -314,7 +315,7 @@ function rowFor(p){
   const step=isWeighed(p)?(p.profile.order_step_g||100):1;
   const unit=isWeighed(p)?(lang==='ru'?'г':lang==='hy'?'գ':'გ'):(lang==='ru'?'шт':lang==='hy'?'հատ':'ც');
   const price=document.createElement('div');price.className='hint';
-  price.textContent=isWeighed(p)?fmt(p.price)+' / kg':fmt(p.price);
+  price.textContent=isWeighed(p)||isWhole(p)?fmt(p.price)+' / kg':fmt(p.price);
   const st=document.createElement('div');st.className='stepper';
   const minus=document.createElement('button');minus.type='button';minus.textContent='−';minus.setAttribute('aria-label','−');
   const val=document.createElement('span');
@@ -372,7 +373,7 @@ function scheduleBody(){
 }
 function localDay(){const d=new Date();const tbs=new Date(d.getTime()+4*3600e3);return tbs.toISOString().slice(0,10)}
 
-function selectionsOf(){return Object.entries(state.basket).map(([product_id,qty])=>{const p=state.products.find(x=>x.id===product_id);return {product_id,selection:isWeighed(p)?{grams:qty}:{count:qty}}})}
+function selectionsOf(){return Object.entries(state.basket).map(([product_id,qty])=>{const p=state.products.find(x=>x.id===product_id);return {product_id,selection:isWeighed(p)?{grams:qty}:isWhole(p)?{count:qty,range_id:p.profile.ranges[0].id}:{count:qty}}})}
 
 function updateSummary(){
   const items=selectionsOf();
