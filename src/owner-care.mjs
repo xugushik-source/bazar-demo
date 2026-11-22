@@ -49,7 +49,7 @@ export async function careTick(db,env,call){
   const links=await owners(db);if(!links.length)return 0;let sent=0;
   const progs=(await db.prepare("SELECT * FROM subscription_programs p WHERE NOT EXISTS(SELECT 1 FROM subscription_events e WHERE e.program_id=p.id AND e.event='OWNER_NOTIFIED_PROGRAM') ORDER BY created_at LIMIT 5").all()).results;
   for(const p of progs){let ok=false;
-    for(const l of links){try{await call(env,'sendMessage',{chat_id:l.chat_id,text:programText(p),reply_markup:{inline_keyboard:[[await button(db,l,'✖ Отменить программу',{action:'care_cancel_ask',program_id:p.id})]]}});ok=true}catch{}}
+    for(const l of links){try{await call(env,'sendMessage',{chat_id:l.chat_id,text:programText(p),reply_markup:{inline_keyboard:[[await button(db,l,'💰 Получил оплату',{action:'care_pay_ask',program_id:p.id})],[await button(db,l,'✖ Отменить программу',{action:'care_cancel_ask',program_id:p.id})]]}});ok=true}catch{}}
     if(ok){await mark(db,p.id,'OWNER_NOTIFIED_PROGRAM');sent++}}
   const funds=(await db.prepare("SELECT * FROM subscription_funds f WHERE f.status='PENDING' AND NOT EXISTS(SELECT 1 FROM subscription_events e WHERE e.program_id=f.program_id AND e.event='OWNER_NOTIFIED_FUND' AND json_extract(e.data,'$.fund_id')=f.id) ORDER BY requested_at LIMIT 10").all()).results;
   for(const f of funds){let ok=false;const text=await fundText(db,f),yes=f.kind==='PAYMENT'?'✅ Деньги пришли':'✅ Выплатить',no=f.kind==='PAYMENT'?'✖ Не пришли':'✖ Отклонить';
@@ -58,10 +58,27 @@ export async function careTick(db,env,call){
   return sent;
 }
 
-export async function ownerCareCallback(db,env,call,l,p,user){
+export async function ownerCareCallback(db,env,call,l,p,user,buttonId=''){
   if(l.kind!=='OWNER'||!user?.owner)fail('FORBIDDEN',403);
   const say=(text,extra)=>call(env,'sendMessage',{chat_id:l.chat_id,text,...(extra?{reply_markup:extra}:{})});
   if(p.action==='care_keep'){await say('Хорошо, программа остаётся.');return {ok:true}}
+  if(p.action==='care_no'){await say('Хорошо, ничего не записано.');return {ok:true}}
+  // Владелец сам получил деньги (человек не нажал «я перевёл»): выбирает сумму и подтверждает; запись и подтверждение — те же, что в кабинете.
+  if(['care_pay_ask','care_pay_pick','care_pay_do'].includes(p.action)){
+    const prog=await q(db,'SELECT * FROM subscription_programs WHERE id=?',p.program_id).first();if(!prog)fail('NOT_FOUND',404);
+    if(prog.status==='CANCELLED'){await say('Программа отменена, оплату записать нельзя.');return {ok:true}}
+    const who=prog.payer_name+' ('+prog.payer_phone+')';
+    if(p.action==='care_pay_ask'){const rows=[],sums=[10000,20000,30000,50000,100000];
+      for(let i=0;i<sums.length;i+=3)rows.push(await Promise.all(sums.slice(i,i+3).map(a=>button(db,l,money(a),{action:'care_pay_pick',program_id:prog.id,amount_minor:a}))));
+      await say('Сколько денег вы получили от '+who+'?',{inline_keyboard:rows});return {ok:true}}
+    const amount=Number(p.amount_minor);if(!Number.isInteger(amount)||amount<1||amount>10000000)fail('INVALID_INPUT');
+    if(p.action==='care_pay_pick'){await say('Записать получение '+money(amount)+' от '+who+'? Заказчик увидит, что оплата подтверждена.',{inline_keyboard:[[await button(db,l,'Да, получил',{action:'care_pay_do',program_id:prog.id,amount_minor:amount}),await button(db,l,'Нет',{action:'care_no',program_id:prog.id})]]});return {ok:true}}
+    const command='tgcare-'+buttonId;const had=buttonId?await q(db,'SELECT id FROM subscription_funds WHERE command=?',command).first():null;
+    if(had){await say('Это уже записано.');return {ok:true}}
+    const id=uuid();await q(db,"INSERT INTO subscription_funds(id,program_id,kind,amount_minor,status,reference,requested_at,command) VALUES(?,?,'PAYMENT',?,'PENDING',?,?,?)",id,prog.id,amount,'Подтверждено владельцем в Telegram',now(),buttonId?command:null).run();
+    const view=await ownerFund(db,{fund_id:id,decision:'CONFIRM'},user);
+    await mark(db,prog.id,'OWNER_NOTIFIED_FUND',{fund_id:id});
+    await say('✅ Оплата '+money(amount)+' от '+who+' записана. Доступно для заказов по программе: '+money(view.summary?.unused_minor??0)+'. Заказчик видит подтверждение на странице программы.');return {ok:true}}
   if(p.action==='care_cancel_ask'||p.action==='care_cancel_do'){
     const prog=await q(db,'SELECT * FROM subscription_programs WHERE id=?',p.program_id).first();if(!prog)fail('NOT_FOUND',404);
     if(prog.status==='CANCELLED'){await say('Программа уже отменена.');return {ok:true}}

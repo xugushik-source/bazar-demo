@@ -16,6 +16,11 @@
   .z legend{font-weight:700;padding:0 6px}
   .z label{display:block;margin:8px 0 4px;font-weight:600}
   .z input[type=text],.z input[type=tel],.z input[type=number],.z input[type=date],.z select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  #st-head{margin:8px 0}
+  .step-line{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+  .step-line>span{font-size:20px;line-height:1.2}
+  #st-info .kv{display:flex;justify-content:space-between;gap:12px;padding:6px 0}
+  #st-info .items{margin-top:4px}
   #products details{border:1px solid #d9d4c2;border-radius:12px;margin:8px 0;background:#fff}
   #products summary{display:flex;justify-content:space-between;gap:8px;padding:12px 14px;font-weight:700;cursor:pointer;min-height:44px;align-items:center}
   #products summary .cnt{color:#254637}
@@ -150,6 +155,9 @@
   </section>
 
   <section id="view-status" class="hidden">
+    <h2 id="st-head"></h2>
+    <div id="st-steps"></div>
+    <fieldset id="st-info-box"><legend id="st-info-title"></legend><div id="st-info"></div></fieldset>
     <div class="sum" id="st-summary"></div>
     <fieldset>
       <legend id="st-topup-title"></legend>
@@ -162,6 +170,7 @@
     </fieldset>
     <fieldset>
       <legend id="st-deliv-title"></legend>
+      <p class="hint" id="st-lead"></p>
       <table><tbody id="st-deliv"></tbody></table>
     </fieldset>
   </section>
@@ -183,10 +192,10 @@ ru:{title:'Забота о близких',sub:'Выбирайте продук�
  privacy:'Я согласен(на) на обработку персональных данных для оформления доставок. Текст — на странице «Конфиденциальность».',
  weight:'Я согласен(на) с правилами взвешивания: допускается отклонение веса в пределах правил, сверх — с моего согласия.',
  oneDelivery:'Одна доставка',goods:'Товары',delivery:'Доставка',total:'Итого',
- done:'Программа оформлена. Сохраните ссылку ниже: по ней вы будете видеть доставки и пополнять программу.',
+ done:'✅ Заявка принята. Сохраните ссылку ниже: по ней вы увидите, подтверждена ли оплата, что заказано и когда ближайшая доставка.',
  doneHint:'Ссылка содержит секретный ключ. Не передавайте её посторонним.',open:'Открыть программу',
- stTitle:'Ваша программа',paid:'Оплачено',unused:'Остаток',reserved:'Занято доставками',
- topupTitle:'Пополнить программу',tuAmount:'Сумма, ₾',tuRef:'Комментарий к переводу (номер или дата перевода)',tuBtn:'Я перевёл(а)',tuDone:'Спасибо. Оператор проверит поступление и подтвердит пополнение.',
+ stHeadOk:'✅ Заявка принята',stHeadCancelled:'Программа отменена',stHeadPaused:'Программа на паузе',stepAccepted:'Заявка принята',stepPay0:'Ждём оплату: переведите деньги и нажмите «Я перевёл(а)» ниже. Пока оплата не подтверждена, заказы не создаются.',stepPayWait:'Ждём подтверждения вашего перевода ({sum}). Это займёт немного времени, страница обновится сама.',stepPayOk:'Оплата подтверждена: {sum}',stepDeliv0:'Доставки начнутся после подтверждения оплаты',stepDelivNext:'Ближайшая доставка: {day} в {time}',stepCancelled:'Программа отменена',infoTitle:'Что вы заказали',iRecipient:'Получатель',iAddress:'Адрес',iSchedule:'График',iMax:'Не больше за доставку',iItems:'Набор',iQuestions:'Вопросы? Позвоните:',monthly:'числа месяца: {d}',everyText:'каждые {n} дн., начиная с {d}',fromText:'с {d}',untilText:'до {d}',leadNote:'Заказ по каждой доставке создаётся за 2 дня до неё.',stTitle:'Ваша программа',paid:'Оплачено',unused:'Остаток',reserved:'Занято доставками',
+ topupTitle:'Сообщить о переводе',tuAmount:'Сумма, ₾',tuRef:'Комментарий к переводу (номер или дата перевода)',tuBtn:'Я перевёл(а)',tuDone:'Спасибо. Оператор проверит поступление и подтвердит пополнение.',
  delivTitle:'Доставки',showAll:'Показать все',noDeliv:'Доставок пока нет.',
  errors:{INVALID_PHONE:'Проверьте телефон.',INVALID_INPUT:'Заполните все поля.',MIN_ORDER:'Для доставки в город минимум 30 ₾ товаров.',CONSENT_REQUIRED:'Нужно согласие на обработку данных и правила взвешивания.',INVALID_SLOT:'Выберите время из списка.',INVALID_SCHEDULE:'Проверьте расписание.',INVALID_ZONE:'Выберите населённый пункт.',INVALID_ITEMS:'Добавьте хотя бы один товар.',OUT_OF_STOCK:'Этот товар сейчас недоступен.',PRODUCT_UNAVAILABLE:'Этот товар сейчас недоступен.',NETWORK:'Нет связи. Попробуйте ещё раз.'},
  st:{ACTIVE:'Активна',PAUSED:'На паузе',CANCELLED:'Отменена'},
@@ -207,7 +216,7 @@ hy:{title:'Հոգատարություն մերձավորների համար',sub
  oneDelivery:'Մեկ առաքում',goods:'Ապրանքներ',delivery:'Առաքում',total:'Ընդամենը',
  done:'Ծրագիրը ձևակերպված է։ Պահպանեք ստորև եղած հղումը. դրանով կտեսնեք առաքումները և կլրացնեք ծրագիրը։',
  doneHint:'Հղումը պարունակում է գաղտնի բանալի։ Մի փոխանցեք երրորդ անձանց։',open:'Բացել ծրագիրը',
- stTitle:'Ձեր ծրագիրը',paid:'Վճարված',unused:'Մնացորդ',reserved:'Զբաղված առաքումներով',
+ stHeadOk:'✅ Հայտն ընդունված է',stHeadCancelled:'Ծրագիրը չեղարկված է',stHeadPaused:'Ծրագիրը դադարեցված է',stepAccepted:'Հայտն ընդունված է',stepPay0:'Սպասում ենք վճարմանը. փոխանցեք գումարը և սեղմեք «Ես փոխանցել եմ» ստորև։ Մինչև վճարումը չհաստատվի, պատվերներ չեն ստեղծվում։',stepPayWait:'Սպասում ենք ձեր փոխանցման հաստատմանը ({sum})։ Էջը կթարմացվի ինքնուրույն։',stepPayOk:'Վճարումը հաստատված է՝ {sum}',stepDeliv0:'Առաքումները կսկսվեն վճարումը հաստատելուց հետո',stepDelivNext:'Մոտակա առաքումը՝ {day}, {time}',stepCancelled:'Ծրագիրը չեղարկված է',infoTitle:'Ինչ եք պատվիրել',iRecipient:'Ստացող',iAddress:'Հասցե',iSchedule:'Ժամանակացույց',iMax:'Առավելագույնը մեկ առաքման համար',iItems:'Հավաքածու',iQuestions:'Հարցե՞ր. զանգահարեք՝',monthly:'ամսվա օրեր՝ {d}',everyText:'յուրաքանչյուր {n} օրը, սկսած {d}',fromText:'սկսած {d}',untilText:'մինչև {d}',leadNote:'Յուրաքանչյուր առաքման պատվերը ստեղծվում է 2 օր առաջ։',stTitle:'Ձեր ծրագիրը',paid:'Վճարված',unused:'Մնացորդ',reserved:'Զբաղված առաքումներով',
  topupTitle:'Լրացնել ծրագիրը',tuAmount:'Գումար, ₾',tuRef:'Փոխանցման մեկնաբանություն',tuBtn:'Փոխանցել եմ',tuDone:'Շնորհակալություն։ Օպերատորը կստուգի և կհաստատի լրացումը։',
  delivTitle:'Առաքումներ',showAll:'Ցույց տալ բոլորը',noDeliv:'Առաքումներ դեռ չկան։',
  errors:{INVALID_PHONE:'Ստուգեք հեռախոսը։',INVALID_INPUT:'Լրացրեք բոլոր դաշտերը։',MIN_ORDER:'Քաղաքում առաքման համար նվազագույնը 30 ₾ ապրանք։',CONSENT_REQUIRED:'Անհրաժեշտ է համաձայնություն։',INVALID_SLOT:'Ընտրեք ժամանակը ցանկից։',INVALID_SCHEDULE:'Ստուգեք ժամանակացույցը։',INVALID_ZONE:'Ընտրեք բնակավայրը։',INVALID_ITEMS:'Ավելացրեք առնվազն մեկ ապրանք։',OUT_OF_STOCK:'Այս ապրանքը հիմա հասանելի չէ։',PRODUCT_UNAVAILABLE:'Այս ապրանքը հիմա հասանելի չէ։',NETWORK:'Կապ չկա։ Փորձեք կրկին։'},
@@ -229,7 +238,7 @@ ka:{title:'ზრუნვა ახლობლებზე',sub:'აირჩ�
  oneDelivery:'ერთი მიტანა',goods:'პროდუქტები',delivery:'მიტანა',total:'სულ',
  done:'პროგრამა გაფორმებულია. შეინახეთ ქვემოთ მოცემული ბმული: მასით დაინახავთ მიტანებს და შეავსებთ პროგრამას.',
  doneHint:'ბმული შეიცავს საიდუმლო გასაღებს. არ გადასცეთ სხვებს.',open:'პროგრამის გახსნა',
- stTitle:'თქვენი პროგრამა',paid:'გადახდილი',unused:'ნაშთი',reserved:'დაკავებული მიტანებით',
+ stHeadOk:'✅ განაცხადი მიღებულია',stHeadCancelled:'პროგრამა გაუქმებულია',stHeadPaused:'პროგრამა შეჩერებულია',stepAccepted:'განაცხადი მიღებულია',stepPay0:'ველით გადახდას: გადარიცხეთ თანხა და დააჭირეთ „გადავრიცხე“ ქვემოთ. გადახდის დადასტურებამდე შეკვეთები არ იქმნება.',stepPayWait:'ველით თქვენი გადარიცხვის დადასტურებას ({sum}). გვერდი თავისით განახლდება.',stepPayOk:'გადახდა დადასტურებულია: {sum}',stepDeliv0:'მიტანა დაიწყება გადახდის დადასტურების შემდეგ',stepDelivNext:'უახლოესი მიტანა: {day}, {time}',stepCancelled:'პროგრამა გაუქმებულია',infoTitle:'რა შეუკვეთეთ',iRecipient:'მიმღები',iAddress:'მისამართი',iSchedule:'გრაფიკი',iMax:'მაქსიმუმი ერთ მიტანაზე',iItems:'ნაკრები',iQuestions:'კითხვები? დარეკეთ:',monthly:'თვის რიცხვები: {d}',everyText:'ყოველ {n} დღეში, დაწყებული {d}',fromText:'დაწყებული {d}',untilText:'{d}-მდე',leadNote:'თითოეული მიტანის შეკვეთა იქმნება 2 დღით ადრე.',stTitle:'თქვენი პროგრამა',paid:'გადახდილი',unused:'ნაშთი',reserved:'დაკავებული მიტანებით',
  topupTitle:'პროგრამის შევსება',tuAmount:'თანხა, ₾',tuRef:'გადარიცხვის კომენტარი',tuBtn:'გადავრიცხე',tuDone:'გმადლობთ. ოპერატორი შეამოწმებს და დაადასტურებს შევსებას.',
  delivTitle:'მიტანები',showAll:'ყველას ჩვენება',noDeliv:'მიტანები ჯერ არ არის.',
  errors:{INVALID_PHONE:'შეამოწმეთ ტელეფონი.',INVALID_INPUT:'შეავსეთ ყველა ველი.',MIN_ORDER:'ქალაქში მიტანისთვის მინიმუმი 30 ₾ პროდუქტი.',CONSENT_REQUIRED:'საჭიროა თანხმობა.',INVALID_SLOT:'აირჩიეთ დრო სიიდან.',INVALID_SCHEDULE:'შეამოწმეთ გრაფიკი.',INVALID_ZONE:'აირჩიეთ დასახლება.',INVALID_ITEMS:'დაამატეთ მინიმუმ ერთი პროდუქტი.',OUT_OF_STOCK:'ეს პროდუქტი ახლა მიუწვდომელია.',PRODUCT_UNAVAILABLE:'ეს პროდუქტი ახლა მიუწვდომელია.',NETWORK:'კავშირი არ არის. სცადეთ თავიდან.'},
@@ -289,7 +298,7 @@ function renderStatic(){
   $('prev').textContent=t().prev;$('next').textContent=t().next;
   $('done-text').textContent=t().done;$('done-hint').textContent=t().doneHint;$('open-status').textContent=t().open;
   $('st-topup-title').textContent=t().topupTitle;$('tu-l-amount').textContent=t().tuAmount;$('tu-l-ref').textContent=t().tuRef;$('tu-btn').textContent=t().tuBtn;
-  $('st-deliv-title').textContent=t().delivTitle;
+  $('st-deliv-title').textContent=t().delivTitle;$('st-lead').textContent=t().leadNote;
   const sched=$('sched');sched.innerHTML='';
   [['weekly',t().weekly],['every',t().every],['dates',t().dates]].forEach(([v,label])=>{const o=document.createElement('option');o.value=v;o.textContent=label;sched.appendChild(o)});
   const time=$('time');time.innerHTML='';SLOTS.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=hhmm(m);if(m===600)o.selected=true;time.appendChild(o)});
@@ -430,6 +439,36 @@ function showDone(r){
 
 function readHash(){const h=new URLSearchParams(location.hash.slice(1));return {id:h.get('id'),key:h.get('key')}}
 
+
+function kv(box,label,value){const d=document.createElement('div');d.className='kv';const a=document.createElement('span');a.textContent=label;const b=document.createElement('b');b.textContent=value;d.append(a,b);box.appendChild(d)}
+function schedText(sc){
+  if(!sc)return '—';const T=t();let x;
+  if(sc.type==='weekly')x=(sc.days||[]).map(d=>T.days[d-1]).join(', ');
+  else if(sc.type==='monthly')x=T.monthly.replace('{d}',(sc.dates||[]).join(', '));
+  else if(sc.type==='interval')x=T.everyText.replace('{n}',sc.every).replace('{d}',sc.start);
+  else x=(sc.dates||[]).join(', ');
+  return x+(sc.from?' · '+T.fromText.replace('{d}',sc.from):'')+(sc.until?' · '+T.untilText.replace('{d}',sc.until):'');
+}
+function qtyText(sel){if(sel?.grams)return sel.grams>=1000?(sel.grams/1000).toString().replace('.',',')+' '+(lang==='ru'?'кг':lang==='hy'?'կգ':'კგ'):sel.grams+' '+(lang==='ru'?'г':lang==='hy'?'գ':'გ');return (sel?.count||1)+' '+(lang==='ru'?'шт':lang==='hy'?'հատ':'ც')}
+// Что человек видит по ссылке из «следите за заказом»: принята ли заявка, где деньги, что и кому везём, когда ближайшая доставка.
+function renderStatusHead(p){
+  const T=t(),s=p.summary,paid=s.paid_minor>0,pending=s.pending_top_up_minor>0;
+  $('st-head').textContent=p.status==='CANCELLED'?T.stHeadCancelled:p.status==='PAUSED'?T.stHeadPaused:T.stHeadOk;
+  const box=$('st-steps');box.innerHTML='';
+  const next=(p.deliveries||[]).find(d=>['PLANNED','ORDERED','WAITING_FUNDS','WAITING_APPROVAL','WAITING_STOCK','WAITING_SLOT','WAITING_CHANGE'].includes(d.status));
+  const steps=[['✅',T.stepAccepted],
+    paid?['✅',T.stepPayOk.replace('{sum}',fmt(s.paid_minor))]:pending?['⏳',T.stepPayWait.replace('{sum}',fmt(s.pending_top_up_minor))]:['⏳',T.stepPay0]];
+  if(p.status==='CANCELLED')steps.push(['✖',p.cancel_reason?T.stepCancelled+': '+p.cancel_reason:T.stepCancelled]);
+  else if(paid&&next)steps.push(['📦',T.stepDelivNext.replace('{day}',next.day).replace('{time}',hhmm(next.minute))]);
+  else steps.push(['📦',T.stepDeliv0]);
+  for(const [ico,text] of steps){const d=document.createElement('div');d.className='step-line';const i=document.createElement('span');i.textContent=ico;const x=document.createElement('div');x.textContent=text;d.append(i,x);box.appendChild(d)}
+  $('st-info-title').textContent=T.infoTitle;const info=$('st-info');info.innerHTML='';
+  kv(info,T.iRecipient,p.recipient.name+', '+p.recipient.phone);kv(info,T.iAddress,p.address);kv(info,T.iSchedule,schedText(p.schedule)+', '+hhmm(p.minute));
+  kv(info,T.iMax,fmt(p.max_delivery_minor));
+  const list=document.createElement('div');list.className='items';for(const i of p.items||[]){const d=document.createElement('div');d.textContent='• '+(i.names?.[lang]||i.names?.ru||i.name)+' — '+qtyText(i.selection);list.appendChild(d)}
+  const wrap=document.createElement('div');const lab=document.createElement('div');lab.className='hint';lab.textContent=T.iItems;wrap.append(lab,list);info.appendChild(wrap);
+  const q=document.createElement('p');q.className='hint';q.textContent=T.iQuestions+' +995 591 244 075';info.appendChild(q);
+}
 async function showStatus(){
   const {id,key}=readHash();
   if(!id||!key)return false;
@@ -437,9 +476,11 @@ async function showStatus(){
   try{
     const p=await api('subscriptions/view',{id,key});
     const s=p.summary;
+    renderStatusHead(p);
     $('st-summary').innerHTML='';
-    const rows=[[t().stTitle,(t().st[p.status]||p.status)],[t().paid,fmt(s.paid_minor)],[t().reserved,fmt(s.reserved_minor)],[t().unused,fmt(s.unused_minor)]];
+    const rows=[[t().paid,fmt(s.paid_minor)],[t().unused,fmt(s.unused_minor)]];
     rows.forEach(([a,b])=>{const d=document.createElement('div');const x=document.createElement('span');x.textContent=a;const y=document.createElement('b');y.textContent=b;d.append(x,y);$('st-summary').appendChild(d)});
+    clearTimeout(state.poll);if(p.status==='ACTIVE'&&!(s.paid_minor>0))state.poll=setTimeout(()=>{if(!document.hidden)showStatus()},30000);
     const tb=$('st-deliv');tb.innerHTML='';
     if(!p.deliveries.length)tb.innerHTML='<tr><td>'+t().noDeliv+'</td></tr>';
     const SHOW=10,draw=list=>{tb.innerHTML='';for(const d of list){const tr=document.createElement('tr');const a=document.createElement('td');a.textContent=d.day+' '+hhmm(d.minute);const b=document.createElement('td');b.textContent=t().ds[d.status]||d.status;tr.append(a,b);tb.appendChild(tr)}
