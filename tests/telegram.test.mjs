@@ -311,3 +311,7 @@ test('owner 22.11: a courier who has not checked in cannot take an order — by 
  // the owner may always take or assign
  await act(f,o2,'claim',f.owner);assert.equal((await q(f.DB,'SELECT driver_id FROM orders WHERE id=?',o2.id).first()).driver_id,f.owner.id);
 }finally{f.DB.close()}});
+
+test('owner 22.11: the courier is told plainly that he must check in; the answer fits the 200 characters Telegram allows for a pop-up',async()=>{const {botWords}=await import('../src/bot-words.mjs');
+ for(const l of ['ru','hy','ka']){assert.ok(botWords[l].noShift.length<=200,l+' pop-up too long: '+botWords[l].noShift.length);assert.match(botWords[l].noShift,/\/shift DAY/);assert.match(botWords[l].rollHello,/❗/,l+': the morning roll call says check-in is required')}
+ assert.match(botWords.ru.noShift,/не отметились/);assert.match(botWords.ru.rollHello,/Кто не отметился — заказы брать не сможет/)});
