@@ -416,3 +416,16 @@ test('Owner 19.11: each green has its own photo (not the one shared «herbs» pi
  const DB=new LocalD1();migrate(DB);await seed(DB);try{for(const x of greensSql())DB.exec(x);for(const x of [...greensPhotoSql(),...greensPhotoSql()])DB.exec(x);// the second run changes nothing
   for(const [k,art] of greensPhotos)assert.equal((await q(DB,'SELECT art FROM products WHERE id=?',cid+'--greens_'+k).first()).art,art);
   const v=(await q(DB,"SELECT version FROM products WHERE id=?",cid+'--greens_dill').first()).version;for(const x of greensPhotoSql())DB.exec(x);assert.equal((await q(DB,"SELECT version FROM products WHERE id=?",cid+'--greens_dill').first()).version,v,'not bumped twice')}finally{DB.close()}});
+
+test('Owner 22.11: heart, kidneys and liver are «ask for availability» like the piglet — the price stays, no cart, no order; the old profile is kept; migration equals the generator',async()=>{const fs=await import('node:fs'),{offalSql,offalIds}=await import('../src/offal-request.mjs');
+ const file=fs.readFileSync(new URL('../migrations/0118_offal_ask_availability.sql',import.meta.url),'utf8').split('\n').slice(1).filter(Boolean).join('\n');assert.equal(file,offalSql().join('\n'));
+ const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
+  const before=Object.fromEntries((await q(DB,"SELECT id,price,profile FROM products WHERE id IN ("+offalIds.map(()=>'?').join(',')+")",...offalIds).all()).results.map(r=>[r.id,r]));assert.equal(Object.keys(before).length,6);
+  DB.exec(file);DB.exec(file);// the second run changes nothing
+  const c=await call(e,'catalog?city=akhalkalaki');
+  for(const id of offalIds){const p=c.products.find(x=>x.id===id);assert.ok(p,id+' stays in the catalogue');assert.equal(p.profile.mode,'REQUEST');assert.equal(p.price,before[id].price,'the price is not touched and stays visible');assert.equal(p.profile.ask_availability,1);assert.equal(JSON.parse(before[id].profile).mode,'WEIGHED')}
+  const r=await call(e,'quote',{city_id:'akhalkalaki',items:[{product_id:offalIds[0],selection:{grams:1000}}],fulfillment:'pickup'});assert.equal(r.http,409);assert.match(JSON.stringify(r),/PRODUCT_UNAVAILABLE/,'it cannot be ordered through the cart or by a stale basket');
+  // putting a product back on sale restores the old weighed profile exactly
+  DB.exec("UPDATE products SET profile=json_extract(profile,'$.restore') WHERE id='"+offalIds[0]+"' AND json_extract(profile,'$.mode')='REQUEST'");
+  assert.deepEqual(JSON.parse((await q(DB,'SELECT profile FROM products WHERE id=?',offalIds[0]).first()).profile),JSON.parse(before[offalIds[0]].profile));
+ }finally{DB.close()}});
