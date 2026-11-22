@@ -472,3 +472,29 @@ test('owner 22.11: the owner gets the programme and the «я оплатил» no
     assert.equal(scheduleText({type:'weekly',days:[1,3],until:'2026-12-20'}),'по дням: пн, ср; по 2026-12-20');
   }finally{e.DB.close()}
 });
+
+test('owner 22.11: the owner records money received outside the site: amount buttons, a question, one confirmation; the payer sees it paid; a repeat tap changes nothing',async()=>{
+  const e=await env(),sent=[],call_=async(_env,method,b)=>{sent.push({method,...b});return {ok:true}};
+  try{
+    const prog=await newProgram(e);
+    await q(e.DB,"INSERT INTO tg_links(id,kind,ref_id,city_id,chat_id,title,lang,active,created_at) VALUES('own1','OWNER','owner','akhalkalaki','5001','Владелец','ru',1,'2026-11-22')").run();
+    const link=await q(e.DB,"SELECT * FROM tg_links WHERE id='own1'").first();
+    await careTick(e.DB,{},call_);
+    const kb=sent[0].reply_markup.inline_keyboard;assert.match(kb[0][0].text,/Получил оплату/);assert.match(kb[1][0].text,/Отменить/);
+    const payload=async b=>JSON.parse((await q(e.DB,'SELECT payload FROM tg_buttons WHERE id=?',b.callback_data.replace('bz:','')).first()).payload);
+    const ask=await payload(kb[0][0]);assert.equal(ask.action,'care_pay_ask');
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,ask,e.owner,'b1');
+    assert.match(sent[0].text,/Сколько денег/);const amounts=sent[0].reply_markup.inline_keyboard.flat();assert.ok(amounts.some(b=>/200\.00/.test(b.text)));
+    const pick=await payload(amounts.find(b=>/200\.00/.test(b.text)));assert.equal(pick.action,'care_pay_pick');assert.equal(pick.amount_minor,20000);
+    assert.equal((await current(e,prog)).summary.paid_minor,0,'choosing an amount records nothing');
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,pick,e.owner,'b2');
+    assert.match(sent[0].text,/Записать получение 200\.00/);const doBtn=sent[0].reply_markup.inline_keyboard[0][0];const doit=await payload(doBtn);assert.equal(doit.action,'care_pay_do');
+    assert.equal((await current(e,prog)).summary.paid_minor,0,'the question records nothing');
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,doit,e.owner,'tap-1');
+    assert.match(sent[0].text,/записана/);assert.equal((await current(e,prog)).summary.paid_minor,20000);
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,doit,e.owner,'tap-1');
+    assert.match(sent[0].text,/уже записано/);assert.equal((await current(e,prog)).summary.paid_minor,20000,'the same tap twice records once');
+    assert.equal(await careTick(e.DB,{},call_),0,'the owner is not asked again about money they just recorded');
+    await assert.rejects(()=>ownerCareCallback(e.DB,{},call_,link,doit,null,'x'),x=>x.code==='FORBIDDEN');
+  }finally{e.DB.close()}
+});
