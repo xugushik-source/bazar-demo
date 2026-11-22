@@ -1,7 +1,7 @@
 import {phoneAPI} from './phone-operator.mjs';
 import {advertising,saveAdvertising}from './advertising.mjs';import {sourceReport}from './sources.mjs';import {recordHit}from './traffic.mjs';import {customerBase,marketingOptOut,customersCsv}from './customers.mjs';import {priceSheet,sheetKey}from './price-sheet.mjs';import {setFirstOrderFree}from './first-order.mjs';
 import {listPromotions,savePromotion,referralInfo,referralManage}from './promotions.mjs';
-import {configured,telegramWebhook,telegramManage,botInvite,drainTelegram,notifyStatement,notifyPayment}from './telegram.mjs';import {botDomain}from './supplier-bot.mjs';import {savePhoto,listPhotos,photoFile}from './order-photos.mjs';
+import {configured,telegramWebhook,telegramManage,botInvite,drainTelegram,notifyStatement,notifyPayment,careNow}from './telegram.mjs';import {botDomain}from './supplier-bot.mjs';import {savePhoto,listPhotos,photoFile}from './order-photos.mjs';
 import {courierSummary,shift,cashReport,cashReview,remit}from './couriers.mjs';
 import {ledgerView,fixDay,answerDay,payVendor,reversePayment,resendPayment,resendStatement}from './vendor-ledger.mjs';
 import {publicAPI}from './public-api.mjs';
@@ -100,4 +100,4 @@ export async function handle(req,env){try{
  }
  fail('NOT_FOUND',404);
  }catch(e){if(e instanceof Problem)return reply({error:e.code},e.status);if(/CHECK|UNIQUE|constraint/i.test(e.message||''))return reply({error:'CONFLICT'},409);return reply({error:'SERVER_ERROR'},500);}}
-export default {async fetch(req,env,ctx){if(new URL(req.url).pathname.startsWith('/api/')){const r=await publicAPI(req,env,handle);if(configured(env)&&ctx?.waitUntil)ctx.waitUntil(drainTelegram(env,new URL(req.url).origin).catch(()=>{}));return r;}return env.ASSETS.fetch(req)}};
+export default {async fetch(req,env,ctx){if(new URL(req.url).pathname.startsWith('/api/')){const r=await publicAPI(req,env,handle);if(configured(env)&&ctx?.waitUntil){ctx.waitUntil(drainTelegram(env,new URL(req.url).origin).catch(()=>{}));if(req.method==='POST'&&new URL(req.url).pathname.startsWith('/api/subscriptions'))ctx.waitUntil(careNow(env).catch(()=>{}))}return r;}return env.ASSETS.fetch(req)}};

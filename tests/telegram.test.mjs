@@ -273,3 +273,18 @@ test('owner 19.11: «я оплатил» in Telegram — after the supplier agre
  f.sent.length=0;await tap(ask2.reply_markup.inline_keyboard[0][0].callback_data,1,ol.chat_id);assert.match(to(ol.chat_id).at(-1).text,/Долг изменился \(сейчас 15\.00 GEL\)/);assert.equal((await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n,1,'a stale amount is never recorded');
  // a supplier can neither see nor press the owner's buttons
  await tap(kb[0].callback_data,777,-200);assert.equal(f.sent.filter(x=>x.method==='answerCallbackQuery').at(-1).show_alert,true);const n=(await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n;await say('/pay',-200,777);assert.equal((await q(f.DB,'SELECT COUNT(*) n FROM vendor_payments').first()).n,n,'/pay in a supplier group does nothing')}finally{f.DB.close()}});
+
+import {careTick}from '../src/owner-care.mjs';import {telegramCall}from '../src/telegram.mjs';
+test('owner 22.11: «Забота о близких» reaches the owner bot; the real webhook button «Деньги пришли» confirms the top-up',async()=>{const f=await fixture();try{
+ const ol=await bind(f,f.owner,1,'OWNER');
+ await f.DB.prepare("INSERT INTO subscription_programs(id,city_id,payer_name,payer_phone,recipient_name,recipient_phone,address,zone,minute,schedule,items,max_delivery_minor,consent_version,consent_at,key_hash,created_at,updated_at) VALUES('sp1','akhalkalaki','Анна','+995555000111','Мама','+995555000222','Ахалкалаки, ул. Тестовая 1','',600,'{\"type\":\"weekly\",\"days\":[2]}','[{\"product_id\":\"akhalkalaki--apple_loose\",\"selection\":{\"grams\":1000}}]',10000,'2026-10-30','2026-11-22','h','2026-11-22','2026-11-22')").run();
+ await f.DB.prepare("INSERT INTO subscription_funds(id,program_id,kind,amount_minor,reference,requested_at) VALUES('fd1','sp1','PAYMENT',5000,'Перевод 22.11','2026-11-22')").run();
+ f.sent.length=0;assert.equal(await careTick(f.DB,f.env,telegramCall),2);
+ const msgs=f.sent.filter(x=>x.method==='sendMessage'&&/Забота/.test(x.text));assert.equal(msgs.length,2);
+ const fundMsg=msgs.find(x=>/Деньги пришли\?/.test(x.text));assert.ok(fundMsg&&/50\.00 ₾/.test(fundMsg.text));
+ const yes=fundMsg.reply_markup.inline_keyboard[0][0];assert.match(yes.text,/Деньги пришли/);
+ const payload={update_id:++f.update,callback_query:{id:'cb'+f.update,data:yes.callback_data,from:{id:1},message:{message_id:100,chat:{id:Number(ol.chat_id)}}}};
+ f.sent.length=0;assert.equal((await webhook(f,payload)).status,200);
+ assert.equal((await q(f.DB,"SELECT status FROM subscription_funds WHERE id='fd1'").first()).status,'CONFIRMED');
+ assert.ok(f.sent.some(x=>x.method==='sendMessage'&&/подтверждена/.test(x.text)),'the owner is told it is confirmed');
+}finally{f.DB.close()}});

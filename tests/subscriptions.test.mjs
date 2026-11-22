@@ -6,6 +6,7 @@ import {seed,createUser} from '../tools/seed.mjs';
 import {handle} from '../src/worker.mjs';
 import {q,clock,action} from '../src/commerce.mjs';
 import {sha,token} from '../src/security.mjs';
+import {careTick,ownerCareCallback,scheduleText} from '../src/owner-care.mjs';
 import {normalizeSchedule,scheduledDays,addDays,runSubscriptionPlanner,quoteFor} from '../src/subscriptions.mjs';
 
 // Программа «Забота о близких» проверяется на SQLite-совместимом адаптере, как и остальной набор.
@@ -431,4 +432,43 @@ test('schedule range: "until" and "from" cut the plan, bad ranges are rejected (
   assert.deepEqual(scheduledDays(i,today,'2027-03-01'),['2026-12-01','2026-12-11','2026-12-21']);
   assert.deepEqual(normalizeSchedule({type:'weekly',days:[1],until:''},today),{type:'weekly',days:[1]});
   for(const bad of [{until:'2026-11-30'},{until:'2027-06-01'},{from:'2026-12-10',until:'2026-12-05'},{until:'nope'}])assert.throws(()=>normalizeSchedule({type:'weekly',days:[1],...bad},today),e=>e.message==='INVALID_SCHEDULE');
+});
+
+test('owner 22.11: the owner gets the programme and the «я оплатил» notice in Telegram once; «Деньги пришли» confirms, a second tap does nothing; cancel asks first',async()=>{
+  const e=await env(),sent=[];
+  const call_=async(_env,method,b)=>{sent.push({method,...b});return {ok:true}};
+  try{
+    // no owner chat yet: nothing is sent and nothing is marked
+    const prog=await newProgram(e);
+    assert.equal(await careTick(e.DB,{},call_),0);assert.equal(sent.length,0);
+    await q(e.DB,"INSERT INTO tg_links(id,kind,ref_id,city_id,chat_id,title,lang,active,created_at) VALUES('own1','OWNER','owner','akhalkalaki','5001','Владелец','ru',1,'2026-11-22')").run();
+    const link=await q(e.DB,"SELECT * FROM tg_links WHERE id='own1'").first();
+    assert.equal(await careTick(e.DB,{},call_),1,'one message about the new programme');
+    assert.match(sent[0].text,/новая программа/);assert.match(sent[0].text,/Тест|Test|\+995/);assert.equal(sent[0].reply_markup.inline_keyboard[0].length,1);
+    assert.equal(await careTick(e.DB,{},call_),0,'a second run sends nothing');
+    // the payer reports a transfer
+    const r=await act(e,prog,'request_top_up',{amount_minor:5000,reference:'Перевод 22.11, Банк'});assert.equal(r.http,200);
+    sent.length=0;assert.equal(await careTick(e.DB,{},call_),1);
+    assert.match(sent[0].text,/50\.00 ₾/);assert.match(sent[0].text,/Деньги пришли\?/);
+    const buttons=sent[0].reply_markup.inline_keyboard[0];assert.equal(buttons.length,2);
+    const payload=async b=>JSON.parse((await q(e.DB,'SELECT payload FROM tg_buttons WHERE id=?',b.callback_data.replace('bz:','')).first()).payload);
+    const yes=await payload(buttons[0]),no=await payload(buttons[1]);assert.equal(yes.action,'care_fund_yes');assert.equal(no.action,'care_fund_no');
+    // a stranger cannot press it
+    await assert.rejects(()=>ownerCareCallback(e.DB,{},call_,link,yes,null),x=>x.code==='FORBIDDEN');
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,yes,e.owner);
+    assert.match(sent[0].text,/подтверждена/);assert.match(sent[0].text,/50\.00 ₾/);
+    const v=await current(e,prog);assert.equal(v.summary.paid_minor,5000);
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,yes,e.owner);assert.match(sent[0].text,/уже принято/);assert.equal((await current(e,prog)).summary.paid_minor,5000,'the second tap changes nothing');
+    // a refused transfer
+    const r2=await act(e,prog,'request_top_up',{amount_minor:700,reference:'ошибочный перевод'});assert.equal(r2.http,200);
+    sent.length=0;await careTick(e.DB,{},call_);const no2=await payload(sent[0].reply_markup.inline_keyboard[0][1]);
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,no2,e.owner);assert.match(sent[0].text,/Отклонено/);assert.equal((await current(e,prog)).summary.paid_minor,5000);
+    // cancelling the programme: first a question, then the action
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,{action:'care_cancel_ask',program_id:prog.id},e.owner);
+    assert.match(sent[0].text,/Отменить программу/);assert.equal((await current(e,prog)).status,'ACTIVE','asking does not cancel');
+    const doit=await payload(sent[0].reply_markup.inline_keyboard[0][0]);assert.equal(doit.action,'care_cancel_do');
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,doit,e.owner);assert.match(sent[0].text,/отменена/);assert.equal((await current(e,prog)).status,'CANCELLED');
+    sent.length=0;await ownerCareCallback(e.DB,{},call_,link,doit,e.owner);assert.match(sent[0].text,/уже отменена/);
+    assert.equal(scheduleText({type:'weekly',days:[1,3],until:'2026-12-20'}),'по дням: пн, ср; по 2026-12-20');
+  }finally{e.DB.close()}
 });
