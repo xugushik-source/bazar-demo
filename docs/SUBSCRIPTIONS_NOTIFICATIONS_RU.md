@@ -20,4 +20,4 @@
 Поставщик должен быть привязан к Telegram (`tg_links`, kind=SUPPLIER, ref_id = id поставщика).
 Ошибка, найденная при тестах: `INSERT OR IGNORE` скрывал нарушение CHECK, и уведомления поставщику молча не создавались. Теперь используется `ON CONFLICT DO NOTHING`.
 
-Файлы: `migrations/0100_subscription_notifications.sql`, `src/notifications.mjs`, `tests/notifications.test.mjs`.
+Файлы: `migrations/0113_subscription_notifications.sql`, `src/notifications.mjs`, `tests/notifications.test.mjs`.
