@@ -74,9 +74,9 @@ test('restaurant «Форель»: photos — every illustrative photo exists an
 test('restaurant «Форель»: «Забота о близких» reads the same catalogue, so the dishes are orderable there too',()=>{
  const z=fs.readFileSync(new URL('../public/zabota.html',import.meta.url),'utf8')+(fs.existsSync(new URL('../public/zabota.js',import.meta.url))?fs.readFileSync(new URL('../public/zabota.js',import.meta.url),'utf8'):'');assert.match(z,/catalog/)});
 
-test('restaurant «Форель»: works 11:00–23:00 — a restaurant-only basket is delivered 12:00–23:00 (last order 22:00); migration equals the generator',async()=>{const e=await env();try{
- const {forelHoursSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0125_restaurant_forel_hours.sql',import.meta.url),'utf8').endsWith(forelHoursSql().join('\n')+'\n'));
+test('restaurant «Форель»: orders until 22:00 — a restaurant-only basket is delivered 12:00–22:30; migration equals the generator',async()=>{const e=await env();try{
+ const {forelHoursSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0126_restaurant_forel_hours_b.sql',import.meta.url),'utf8').endsWith(forelHoursSql().join('\n')+'\n'));
  for(const s of forelHoursSql())e.DB.exec(s);const day=new Date(Date.now()+86400000).toISOString().slice(0,10);
  const r=await call(e,`slots?city=${cid}&day=${day}&products=${pid('forel_pork_shashlik')}`);const m=r.slots.map(s=>s.minute);
- assert.equal(Math.min(...m),720,'first delivery 12:00');assert.equal(Math.max(...m),1380,'last delivery 23:00');
- const mixed=await call(e,`slots?city=${cid}&day=${day}&products=${pid('forel_pork_shashlik')},${pid('apple_loose')}`);assert.ok(Math.max(...mixed.slots.map(s=>s.minute))<1380,'with shop goods the shop hours apply')}finally{e.DB.close()}});
+ assert.equal(Math.min(...m),720,'first delivery 12:00');assert.equal(Math.max(...m),1350,'last delivery 22:30 — with the 30-minute lead the last order is 22:00');
+ const mixed=await call(e,`slots?city=${cid}&day=${day}&products=${pid('forel_pork_shashlik')},${pid('apple_loose')}`);assert.ok(Math.max(...mixed.slots.map(s=>s.minute))<1350,'with shop goods the shop hours apply')}finally{e.DB.close()}});

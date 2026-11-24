@@ -165,3 +165,8 @@ html.big body{zoom:1.2}
 .grid .subhead[id]{scroll-margin-top:64px}
 .art .photo-note{display:block;position:absolute;left:6px;top:6px;right:auto;max-width:calc(100% - 12px);background:rgba(36,63,49,.82);color:#fffdf6;font-size:.68rem;line-height:1.2;padding:3px 6px;border-radius:6px;pointer-events:none;z-index:1}
 .set-info{background:var(--card);border-radius:12px;padding:10px 14px;margin:10px 0}.set-info ul{margin:6px 0;padding-left:18px}.photo-note-text{color:var(--muted)}
+
+/* Owner 24.11: sections with their own hours, shown apart */
+.own-hours{margin:10px 0 12px;padding:12px 14px;border-radius:14px;background:#fffdf6;box-shadow:0 2px 10px rgba(36,63,49,.12);border:1px solid var(--line)}.own-hours h3{margin:0 0 4px;color:var(--green);font-size:1.05rem}.own-hours .small{margin:0 0 8px;color:var(--muted)}
+.own-hours button{display:block;width:100%;text-align:left;margin:6px 0 0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#f1efe3;color:var(--ink);font:inherit;cursor:pointer}
+.grid .own-hours-top{grid-column:1/-1;margin:4px 0 6px;padding:10px 12px;border-radius:10px;background:#fffdf6;box-shadow:0 1px 6px rgba(36,63,49,.12);color:var(--green);font-weight:600}
