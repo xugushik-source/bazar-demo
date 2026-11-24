@@ -77,6 +77,11 @@ test('owner 10.11: household price list — cost +20 % rounded up to 10 tetri (o
  assert.equal(by(1).price,3000);assert.equal(by(2).price,1500);assert.ok(by(3));assert.equal(c.products.filter(p=>p.id.includes('artur_hh_')&&p.profile.mode==='EACH').length,2,'priced items become ordinary');assert.equal(by(3).profile.mode,'SOON','no cost — still «Ожидается»');
  assert.equal((await q(DB,'SELECT cost FROM products WHERE id=?',householdId(1)).first()).cost,2500);assert.ok(!('cost'in by(1)),'cost is private')}finally{DB.close()}});
 
+test('owner 24.11: household prices read from the shelf photos (+20 %), children\'s pants are «Памперсы»; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
+ const fs=await import('node:fs'),{householdSql1124,householdId}=await import('../src/artur-household.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0119_artur_household_prices_1124.sql',import.meta.url),'utf8').endsWith(householdSql1124().join('\n')+'\n'));
+ for(const sql of householdSql1124())DB.exec(sql);const c=await call(e,'catalog?city='+cid),by=n=>c.products.find(p=>p.id===householdId(n));
+ assert.equal(by(1).price,3600,'Persil 10 кг: 30 ₾ +20 %');assert.equal(by(266).price,420,'ACE 1 л: 3,50 ₾ +20 %');assert.equal(by(1).profile.mode,'EACH');assert.equal(by(2).profile.mode,'SOON','not on the photos — still «Ожидается»');
+ assert.match(by(33).names.ru,/^Памперсы Predo/);assert.match(by(133).names.ru,/^Трусы-подгузники для взрослых/,'adults unchanged')}finally{DB.close()}});
 test('owner 11.11: «Торты и выпечка» — new section, supplier and eight cakes with photos show «Ожидается», not orderable; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
  const {cakesSql,cakes,cakesId,cakesArt}=await import('../src/vypechka.mjs'),fs=await import('node:fs');
  const c=await call(e,'catalog?city='+cid);assert.ok(c.categories.find(x=>x.id==='cakes'&&x.names.hy&&x.names.ka),'category in three languages');assert.ok(c.vendors.find(v=>v.id==='akhalkalaki-vypechka'&&v.names.hy&&v.names.ka));
