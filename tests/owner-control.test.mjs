@@ -85,6 +85,12 @@ test('owner 24.11: household prices read from the shelf photos (+20 %), children
 test('owner 24.11: second pass — prices from the owner\'s sheet; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
  const fs=await import('node:fs'),{householdSql1124b,householdId}=await import('../src/artur-household.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0120_artur_household_prices_1124b.sql',import.meta.url),'utf8').endsWith(householdSql1124b().join('\n')+'\n'));
  for(const sql of householdSql1124b())DB.exec(sql);const c=await call(e,'catalog?city='+cid),by=n=>c.products.find(p=>p.id===householdId(n));assert.equal(by(97).price,4080,'Ariel 10 кг: 34 ₾ +20 %');assert.equal(by(154).price,660);assert.equal(by(153).profile.mode,'SOON','still unclear')}finally{DB.close()}});
+test('owner 24.11: third pass — last sheet prices, Fairy Platinum 72 with photo, household items without a price hidden; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
+ const fs=await import('node:fs'),{householdSql1124c,householdId}=await import('../src/artur-household.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0121_artur_household_1124c.sql',import.meta.url),'utf8').endsWith(householdSql1124c().join('\n')+'\n'));
+ assert.ok(fs.existsSync(new URL('../public/media/artur-hh-030.jpg',import.meta.url)));
+ for(const sql of householdSql1124c())DB.exec(sql);const c=await call(e,'catalog?city='+cid),by=n=>c.products.find(p=>p.id===householdId(n));
+ assert.equal(by(30).price,4800,'Fairy Platinum 72: 40 ₾ +20 %');assert.match(by(30).names.ru,/Fairy Platinum, 72/);assert.equal(by(153).price,960);
+ assert.ok(!by(2),'no price yet — hidden');assert.ok(!c.products.some(p=>p.id.includes('artur_hh_')&&!(p.price>0)),'no unpriced household item on the site')}finally{DB.close()}});
 test('owner 11.11: «Торты и выпечка» — new section, supplier and eight cakes with photos show «Ожидается», not orderable; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
  const {cakesSql,cakes,cakesId,cakesArt}=await import('../src/vypechka.mjs'),fs=await import('node:fs');
  const c=await call(e,'catalog?city='+cid);assert.ok(c.categories.find(x=>x.id==='cakes'&&x.names.hy&&x.names.ka),'category in three languages');assert.ok(c.vendors.find(v=>v.id==='akhalkalaki-vypechka'&&v.names.hy&&v.names.ka));

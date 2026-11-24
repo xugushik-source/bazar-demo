@@ -380,3 +380,13 @@ export function householdSql1124(){const s=x=>"'"+String(x).replaceAll("'","''")
 export const householdPrices1124b=[[16,850],[19,1900],[20,1900],[32,1250],[76,1000],[97,3400],[118,2700],[130,2500],[131,2500],[132,2500],[136,3900],[137,3900],[138,3900],
  [154,550],[160,750],[185,950],[229,2400],[305,2000],[308,2000],[313,1600],[368,1000],[369,1000]].map(([n,c])=>[n,c,null]);
 export const householdSql1124b=()=>arturHouseholdPriceSql(householdPrices1124b);
+// Owner 24.11 (third pass): the last prices from his sheet; Fairy Platinum capsules 72 (row 30 of his list, left out on 10.11) added
+// with the owner's own shelf photo (supplier price tag painted over); every household item still without a purchase price is
+// hidden from the site until its price comes (arturHouseholdPriceSql makes a priced item active again).
+export const householdPrices1124c=[[153,800],[223,3000],[260,1900],[30,4000]].map(([n,c])=>[n,c,null]);
+export const householdFairy72=[30,["Капсулы для посудомоечной машины Fairy Platinum, 72 шт.","Սպասք լվացող մեքենայի պարկուճներ Fairy Platinum, 72 հատ","ჭურჭლის სარეცხი მანქანის კაფსულები Fairy Platinum, 72 ცალი"],1];
+export function householdSql1124c(){const V=arturVendor,s=x=>"'"+String(x).replaceAll("'","''")+"'",[n,[ru,hy,ka]]=householdFairy72;
+ return [`INSERT INTO products(id,vendor_id,names,category,art,profile,price,cost,stock,active) SELECT ${s(householdId(n))},${s(V.id)},${s(JSON.stringify({ru,hy,ka}))},'household',${s(artOf(n))},'{"mode":"SOON","policy_version":1}',0,NULL,100,1 WHERE EXISTS(SELECT 1 FROM vendors WHERE id=${s(V.id)}) AND EXISTS(SELECT 1 FROM categories WHERE id='household') ON CONFLICT(id) DO NOTHING;`,
+  ...arturHouseholdPriceSql([...householdPrices1124c.filter(r=>r[0]!==30)]),
+  `UPDATE products SET cost=${householdPrices1124c.find(r=>r[0]===30)[1]},price=${householdRetail(householdPrices1124c.find(r=>r[0]===30)[1])},profile='{"mode":"EACH","policy_version":1}',active=1,version=version+1 WHERE id=${s(householdId(30))} AND vendor_id=${s(V.id)};`,
+  `UPDATE products SET active=0,version=version+1 WHERE vendor_id=${s(V.id)} AND category='household' AND id LIKE ${s(V.city_id+'--artur_hh_%')} AND (cost IS NULL OR cost=0) AND active=1;`]}
