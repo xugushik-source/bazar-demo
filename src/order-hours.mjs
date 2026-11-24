@@ -12,6 +12,10 @@ export const orderHoursSql=()=>[`INSERT INTO app_config(key,value) VALUES('${ORD
 export const readyFoodTo=1170;   // 19:30
 // Owner 11.11 (later): cakes from the same bakery are ordered in the evening too.
 export const isReadyCat=c=>String(c||'').startsWith('rf_')||c==='cakes';
+// Owner 24.11: «курьеры все работают» — a supplier working in the evening (Karo, fruit and vegetables, 8:00–23:00) is delivered
+// by its own hours, like ready food: up to its closing time, the last order «lead» minutes before. Mixed with others — their hours.
+export const eveningVendors=['akhalkalaki-karo'];
+export const ownHoursLine=(category,vendor)=>isReadyCat(category)||eveningVendors.includes(vendor);
 export const readyOpen=(h,minute)=>!h||globalThis.process?.env?.BAZAR_IGNORE_ORDER_HOURS==='1'||(minute>=h.from&&minute<Math.max(h.to,readyFoodTo));
 
 // Owner 17.11: the latest delivery slot (minutes) the order hours allow for ordinary goods, or null (no limit; also under test).
