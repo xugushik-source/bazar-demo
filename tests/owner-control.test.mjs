@@ -95,6 +95,12 @@ test('owner 24.11: fourth pass — Persil Matik 10 kg priced; migration equals t
  const fs=await import('node:fs'),{householdSql1124c,householdSql1124d,householdId}=await import('../src/artur-household.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0122_artur_household_1124d.sql',import.meta.url),'utf8').endsWith(householdSql1124d().join('\n')+'\n'));
  for(const sql of [...householdSql1124c(),...householdSql1124d()])DB.exec(sql);const c=await call(e,'catalog?city='+cid),by=n=>c.products.find(p=>p.id===householdId(n));
  assert.equal(by(267).price,3600);assert.equal(by(267).profile.mode,'EACH','a hidden item comes back once priced')}finally{DB.close()}});
+test('owner 24.11: Artur extra goods — every flavour its own product, cost +20 % up to 50 tetri, weighed goods by the kilo; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
+ const fs=await import('node:fs'),{arturSql1124,arturProducts1124}=await import('../src/artur-1124.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0123_artur_extra_1124.sql',import.meta.url),'utf8').endsWith(arturSql1124().join('\n')+'\n'));
+ for(const sql of arturSql1124())DB.exec(sql);const c=await call(e,'catalog?city='+cid),by=k=>c.products.find(p=>p.id==='akhalkalaki--artur_'+k);
+ for(const [k]of arturProducts1124)assert.ok(by(k),k);assert.equal(by('ferrero_rocher_24').price,5400);assert.equal(by('butter_valio_200').price,750);assert.equal(by('jelly_iris_kiwi').price,300);
+ assert.equal(by('chicken_wings').profile.mode,'WEIGHED');assert.equal(by('turkey_whole_stasin').profile.mode,'WHOLE_BY_WEIGHT');
+ assert.equal(c.products.filter(p=>p.id.includes('artur_jam_maheev_')).length,6);assert.equal(c.products.filter(p=>p.id.includes('artur_barilla_')).length,9)}finally{DB.close()}});
 test('owner 11.11: «Торты и выпечка» — new section, supplier and eight cakes with photos show «Ожидается», not orderable; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
  const {cakesSql,cakes,cakesId,cakesArt}=await import('../src/vypechka.mjs'),fs=await import('node:fs');
  const c=await call(e,'catalog?city='+cid);assert.ok(c.categories.find(x=>x.id==='cakes'&&x.names.hy&&x.names.ka),'category in three languages');assert.ok(c.vendors.find(v=>v.id==='akhalkalaki-vypechka'&&v.names.hy&&v.names.ka));
