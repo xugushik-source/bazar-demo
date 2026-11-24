@@ -74,9 +74,17 @@ test('restaurant «Форель»: photos — every illustrative photo exists an
 test('restaurant «Форель»: «Забота о близких» reads the same catalogue, so the dishes are orderable there too',()=>{
  const z=fs.readFileSync(new URL('../public/zabota.html',import.meta.url),'utf8')+(fs.existsSync(new URL('../public/zabota.js',import.meta.url))?fs.readFileSync(new URL('../public/zabota.js',import.meta.url),'utf8'):'');assert.match(z,/catalog/)});
 
-test('restaurant «Форель»: works 11:00–23:00 — a restaurant-only basket is delivered 12:00–23:00 (last order 22:00); migration equals the generator',async()=>{const e=await env();try{
- const {forelHoursSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0125_restaurant_forel_hours.sql',import.meta.url),'utf8').endsWith(forelHoursSql().join('\n')+'\n'));
+test('restaurant «Форель»: orders until 22:00 — a restaurant-only basket is delivered 12:00–22:30; migration equals the generator',async()=>{const e=await env();try{
+ const {forelHoursSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0126_restaurant_forel_hours_b.sql',import.meta.url),'utf8').endsWith(forelHoursSql().join('\n')+'\n'));
  for(const s of forelHoursSql())e.DB.exec(s);const day=new Date(Date.now()+86400000).toISOString().slice(0,10);
  const r=await call(e,`slots?city=${cid}&day=${day}&products=${pid('forel_pork_shashlik')}`);const m=r.slots.map(s=>s.minute);
- assert.equal(Math.min(...m),720,'first delivery 12:00');assert.equal(Math.max(...m),1380,'last delivery 23:00');
- const mixed=await call(e,`slots?city=${cid}&day=${day}&products=${pid('forel_pork_shashlik')},${pid('apple_loose')}`);assert.ok(Math.max(...mixed.slots.map(s=>s.minute))<1380,'with shop goods the shop hours apply')}finally{e.DB.close()}});
+ assert.equal(Math.min(...m),720,'first delivery 12:00');assert.equal(Math.max(...m),1350,'last delivery 22:30 — with the 30-minute lead the last order is 22:00');
+ const mixed=await call(e,`slots?city=${cid}&day=${day}&products=${pid('forel_pork_shashlik')},${pid('apple_loose')}`);assert.ok(Math.max(...mixed.slots.map(s=>s.minute))<1350,'with shop goods the shop hours apply')}finally{e.DB.close()}});
+
+test('owner 24.11: Karo (fruit and vegetables) delivers in the evening by its own hours, last slot 22:40; with other shop goods the usual hours stay',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);DB.exec('DELETE FROM day_hours');const e={DB};try{
+ e.DB.exec("UPDATE vendors SET open_minute=480,close_minute=1380 WHERE id='akhalkalaki-karo'");const day=new Date(Date.now()+86400000).toISOString().slice(0,10);
+ const karo=(await e.DB.prepare("SELECT id FROM products WHERE vendor_id='akhalkalaki-karo' AND active=1 LIMIT 1").first()).id,other=(await e.DB.prepare("SELECT id FROM products WHERE vendor_id='akhalkalaki-artur' AND active=1 LIMIT 1").first())?.id;
+ const prev=process.env.BAZAR_IGNORE_ORDER_HOURS;e.DB.exec("INSERT INTO app_config(key,value) VALUES('order_hours','540-1080') ON CONFLICT(key) DO UPDATE SET value=excluded.value");delete process.env.BAZAR_IGNORE_ORDER_HOURS;
+ try{const r=await call(e,`slots?city=${cid}&day=${day}&products=${karo}`);assert.equal(Math.max(...r.slots.map(s=>s.minute)),1360,'Karo alone: up to 22:40, past the 18:00 cap');
+  if(other){const m=await call(e,`slots?city=${cid}&day=${day}&products=${karo},${other}`);assert.ok(Math.max(...m.slots.map(s=>s.minute))<=1060,'with Artur: the usual 18:00 cap')}
+  const c=await call(e,'catalog?city='+cid);assert.deepEqual(c.city.evening_vendors,['akhalkalaki-karo'])}finally{if(prev!==undefined)process.env.BAZAR_IGNORE_ORDER_HOURS=prev}}finally{e.DB.close()}});
