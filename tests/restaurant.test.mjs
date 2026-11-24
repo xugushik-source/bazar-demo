@@ -81,10 +81,11 @@ test('restaurant «Форель»: orders until 22:00 — a restaurant-only bask
  assert.equal(Math.min(...m),720,'first delivery 12:00');assert.equal(Math.max(...m),1350,'last delivery 22:30 — with the 30-minute lead the last order is 22:00');
  const mixed=await call(e,`slots?city=${cid}&day=${day}&products=${pid('forel_pork_shashlik')},${pid('apple_loose')}`);assert.ok(Math.max(...mixed.slots.map(s=>s.minute))<1350,'with shop goods the shop hours apply')}finally{e.DB.close()}});
 
-test('owner 24.11: Karo (fruit and vegetables) delivers in the evening by its own hours, last slot 22:40; with other shop goods the usual hours stay',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);DB.exec('DELETE FROM day_hours');const e={DB};try{
- e.DB.exec("UPDATE vendors SET open_minute=480,close_minute=1380 WHERE id='akhalkalaki-karo'");const day=new Date(Date.now()+86400000).toISOString().slice(0,10);
+test('owner 24.11: Karo (fruit and vegetables) delivers in the evening by its own hours, until 20:00, last order 19:30; with other shop goods the usual hours stay',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);DB.exec('DELETE FROM day_hours');const e={DB};try{
+ e.DB.exec("UPDATE vendors SET open_minute=480,close_minute=1200 WHERE id='akhalkalaki-karo'");const day=new Date(Date.now()+86400000).toISOString().slice(0,10);
  const karo=(await e.DB.prepare("SELECT id FROM products WHERE vendor_id='akhalkalaki-karo' AND active=1 LIMIT 1").first()).id,other=(await e.DB.prepare("SELECT id FROM products WHERE vendor_id='akhalkalaki-artur' AND active=1 LIMIT 1").first())?.id;
  const prev=process.env.BAZAR_IGNORE_ORDER_HOURS;e.DB.exec("INSERT INTO app_config(key,value) VALUES('order_hours','540-1080') ON CONFLICT(key) DO UPDATE SET value=excluded.value");delete process.env.BAZAR_IGNORE_ORDER_HOURS;
- try{const r=await call(e,`slots?city=${cid}&day=${day}&products=${karo}`);assert.equal(Math.max(...r.slots.map(s=>s.minute)),1360,'Karo alone: up to 22:40, past the 18:00 cap');
+ try{const r=await call(e,`slots?city=${cid}&day=${day}&products=${karo}`);assert.equal(Math.max(...r.slots.map(s=>s.minute)),1200,'Karo alone: up to 20:00, past the 18:00 cap');
+  const fs=await import('node:fs'),{karoHoursSql1124}=await import('../src/karo.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0127_karo_until_20.sql',import.meta.url),'utf8').endsWith(karoHoursSql1124().join('\n')+'\n'));
   if(other){const m=await call(e,`slots?city=${cid}&day=${day}&products=${karo},${other}`);assert.ok(Math.max(...m.slots.map(s=>s.minute))<=1060,'with Artur: the usual 18:00 cap')}
   const c=await call(e,'catalog?city='+cid);assert.deepEqual(c.city.evening_vendors,['akhalkalaki-karo'])}finally{if(prev!==undefined)process.env.BAZAR_IGNORE_ORDER_HOURS=prev}}finally{e.DB.close()}});

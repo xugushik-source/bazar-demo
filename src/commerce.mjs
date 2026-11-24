@@ -29,8 +29,8 @@ async function cityLast(db,city){try{const r=await q(db,'SELECT MAX(close_minute
 export function slotMinutes(from,to){const out=[];for(let m=540;m<=to;m+=30)if(m>=from)out.push(m);if(to%30&&to>=Math.max(from,540))out.push(to);return out}
 // Owner 30.10: «закрывай в 18:00 эти 2 дня» — a day's own last delivery time (day_hours) cuts the window for that day only.
 async function dayClose(db,city,day){if(!day)return null;try{return (await q(db,'SELECT close_minute FROM day_hours WHERE city_id=? AND day=?',city,day).first())?.close_minute??null}catch{return null}}
-// Owner 11.11: a ready-food-only basket may be delivered up to the supplier's closing time (an order at 19:30 → 20:00).
-async function slotWindow(db,city,vendorIds,day,ready=false,evening=false){const w=await vendorWindow(db,vendorIds,ready?0:lastSlotGap),last=ready?1440:await cityLast(db,city),close=await dayClose(db,city,day),cap=ready||evening?null:await deliveryCap(db),to=Math.min(w.to,last,close??1440,cap??1440);return {from:w.from,to,last,close,minutes:slotMinutes(w.from,to)}}
+// Owner 11.11: a ready-food-only basket may be delivered up to the supplier's closing time; owner 24.11: so may an evening supplier's (Karo till 20:00) (an order at 19:30 → 20:00).
+async function slotWindow(db,city,vendorIds,day,ready=false,evening=false){const own=ready||evening,w=await vendorWindow(db,vendorIds,own?0:lastSlotGap),last=own?1440:await cityLast(db,city),close=await dayClose(db,city,day),cap=ready||evening?null:await deliveryCap(db),to=Math.min(w.to,last,close??1440,cap??1440);return {from:w.from,to,last,close,minutes:slotMinutes(w.from,to)}}
 // Wholesale lines (owner 22.10): ordered at or above the bulk threshold. Their profile may ask for notice (lead_minutes) and say the
 // supplier delivers them himself; an order made only of such lines is not offered to the courier group.
 const bulkLine=l=>l.mode==='WEIGHED'&&l.product?.bulk&&l.target_g>=l.product.bulk.from_g;
