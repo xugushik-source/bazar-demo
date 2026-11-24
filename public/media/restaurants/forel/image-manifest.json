@@ -1,0 +1,302 @@
+[
+ {
+  "product_key": "forel_ojakhuri",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/a1279bf24c3dab67.jpg",
+  "source_dish": "Оджахури",
+  "new_path": "public/media/restaurants/forel/hot/ojakhuri.jpg",
+  "art": "restaurants/forel/hot/ojakhuri",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_dolma",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/bf21157bf46fb5f7.jpg",
+  "source_dish": "Долма",
+  "new_path": "public/media/restaurants/forel/hot/dolma.jpg",
+  "art": "restaurants/forel/hot/dolma",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_trout_grill",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/749b0bf7db92b17d.jpg",
+  "source_dish": "Форель на мангале",
+  "new_path": "public/media/restaurants/forel/grill/trout-grill.jpg",
+  "art": "restaurants/forel/grill/trout-grill",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chicken_breast_shashlik",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/f6b655bda38b6fd0.jpg",
+  "source_dish": "Шашлык из куриной мякоти",
+  "new_path": "public/media/restaurants/forel/grill/chicken-breast-shashlik.jpg",
+  "art": "restaurants/forel/grill/chicken-breast-shashlik",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pork_shashlik",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/f6d2bd33e234322f.jpg",
+  "source_dish": "Шашлык из свиной мякоти",
+  "new_path": "public/media/restaurants/forel/grill/pork-shashlik.jpg",
+  "art": "restaurants/forel/grill/pork-shashlik",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chicken_wings",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/fbc88dde84d9441f.jpg",
+  "source_dish": "Шашлык из куриных крыльев",
+  "new_path": "public/media/restaurants/forel/grill/chicken-wings.jpg",
+  "art": "restaurants/forel/grill/chicken-wings",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_grilled_vegetables",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/20e268bd3f86b1b2.jpg",
+  "source_dish": "Микс овощей на углях",
+  "new_path": "public/media/restaurants/forel/grill/grilled-vegetables.jpg",
+  "art": "restaurants/forel/grill/grilled-vegetables",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pork_ribs_shashlik",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/bb90e59974fdd0be.jpg",
+  "source_dish": "Шашлык из свиных ребрышек",
+  "new_path": "public/media/restaurants/forel/grill/pork-ribs-shashlik.jpg",
+  "art": "restaurants/forel/grill/pork-ribs-shashlik",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pickles",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/882d0a6f841fc20e.jpg",
+  "source_dish": "Соленья",
+  "new_path": "public/media/restaurants/forel/cold/pickles.jpg",
+  "art": "restaurants/forel/cold/pickles",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_cheese_banquet",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/87146ce20f71df53.jpg",
+  "source_dish": "Сырное ассорти",
+  "new_path": "public/media/restaurants/forel/cold/cheese-banquet.jpg",
+  "art": "restaurants/forel/cold/cheese-banquet",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pkhali",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/0e5d35a9e2c0298e.jpg",
+  "source_dish": "Ассорти из пхали",
+  "new_path": "public/media/restaurants/forel/cold/pkhali.jpg",
+  "art": "restaurants/forel/cold/pkhali",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_eggplant_walnuts",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/8ff9f5ae1bcf5f67.jpg",
+  "source_dish": "Рулетики из баклажанов с сырной начинкой",
+  "new_path": "public/media/restaurants/forel/cold/eggplant-walnuts.jpg",
+  "art": "restaurants/forel/cold/eggplant-walnuts",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_basturma_sujuk",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/8b34fb0208a42303.jpg",
+  "source_dish": "Бастурма / Суджук",
+  "new_path": "public/media/restaurants/forel/cold/basturma-sujuk.jpg",
+  "art": "restaurants/forel/cold/basturma-sujuk",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_meat_platter",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/74ca50c2ce49e3a1.jpg",
+  "source_dish": "Мясное ассорти",
+  "new_path": "public/media/restaurants/forel/cold/meat-platter.jpg",
+  "art": "restaurants/forel/cold/meat-platter",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_vegetable_platter",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/9bbbfb2c8dd9eb92.jpg",
+  "source_dish": "Овощное ассорти",
+  "new_path": "public/media/restaurants/forel/cold/vegetable-platter.jpg",
+  "art": "restaurants/forel/cold/vegetable-platter",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_tongue_boiled",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/3a22ae9aeeb6078c.jpg",
+  "source_dish": "Телячий язык",
+  "new_path": "public/media/restaurants/forel/cold/tongue-boiled.jpg",
+  "art": "restaurants/forel/cold/tongue-boiled",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_cheese",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/8c63cb59186397de.jpg",
+  "source_dish": "Сыр сулугуни",
+  "new_path": "public/media/restaurants/forel/cold/cheese.jpg",
+  "art": "restaurants/forel/cold/cheese",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_caesar",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/23637b2bffc82920.jpg",
+  "source_dish": "Цезарь с курицей",
+  "new_path": "public/media/restaurants/forel/salads/caesar.jpg",
+  "art": "restaurants/forel/salads/caesar",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_vegetable_salad",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/50da160bf795bf20.jpg",
+  "source_dish": "Овощной салат",
+  "new_path": "public/media/restaurants/forel/salads/vegetable-salad.jpg",
+  "art": "restaurants/forel/salads/vegetable-salad",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_tongue_cucumber_salad",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/b1805f9d30ea065f.jpg",
+  "source_dish": "Салат с говяжьим языком",
+  "new_path": "public/media/restaurants/forel/salads/tongue-cucumber-salad.jpg",
+  "art": "restaurants/forel/salads/tongue-cucumber-salad",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_kharcho",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/97464f2e1c0b2e24.jpg",
+  "source_dish": "Харчо из говядины",
+  "new_path": "public/media/restaurants/forel/soups/kharcho.jpg",
+  "art": "restaurants/forel/soups/kharcho",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_mushrooms_baked",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/6f25f02b04a739f2.jpg",
+  "source_dish": "Грибы запеченные",
+  "new_path": "public/media/restaurants/forel/sides/mushrooms-baked.jpg",
+  "art": "restaurants/forel/sides/mushrooms-baked",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_fries",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/5f20a87909b15bee.jpg",
+  "source_dish": "Картофель фри",
+  "new_path": "public/media/restaurants/forel/sides/fries.jpg",
+  "art": "restaurants/forel/sides/fries",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_satsebeli",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/cf27321efc2b0e82.jpg",
+  "source_dish": "Сацебели",
+  "new_path": "public/media/restaurants/forel/sauces/satsebeli.jpg",
+  "art": "restaurants/forel/sauces/satsebeli",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_tkemali",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/cacdfd997839a494.jpg",
+  "source_dish": "Ткемали красный",
+  "new_path": "public/media/restaurants/forel/sauces/tkemali.jpg",
+  "art": "restaurants/forel/sauces/tkemali",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_set_meat",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/30cd32762eb0a7ea.jpg",
+  "source_dish": "Ассорти от души",
+  "new_path": "public/media/restaurants/forel/sets/set-meat.jpg",
+  "art": "restaurants/forel/sets/set-meat",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_set_chicken",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": "static/media/4af2ac572d9d5d37.jpg",
+  "source_dish": "Ассорти из курицы",
+  "new_path": "public/media/restaurants/forel/sets/set-chicken.jpg",
+  "art": "restaurants/forel/sets/set-chicken",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_set_dinner_two",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": [
+   "static/media/f6d2bd33e234322f.jpg",
+   "static/media/20e268bd3f86b1b2.jpg",
+   "static/media/5f20a87909b15bee.jpg",
+   "static/media/cf27321efc2b0e82.jpg"
+  ],
+  "source_dish": [
+   "Шашлык из свиной мякоти",
+   "Микс овощей на углях",
+   "Картофель фри",
+   "Сацебели"
+  ],
+  "new_path": "public/media/restaurants/forel/sets/set-dinner-two.jpg",
+  "art": "restaurants/forel/sets/set-dinner-two",
+  "kind": "collage of the set's dishes (similar dishes)"
+ },
+ {
+  "product_key": "forel_set_feast",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": [
+   "static/media/f6d2bd33e234322f.jpg",
+   "static/media/bb90e59974fdd0be.jpg",
+   "static/media/20e268bd3f86b1b2.jpg",
+   "static/media/50da160bf795bf20.jpg"
+  ],
+  "source_dish": [
+   "Шашлык из свиной мякоти",
+   "Шашлык из свиных ребрышек",
+   "Микс овощей на углях",
+   "Овощной салат"
+  ],
+  "new_path": "public/media/restaurants/forel/sets/set-feast.jpg",
+  "art": "restaurants/forel/sets/set-feast",
+  "kind": "collage of the set's dishes (similar dishes)"
+ },
+ {
+  "product_key": "forel_set_caucasian",
+  "source_project": "xugushik-source/Shashlicniy_ray",
+  "source_file": [
+   "static/media/8ff9f5ae1bcf5f67.jpg",
+   "static/media/0e5d35a9e2c0298e.jpg",
+   "static/media/8c63cb59186397de.jpg",
+   "static/media/882d0a6f841fc20e.jpg"
+  ],
+  "source_dish": [
+   "Рулетики из баклажанов с сырной начинкой",
+   "Ассорти из пхали",
+   "Сыр сулугуни",
+   "Соленья"
+  ],
+  "new_path": "public/media/restaurants/forel/sets/set-caucasian.jpg",
+  "art": "restaurants/forel/sets/set-caucasian",
+  "kind": "collage of the set's dishes (similar dishes)"
+ }
+]

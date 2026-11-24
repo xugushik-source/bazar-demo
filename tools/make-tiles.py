@@ -16,5 +16,6 @@ for a in arts:
     else:  # cover 4:3
         r = max(W / im.width, H / im.height); im = im.resize((round(im.width * r), round(im.height * r)), Image.LANCZOS)
         l, t = (im.width - W) // 2, (im.height - H) // 2; out = im.crop((l, t, l + W, t + H))
+    os.makedirs(os.path.dirname(f'{root}/public/media-tiles/{a}.jpg'), exist_ok=True)  # restaurant photos live in sub-folders
     out.save(f'{root}/public/media-tiles/{a}.jpg', quality=78, optimize=True, progressive=False)
 print(len(arts), 'tiles')

@@ -158,3 +158,10 @@ html.big body{zoom:1.2}
 
 /* Owner 18.11: on the phone the offers («Акции», «Вечерний базар») sit right under the category tiles, not after the whole catalogue */
 @media(max-width:700px){main>.market-offers,main>section#promotions,main>section#evening{order:3}}
+
+/* Owner 24.11: restaurant dishes — jump row between sections, «similar dish» note on photos from another project, set composition */
+.grid .rs-nav{grid-column:1/-1;display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none;position:sticky;top:0;z-index:3;background:var(--paper)}.grid .rs-nav::-webkit-scrollbar{display:none}
+.grid .rs-nav button{display:inline-block;flex:0 0 auto;white-space:nowrap;border:1px solid var(--line);background:var(--white);color:var(--green);border-radius:999px;padding:8px 12px;font:inherit;font-size:.9rem;cursor:pointer}
+.grid .subhead[id]{scroll-margin-top:64px}
+.art .photo-note{display:block;position:absolute;left:6px;top:6px;right:auto;max-width:calc(100% - 12px);background:rgba(36,63,49,.82);color:#fffdf6;font-size:.68rem;line-height:1.2;padding:3px 6px;border-radius:6px;pointer-events:none;z-index:1}
+.set-info{background:var(--card);border-radius:12px;padding:10px 14px;margin:10px 0}.set-info ul{margin:6px 0;padding-left:18px}.photo-note-text{color:var(--muted)}
