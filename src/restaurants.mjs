@@ -21,8 +21,10 @@ const byKg={mode:'WEIGHED',policy_version:1,minimum_g:1000,order_step_g:1000,tol
 const each={mode:'EACH',policy_version:1};
 // Owner 24.11 (later): «вместо седло у нас называют корейку свиную» — the grill «Седло» is pork loin. The beef saddle stays.
 // Migration 0124 keeps the names it was made with; renames go in their own migration (0128).
-export const forelRenames={saddle_grill:{ru:'Корейка свиная',ka:'ღორის კორეიკა',hy:'Խոզի կորեյկա'}};
-export const forelRenameSql=()=>Object.entries(forelRenames).map(([k,n])=>`UPDATE products SET names='${JSON.stringify(n).replaceAll("'","''")}' WHERE id='${forelVendor.city_id}--${forelKey(k)}';`);
+// One batch per migration: 0128 — «Корейка свиная»; 0129 — owner 24.11 «не рябушка, а ряпушка» (vendace).
+export const forelRenameBatches=[{saddle_grill:{ru:'Корейка свиная',ka:'ღორის კორეიკა',hy:'Խոզի կորեյկա'}},{ryabushka:{ru:'Ряпушка',ka:'რიაპუშკა',hy:'Ռյապուշկա'}}];
+export const forelRenames=Object.assign({},...forelRenameBatches);
+export const forelRenameSql=(batch=0)=>Object.entries(forelRenameBatches[batch]).map(([k,n])=>`UPDATE products SET names='${JSON.stringify(n).replaceAll("'","''")}' WHERE id='${forelVendor.city_id}--${forelKey(k)}';`);
 export function forelProducts({renamed=true}={}){
  return [...forelDishes.map(([key,section,ru,ka,hy,kg])=>({key,section,names:renamed&&forelRenames[key]||{ru,ka,hy},cost:tetri(forelCosts[key]),profile:kg?byKg:each})),
   ...forelSets.map(s=>({key:s[0],section:'rf_rs_sets',names:{ru:s[1],ka:s[2],hy:s[3]},cost:setCost(s),profile:each}))]
