@@ -376,3 +376,7 @@ export const householdPrices1124=[[1,3000],[17,850],[33,1250],[34,1250],[77,1000
 export const householdRenames1124=arturHousehold.filter(r=>r[1][0].startsWith('Трусики-подгузники ')).map(r=>[r[0],r[1][0].replace('Трусики-подгузники ','Памперсы ')]);
 export function householdSql1124(){const s=x=>"'"+String(x).replaceAll("'","''")+"'";
  return [...arturHouseholdPriceSql(householdPrices1124),...householdRenames1124.map(([n,ru])=>`UPDATE products SET names=json_set(names,'$.ru',${s(ru)}),version=version+1 WHERE id=${s(householdId(n))};`)]}
+// Owner 24.11 (second pass): prices he wrote into the sheet «Артур бытхим — цены по фото 24.11» (unclear rows confirmed or filled in).
+export const householdPrices1124b=[[16,850],[19,1900],[20,1900],[32,1250],[76,1000],[97,3400],[118,2700],[130,2500],[131,2500],[132,2500],[136,3900],[137,3900],[138,3900],
+ [154,550],[160,750],[185,950],[229,2400],[305,2000],[308,2000],[313,1600],[368,1000],[369,1000]].map(([n,c])=>[n,c,null]);
+export const householdSql1124b=()=>arturHouseholdPriceSql(householdPrices1124b);
