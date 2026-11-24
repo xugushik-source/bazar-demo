@@ -367,3 +367,12 @@ export const householdPct=20;
 export const householdRetail=cost=>tierRetail(cost,householdPct);
 export function arturHouseholdPriceSql(prices){const s=x=>"'"+String(x).replaceAll("'","''")+"'";
  return prices.filter(([n,cost])=>cost>0&&arturHousehold.some(r=>r[0]===n)).map(([n,cost,sale])=>`UPDATE products SET cost=${Math.round(cost)},price=${sale>0?Math.round(sale):householdRetail(Math.round(cost))},profile='{"mode":"EACH","policy_version":1}',active=1,version=version+1 WHERE id=${s(householdId(n))} AND vendor_id=${s(arturVendor.id)};`)}
+// Owner 24.11: purchase prices read from his shelf photos — only the items whose name, variant and size match the photo exactly
+// (the unclear ones wait for the owner). [n, costTetri, null] → sale price = cost +20 % (householdRetail).
+export const householdPrices1124=[[1,3000],[17,850],[33,1250],[34,1250],[77,1000],[86,2850],[87,2850],[99,1500],[100,2000],[101,1350],[117,2700],[119,1650],[120,1650],
+ [149,700],[150,700],[151,700],[152,800],[161,750],[183,750],[184,2700],[186,950],[187,2000],[192,2700],[218,3400],[219,3800],[245,1050],[246,1750],[263,1200],[264,3700],
+ [266,350],[268,2000],[275,2300],[276,2300],[306,2000],[307,2000],[314,1600],[346,1600],[333,950],[359,1700]].map(([n,c])=>[n,c,null]);
+// Owner 24.11: «трусики у нас называют памперсами» — children's pants are called «Памперсы» in Russian.
+export const householdRenames1124=arturHousehold.filter(r=>r[1][0].startsWith('Трусики-подгузники ')).map(r=>[r[0],r[1][0].replace('Трусики-подгузники ','Памперсы ')]);
+export function householdSql1124(){const s=x=>"'"+String(x).replaceAll("'","''")+"'";
+ return [...arturHouseholdPriceSql(householdPrices1124),...householdRenames1124.map(([n,ru])=>`UPDATE products SET names=json_set(names,'$.ru',${s(ru)}),version=version+1 WHERE id=${s(householdId(n))};`)]}
