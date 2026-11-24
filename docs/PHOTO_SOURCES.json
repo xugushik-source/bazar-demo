@@ -5468,5 +5468,292 @@
   "license": "own drawing",
   "file": "public/media/restaurants/forel/placeholder.jpg",
   "sha256": "211a95f20c215d875f17cb6eaab70f855c698b6cf13e89aa3b40158c68b929bf"
+ },
+ {
+  "key": "restaurants/forel/hot/pork-leg-baked",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2310",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/pork-leg-baked.jpg",
+  "sha256": "8d82677d83ab929c6a63af239123b47fe1c8a5d70ee23c42a83b56a6fc262683"
+ },
+ {
+  "key": "restaurants/forel/hot/rabbit-baked",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2311",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/rabbit-baked.jpg",
+  "sha256": "ff81015aefc8915f772d3fe48bd31eb66cfc2a2b047ff45d8067a946d6c63451"
+ },
+ {
+  "key": "restaurants/forel/hot/chicken-boiled",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2312",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/chicken-boiled.jpg",
+  "sha256": "4cd66f77c4f767200c5c1684a8148f01cd14f597a3696d198c8b9ba067677385"
+ },
+ {
+  "key": "restaurants/forel/hot/piglet-baked",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2313",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/piglet-baked.jpg",
+  "sha256": "236c8dcde3a2352618ab5a2a8f20f0b9b37068004150d2f36200a036fb9714e4"
+ },
+ {
+  "key": "restaurants/forel/hot/pork-knuckle",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2314",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/pork-knuckle.jpg",
+  "sha256": "4dd72417f454000698f2bc1544c98ad18624ebcf1f6ab47243913c268e0af140"
+ },
+ {
+  "key": "restaurants/forel/hot/beef-saddle",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2315",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/beef-saddle.jpg",
+  "sha256": "1b646273bc6cf788d25b470266ef285ba1b22333877f15dc93aa4ecda7878b93"
+ },
+ {
+  "key": "restaurants/forel/hot/lamb-khashlama",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2316",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/lamb-khashlama.jpg",
+  "sha256": "8960a7cc26c98585408df82766da2082fc33455ff71b7753a25da17e16efd72d"
+ },
+ {
+  "key": "restaurants/forel/hot/beef-stroganoff",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2317",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/beef-stroganoff.jpg",
+  "sha256": "c8691c8ffdf8645b0788a8bc3b2e98810d6064810ecfcac2188883c470a1b32f"
+ },
+ {
+  "key": "restaurants/forel/hot/pork-fried",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2318",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/pork-fried.jpg",
+  "sha256": "33a7775e5f94c5e67f5d4dd8c1ee7a1c8043ff0a1a072348f8032fff213a0e76"
+ },
+ {
+  "key": "restaurants/forel/hot/pork-pot",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2319",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/pork-pot.jpg",
+  "sha256": "d09362dc716f8d0883f66e3fc08929ac811b3ddeafed92ddab45ab38c7d103cf"
+ },
+ {
+  "key": "restaurants/forel/hot/khashlama",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2320",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/khashlama.jpg",
+  "sha256": "0554722ee7e396c93b15dad8a577a402a3e29267611e1df042a486a1dd91d9cc"
+ },
+ {
+  "key": "restaurants/forel/hot/oxtail",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2321",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/oxtail.jpg",
+  "sha256": "78bfd2d489b4b5832da3bb689ec5e98dee9fa3e47daba0ce7fd733ac4f598c0e"
+ },
+ {
+  "key": "restaurants/forel/hot/chkmeruli",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2322",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/hot/chkmeruli.jpg",
+  "sha256": "b529fac5acc0742ceb89e509738a76c2024733c1aa05bc04e0e172d98f2c4383"
+ },
+ {
+  "key": "restaurants/forel/fish/fish-kebab",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2323",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/fish/fish-kebab.jpg",
+  "sha256": "17dbae9f1bc122554eec6cb5ff22147d204b60057ce7b8b9c907d888d8f5c3d4"
+ },
+ {
+  "key": "restaurants/forel/fish/ryabushka",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2324",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/fish/ryabushka.jpg",
+  "sha256": "6041fb2ede4824b8a18012bd198518b742269b5dad79afec118bbe3eaf4fc0cf"
+ },
+ {
+  "key": "restaurants/forel/fish/sterlet",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2325",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/fish/sterlet.jpg",
+  "sha256": "f2fc49da86e364f510617680325f511077e54c63f6309c06f1973c1566629bcb"
+ },
+ {
+  "key": "restaurants/forel/fish/trout-large",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2326",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/fish/trout-large.jpg",
+  "sha256": "605914dcc57372f60c7112a9d076a0d5a747b5a3d1cf527f3cca69205d3acd35"
+ },
+ {
+  "key": "restaurants/forel/grill/lamb-ribs-shashlik",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2327",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/grill/lamb-ribs-shashlik.jpg",
+  "sha256": "018df1b63c5f17558659d04231dd46657b7a0ca6be6c463d6fda5f61f33fb964"
+ },
+ {
+  "key": "restaurants/forel/grill/chicken-spit",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2328",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/grill/chicken-spit.jpg",
+  "sha256": "e6be68b3cef554efe8026bd90c0c82ba8623e7d582b1d9c7f41a51d4ea4d56f8"
+ },
+ {
+  "key": "restaurants/forel/grill/saddle-grill",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2329",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/grill/saddle-grill.jpg",
+  "sha256": "7a740bf40a54f6292b886a560896954d138e3bdb57db432ebc7851e87435f2a7"
+ },
+ {
+  "key": "restaurants/forel/grill/quail",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2331",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/grill/quail.jpg",
+  "sha256": "e145b2a7058d4bb740357b1a452360de40c67863eb656fc7f2cd83818cc77bd9"
+ },
+ {
+  "key": "restaurants/forel/grill/chicken-tabaka",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2332",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/grill/chicken-tabaka.jpg",
+  "sha256": "01dfd8ecabb7bc2b2d582b903f43bd2df505c91272366f2362c231a047a047c5"
+ },
+ {
+  "key": "restaurants/forel/cold/pickles-banquet",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2333",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/cold/pickles-banquet.jpg",
+  "sha256": "e257ad4a9bc0f0d1d81d2f245aacb53339d2451891ad76ac5d613e38d0933edc"
+ },
+ {
+  "key": "restaurants/forel/cold/caviar",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2334",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/cold/caviar.jpg",
+  "sha256": "8cc227ac7de6ad5a9af587f848906055dc7e847c1940cad347fad45e0230c7d6"
+ },
+ {
+  "key": "restaurants/forel/cold/lemon",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2335",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/cold/lemon.jpg",
+  "sha256": "4714a66ad47ad096a6b47f312a2c82715af783af481a2244547d61c8cde9d06e"
+ },
+ {
+  "key": "restaurants/forel/cold/olives",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2336",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/cold/olives.jpg",
+  "sha256": "b114f83de941ed2026ac164bf86044c231beffbd986a632f5bfd357f5dc402bc"
+ },
+ {
+  "key": "restaurants/forel/salads/crab-salad",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2337",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/salads/crab-salad.jpg",
+  "sha256": "e8c803bc62be4cc03ecfff2ef01100951f6be3a9ae841dabdc8f3d63aac1fc76"
+ },
+ {
+  "key": "restaurants/forel/salads/kuchmachi",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2338",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/salads/kuchmachi.jpg",
+  "sha256": "38b7e0527fca77770bf7841b407dd57dacc28207a624b794ce150f135e83c6c4"
+ },
+ {
+  "key": "restaurants/forel/salads/svetofor",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2339",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/salads/svetofor.jpg",
+  "sha256": "9957eddc5d1dafe9e323d1744f483b0d1557d1448b7c9f7984bf6bd5ef2bc8c9"
+ },
+ {
+  "key": "restaurants/forel/salads/moskovsky",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2340",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/salads/moskovsky.jpg",
+  "sha256": "b020dfb7a64831d60a552f48f36a0532e7430b6e403fb8cb8c00f48d64f41006"
+ },
+ {
+  "key": "restaurants/forel/soups/chakapuli",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2341",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/soups/chakapuli.jpg",
+  "sha256": "ab208a6ca9fca33cbd9d85895e293b852bbd77c47faba0da1649df9965c35bd1"
+ },
+ {
+  "key": "restaurants/forel/soups/chicken-soup",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2342",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/soups/chicken-soup.jpg",
+  "sha256": "9ee09fecd2f10b81327126ce8a1785387c69a2ebba5c387d4fd4822c6aa4add7"
+ },
+ {
+  "key": "restaurants/forel/soups/ostri",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2343",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/soups/ostri.jpg",
+  "sha256": "d3d25cdb1c3aed778540752dda8f2f825c55bb3d7ae494a7fe0282f1ab960276"
+ },
+ {
+  "key": "restaurants/forel/soups/solyanka",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2344",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/soups/solyanka.jpg",
+  "sha256": "c73cbe7620f9237a5e10e60ee4a26b4edac9d7182461e2c882e622a3ea2e4f6a"
+ },
+ {
+  "key": "restaurants/forel/soups/ukha",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2345",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/soups/ukha.jpg",
+  "sha256": "ef118b3541b70b71aaf939b430d575d3a318938f68a629db885f1e0b5deb835a"
+ },
+ {
+  "key": "restaurants/forel/sides/peas-egg",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2346",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/sides/peas-egg.jpg",
+  "sha256": "213d5ae9669bcfcbae51c32684fb618e7142fdbe7ee0a1aa7376b064aa3406b2"
+ },
+ {
+  "key": "restaurants/forel/sides/mushrooms-cheese",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2347",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/sides/mushrooms-cheese.jpg",
+  "sha256": "25fceb2f46a5368f4183fd2b2d774e258dce66b9ef5eef0f02e9919813d1702a"
+ },
+ {
+  "key": "restaurants/forel/sides/potato-home",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2348",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/sides/potato-home.jpg",
+  "sha256": "b7a32cae18392a3b52cbd321c86fa3c05b27180b5d7e6a621beab3093f605c75"
+ },
+ {
+  "key": "restaurants/forel/bread/bread-basket",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2349",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/bread/bread-basket.jpg",
+  "sha256": "941d4c83b655dfbe54ffc7306aa1ba26192f37d7feed01cbd50d8a33924cc0f1"
+ },
+ {
+  "key": "restaurants/forel/sauces/matsoni",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2350",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/sauces/matsoni.jpg",
+  "sha256": "c67bd9340165cee243e66cb68b35e3cc8bb0475826d73fc9366a1c5f2952e4dd"
+ },
+ {
+  "key": "restaurants/forel/sauces/sour-cream",
+  "source": "owner: photo picked by the owner 24.11, Drive «Фото ресторанных блюд» IMG_2351",
+  "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
+  "file": "public/media/restaurants/forel/sauces/sour-cream.jpg",
+  "sha256": "bc9186d1ef5bd7aebc4556213182504eadb2b1b181739ab123b0be97a46fdc05"
  }
 ]
