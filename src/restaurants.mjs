@@ -38,3 +38,6 @@ export function restaurantSql(){const V=forelVendor,s=x=>"'"+String(x).replaceAl
 // Owner 24.11 (later): the city lead is 30 minutes, so «orders until 22:00» means the last delivery slot is 22:30.
 export const forelHours={open_minute:660,close_minute:1350};
 export function forelHoursSql(){const h=forelHours;return [`UPDATE vendors SET open_minute=${h.open_minute},close_minute=${h.close_minute} WHERE id='${forelVendor.id}' AND (open_minute IS NOT ${h.open_minute} OR close_minute IS NOT ${h.close_minute});`]}
+// Owner 24.11: «эти 5 … их закрывай просто» — hidden (active=0), not deleted: turning one back on is a single UPDATE.
+export const forelHidden=['ham','summer_dolma','fish_assorted','greens','bean_salad'];
+export const forelHideSql=()=>forelHidden.map(k=>`UPDATE products SET active=0 WHERE id='${forelVendor.city_id}--${forelKey(k)}';`);
