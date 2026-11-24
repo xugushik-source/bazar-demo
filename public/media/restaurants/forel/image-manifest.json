@@ -667,5 +667,14 @@
   "new_path": "public/media/restaurants/forel/sauces/sour-cream.jpg",
   "art": "restaurants/forel/sauces/sour-cream",
   "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_kebab",
+  "source_project": "owner, sent in chat 24.11",
+  "source_file": "IMG_2353",
+  "source_dish": "Кебаб",
+  "new_path": "public/media/restaurants/forel/grill/kebab.jpg",
+  "art": "restaurants/forel/grill/kebab",
+  "kind": "dish photo picked by the owner"
  }
 ]

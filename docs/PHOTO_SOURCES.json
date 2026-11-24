@@ -5755,5 +5755,12 @@
   "license": "owner-provided dish photo (similar dish); other sites' watermarks cropped out",
   "file": "public/media/restaurants/forel/sauces/sour-cream.jpg",
   "sha256": "bc9186d1ef5bd7aebc4556213182504eadb2b1b181739ab123b0be97a46fdc05"
+ },
+ {
+  "key": "restaurants/forel/grill/kebab",
+  "source": "owner: photo sent by the owner in chat 24.11 (IMG_2353)",
+  "license": "owner-provided dish photo",
+  "file": "public/media/restaurants/forel/grill/kebab.jpg",
+  "sha256": "a661903632d6979ec95073fa37c690e83709507fe3ee09b8206a81772f003305"
  }
 ]
