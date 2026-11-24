@@ -47,10 +47,10 @@ test('restaurant «Форель»: a mixed basket is split by vendor; the restau
  const forbidden=await call(e,'manage/sales?city='+cid);assert.notEqual(forbidden.http,200,'the report is for the owner only');
  const ok=await call(e,'manage/sales?city='+cid,null,e.owner);assert.equal(ok.http,200);assert.ok(ok.vendors.some(v=>v.id==='akhalkalaki-forel'))}finally{e.DB.close()}});
 
-test('restaurant «Форель»: a set shows its composition and the saving; sold sets are counted apart',async()=>{const e=await env();try{
+test('restaurant «Форель»: a set shows its composition (owner: no «saving» line); sold sets are counted apart',async()=>{const e=await env();try{
  const c=await call(e,'catalog?city='+cid),set=k=>c.products.find(p=>p.id===pid('forel_'+k));
- const meat=setInfo(c.products,set('set_meat'));assert.ok(meat.lines.length>=3&&meat.lines.every(l=>l.product));assert.equal(meat.saving,meat.separate-set('set_meat').price);
- assert.deepEqual(['set_meat','set_chicken','set_dinner_two','set_feast','set_caucasian'].map(k=>setInfo(c.products,set(k)).saving),[100,100,0,200,200]);
+ const meat=setInfo(c.products,set('set_meat'));assert.ok(meat.lines.length>=3&&meat.lines.every(l=>l.product));
+ const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(!app.includes("rsWord('saving')"),'owner 24.11: no «saving» on sets — just the set, so nobody has to count');
  assert.equal(setInfo(c.products,set('pork_shashlik')),null,'a single dish is not a set');
  const o=await order(e,[{product_id:pid('forel_set_feast'),selection:{count:1}}]);e.DB.exec(`UPDATE orders SET status='COMPLETED' WHERE id='${o.id||o.order?.id}'`);
  const r=await salesReport(e.DB,cid);assert.equal(r.sets.length,1);assert.equal(r.sets[0].revenue,13500);assert.equal(r.sets[0].cost,11200)}finally{e.DB.close()}});
