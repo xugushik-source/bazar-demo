@@ -103,3 +103,6 @@ export function karoPriceSql(){const v=karoVendor;return karoCosts().map(([key,c
 // Owner 22.10: Karo works 08:00–23:00; the city's slots run until its last one, 22:40.
 export const karoHours={open_minute:480,close_minute:1380};
 export function karoHoursSql(){return [`UPDATE vendors SET open_minute=${karoHours.open_minute},close_minute=${karoHours.close_minute} WHERE id='${karoVendor.id}' AND (open_minute IS NOT ${karoHours.open_minute} OR close_minute IS NOT ${karoHours.close_minute});`]}
+// Owner 24.11: Karo delivers until 20:00, last order 19:30 (the 30-minute lead), like «Выпечка с любовью».
+export const karoHours1124={open_minute:480,close_minute:1200};
+export function karoHoursSql1124(){const h=karoHours1124;return [`UPDATE vendors SET open_minute=${h.open_minute},close_minute=${h.close_minute} WHERE id='${karoVendor.id}' AND (open_minute IS NOT ${h.open_minute} OR close_minute IS NOT ${h.close_minute});`]}
