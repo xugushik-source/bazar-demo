@@ -19,14 +19,18 @@ export const saleOf=costTetri=>Math.ceil(costTetri*1.2/100-1e-9)*100;   // whole
 export const setCost=set=>set[4].reduce((s,[k,n])=>s+tetri(forelCosts[k])*n,0);
 const byKg={mode:'WEIGHED',policy_version:1,minimum_g:1000,order_step_g:1000,tolerance_bps:1000,tolerance_cap_g:50};
 const each={mode:'EACH',policy_version:1};
-export function forelProducts(){
- return [...forelDishes.map(([key,section,ru,ka,hy,kg])=>({key,section,names:{ru,ka,hy},cost:tetri(forelCosts[key]),profile:kg?byKg:each})),
+// Owner 24.11 (later): «вместо седло у нас называют корейку свиную» — the grill «Седло» is pork loin. The beef saddle stays.
+// Migration 0124 keeps the names it was made with; renames go in their own migration (0128).
+export const forelRenames={saddle_grill:{ru:'Корейка свиная',ka:'ღორის კორეიკა',hy:'Խոզի կորեյկա'}};
+export const forelRenameSql=()=>Object.entries(forelRenames).map(([k,n])=>`UPDATE products SET names='${JSON.stringify(n).replaceAll("'","''")}' WHERE id='${forelVendor.city_id}--${forelKey(k)}';`);
+export function forelProducts({renamed=true}={}){
+ return [...forelDishes.map(([key,section,ru,ka,hy,kg])=>({key,section,names:renamed&&forelRenames[key]||{ru,ka,hy},cost:tetri(forelCosts[key]),profile:kg?byKg:each})),
   ...forelSets.map(s=>({key:s[0],section:'rf_rs_sets',names:{ru:s[1],ka:s[2],hy:s[3]},cost:setCost(s),profile:each}))]
   .map(p=>({...p,id:forelVendor.city_id+'--'+forelKey(p.key),art:restaurantArt(p.section,p.key),price:saleOf(p.cost)}))}
 export function restaurantSql(){const V=forelVendor,s=x=>"'"+String(x).replaceAll("'","''")+"'",j=o=>s(JSON.stringify(o));
  return [...restaurantSections.map(([id,names,sort])=>`INSERT INTO categories(id,names,sort) VALUES(${s(id)},${j(names)},${sort}) ON CONFLICT(id) DO NOTHING;`),
   `INSERT INTO vendors(id,city_id,names,active) SELECT ${s(V.id)},${s(V.city_id)},${j(V.names)},1 WHERE EXISTS(SELECT 1 FROM cities WHERE id=${s(V.city_id)}) ON CONFLICT(id) DO NOTHING;`,
-  ...forelProducts().map(p=>`INSERT INTO products(id,vendor_id,names,category,art,profile,price,cost,stock,active) SELECT ${s(p.id)},${s(V.id)},${j(p.names)},${s(p.section)},${s(p.art)},${j(p.profile)},${p.price},${p.cost},${p.profile.mode==='WEIGHED'?1000000:1000},1 WHERE EXISTS(SELECT 1 FROM vendors WHERE id=${s(V.id)}) ON CONFLICT(id) DO NOTHING;`)]}
+  ...forelProducts({renamed:false}).map(p=>`INSERT INTO products(id,vendor_id,names,category,art,profile,price,cost,stock,active) SELECT ${s(p.id)},${s(V.id)},${j(p.names)},${s(p.section)},${s(p.art)},${j(p.profile)},${p.price},${p.cost},${p.profile.mode==='WEIGHED'?1000000:1000},1 WHERE EXISTS(SELECT 1 FROM vendors WHERE id=${s(V.id)}) ON CONFLICT(id) DO NOTHING;`)]}
 // Owner 24.11: «Форель» works 11:00–23:00, orders until 22:00. With the one-hour lead, a restaurant-only basket gets
 // delivery slots 12:00–22:30, so the last order for today is at 22:00; later orders go to tomorrow.
 // Owner 24.11 (later): the city lead is 30 minutes, so «orders until 22:00» means the last delivery slot is 22:30.

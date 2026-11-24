@@ -94,3 +94,8 @@ test('owner 24.11: home page — tiles right after the search, popular goods ins
  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
  assert.match(app,/filter='home'/);assert.match(app,/class=\"home-more\"/);assert.match(app,/zabota-link/);assert.ok(!html.includes('>Забота о близких</a></div>'),'the big «Забота» strip is gone from the top');
  assert.ok(!app.includes('${ownHoursHTML()}'),'no big hours block; the hours are on the tiles');assert.ok(!app.includes('soon-line'))});
+
+test('owner 24.11: the grill «Седло» is «Корейка свиная» in three languages; the beef saddle stays; migration equals the generator',async()=>{const e=await env();try{
+ const {forelRenameSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0128_forel_koreika.sql',import.meta.url),'utf8').endsWith(forelRenameSql().join('\n')+'\n'));
+ for(const s of forelRenameSql())e.DB.exec(s);const c=await call(e,'catalog?city='+cid),by=k=>c.products.find(p=>p.id===pid('forel_'+k));
+ assert.deepEqual(by('saddle_grill').names,{ru:'Корейка свиная',ka:'ღორის კორეიკა',hy:'Խոզի կորեյկա'});assert.equal(by('saddle_grill').price,6500);assert.equal(by('beef_saddle').names.ru,'Седло из говядины')}finally{e.DB.close()}});
