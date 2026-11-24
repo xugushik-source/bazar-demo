@@ -390,3 +390,6 @@ export function householdSql1124c(){const V=arturVendor,s=x=>"'"+String(x).repla
   ...arturHouseholdPriceSql([...householdPrices1124c.filter(r=>r[0]!==30)]),
   `UPDATE products SET cost=${householdPrices1124c.find(r=>r[0]===30)[1]},price=${householdRetail(householdPrices1124c.find(r=>r[0]===30)[1])},profile='{"mode":"EACH","policy_version":1}',active=1,version=version+1 WHERE id=${s(householdId(30))} AND vendor_id=${s(V.id)};`,
   `UPDATE products SET active=0,version=version+1 WHERE vendor_id=${s(V.id)} AND category='household' AND id LIKE ${s(V.city_id+'--artur_hh_%')} AND (cost IS NULL OR cost=0) AND active=1;`]}
+// Owner 24.11 (fourth pass): Persil Matik 10 kg — 30 ₾ (Familia 32, row 292, is the same goods as row 260, already 19 ₾).
+export const householdPrices1124d=[[267,3000]].map(([n,c])=>[n,c,null]);
+export const householdSql1124d=()=>arturHouseholdPriceSql(householdPrices1124d);

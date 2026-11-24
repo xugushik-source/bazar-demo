@@ -91,6 +91,10 @@ test('owner 24.11: third pass — last sheet prices, Fairy Platinum 72 with phot
  for(const sql of householdSql1124c())DB.exec(sql);const c=await call(e,'catalog?city='+cid),by=n=>c.products.find(p=>p.id===householdId(n));
  assert.equal(by(30).price,4800,'Fairy Platinum 72: 40 ₾ +20 %');assert.match(by(30).names.ru,/Fairy Platinum, 72/);assert.equal(by(153).price,960);
  assert.ok(!by(2),'no price yet — hidden');assert.ok(!c.products.some(p=>p.id.includes('artur_hh_')&&!(p.price>0)),'no unpriced household item on the site')}finally{DB.close()}});
+test('owner 24.11: fourth pass — Persil Matik 10 kg priced; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
+ const fs=await import('node:fs'),{householdSql1124c,householdSql1124d,householdId}=await import('../src/artur-household.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0122_artur_household_1124d.sql',import.meta.url),'utf8').endsWith(householdSql1124d().join('\n')+'\n'));
+ for(const sql of [...householdSql1124c(),...householdSql1124d()])DB.exec(sql);const c=await call(e,'catalog?city='+cid),by=n=>c.products.find(p=>p.id===householdId(n));
+ assert.equal(by(267).price,3600);assert.equal(by(267).profile.mode,'EACH','a hidden item comes back once priced')}finally{DB.close()}});
 test('owner 11.11: «Торты и выпечка» — new section, supplier and eight cakes with photos show «Ожидается», not orderable; migration equals the generator',async()=>{const DB=new LocalD1();migrate(DB);await seed(DB);const e={DB};try{
  const {cakesSql,cakes,cakesId,cakesArt}=await import('../src/vypechka.mjs'),fs=await import('node:fs');
  const c=await call(e,'catalog?city='+cid);assert.ok(c.categories.find(x=>x.id==='cakes'&&x.names.hy&&x.names.ka),'category in three languages');assert.ok(c.vendors.find(v=>v.id==='akhalkalaki-vypechka'&&v.names.hy&&v.names.ka));
