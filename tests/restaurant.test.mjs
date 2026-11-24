@@ -104,3 +104,6 @@ test('owner 24.11: «не рябушка, а ряпушка» — the fish is na
  const {forelRenameSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0129_forel_ryapushka.sql',import.meta.url),'utf8').endsWith(forelRenameSql(1).join('\n')+'\n'));
  for(const s of forelRenameSql(1))e.DB.exec(s);const c=await call(e,'catalog?city='+cid),f=c.products.find(p=>p.id===pid('forel_ryabushka'));
  assert.deepEqual(f.names,{ru:'Ряпушка',ka:'რიაპუშკა',hy:'Ռյապուշկա'});assert.equal(f.price,3300);assert.ok(!JSON.stringify(c.products.map(p=>p.names)).includes('Рябушк'))}finally{e.DB.close()}});
+
+test('owner 24.11: «мы будем точно так подавать» — no «similar dish» note on restaurant photos',()=>{
+ const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(!app.includes('photo-note')&&!app.includes('photoNote'))});
