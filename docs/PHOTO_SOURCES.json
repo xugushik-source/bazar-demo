@@ -5125,5 +5125,117 @@
   "download_url": "https://images.pexels.com/photos/8268856/pexels-photo-8268856.jpeg?auto=compress&cs=tinysrgb&w=1400",
   "file": "public/media/greens-kotem.jpg",
   "sha256": "c8e76c633953886acb7ec657f2b4cba8e831231e78741be7f5c778776ddb0ba7"
+ },
+ {
+  "key": "artur-barilla-bucatini",
+  "source": "https://www.kifli.hu/36322-barilla-bucatini-fibrous-durum-dry-pasta",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-bucatini.jpg",
+  "sha256": "ea8a757b3d52d6b0696693c2255154079c955e61c883a7c31ff1af4b9ededa12"
+ },
+ {
+  "key": "artur-barilla-capellini",
+  "source": "https://www.k-ruoka.fi (Kesko, EAN 8076800195019)",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-capellini.jpg",
+  "sha256": "6307980b6580d62e7a08e3f815e7c3e9e7747977383e2255c6deaae82629915f"
+ },
+ {
+  "key": "artur-barilla-penne-rigate",
+  "source": "https://www.k-ruoka.fi (Kesko, EAN 8076802085738)",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-penne-rigate.jpg",
+  "sha256": "f3a04036511e386bd6612a0e9b5ffa742654b23524b10ef085f9d4cb6b52a797"
+ },
+ {
+  "key": "artur-barilla-pipe-rigate",
+  "source": "https://www.kespro.com/en/products/barilla-pipe-rigate-n91-500g-8076802085912",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-pipe-rigate.jpg",
+  "sha256": "34c0f1244a6ca615f492ace1f9c71c989fa65e740d2045de1eb29e07b99a00d0"
+ },
+ {
+  "key": "artur-barilla-risoni",
+  "source": "https://www.kespro.com/en/products/barilla-risoni-n26-durum-wheat-pasta-500g-8076809579100",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-risoni.jpg",
+  "sha256": "c69623fdf6276bfe45fa4adde7d9aa9deb8e02282e6e479265e6bf3ccf5bef17"
+ },
+ {
+  "key": "artur-barilla-spaghetti",
+  "source": "https://www.k-ruoka.fi (Kesko, EAN 8076800195057)",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-spaghetti.jpg",
+  "sha256": "04f82243085d21ead395d453d03c99a72a57f05fdb70f50c8221137eebf898f0"
+ },
+ {
+  "key": "artur-barilla-stelline",
+  "source": "https://www.kifli.hu/101059-barilla-stelline-durum-wheat-semolina-pasta",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-stelline.jpg",
+  "sha256": "f7f6c5ffb47b8af7e13dd7be7f7a3aca72850e5ef5a3089fb5cc95be0ec634e7"
+ },
+ {
+  "key": "artur-barilla-tortiglioni",
+  "source": "https://www.k-ruoka.fi (Kesko, EAN 8076802085837)",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-barilla-tortiglioni.jpg",
+  "sha256": "76de612a6bb402c88c1a12c40436deaef6d1437dc8e9a81424952e551ef03743"
+ },
+ {
+  "key": "artur-ferrero-rocher-16",
+  "source": "https://www.knuspr.de/1083-ferrero-rocher",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-ferrero-rocher-16.jpg",
+  "sha256": "c28cba12843d23688abdafd87d87200f64becc81d280c5f9af6510668d2fc138"
+ },
+ {
+  "key": "artur-ferrero-rocher-24",
+  "source": "https://www.fairprice.com.sg/product/ferrero-rocher-chocolate-t24-300g-433178",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-ferrero-rocher-24.jpg",
+  "sha256": "54059900d2473f130e2801eabaf9b598779f1c59121905f67e36179db67b385d"
+ },
+ {
+  "key": "artur-ferrero-collection-big",
+  "source": "https://www.rohlik.cz/1474937-ferrero-collection-gift-box",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-ferrero-collection-big.jpg",
+  "sha256": "e3c8c0c95ae87ae4dfbf3470a03073940cfb1f03d35cf0ed8c82cb16fed665fd"
+ },
+ {
+  "key": "artur-raffaello-150",
+  "source": "https://www.knuspr.de/1111-raffaello",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-raffaello-150.jpg",
+  "sha256": "8f7d24a123f3dfa6450afbca9b1fc9099e5e43bbeac7f0f8639a187f834b0d9f"
+ },
+ {
+  "key": "artur-raffaello-gift",
+  "source": "https://www.kifli.hu/53489-raffaello-dobozka",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-raffaello-gift.jpg",
+  "sha256": "2f157dbef1b3460197ed373371acdf9c61cf204396a88321e4890d84af0b41d7"
+ },
+ {
+  "key": "artur-raffaello-small",
+  "source": "https://vkusvill.ru/goods/konfety-v-korobke-raffaello-s-tselnym-mindalnym-orekhom-v-kokosovoy-obsypke-70-g-56289/",
+  "license": "retailer product photo (brand packshot), used at the owner's request 24.11",
+  "author": "retailer page",
+  "file": "public/media/artur-raffaello-small.jpg",
+  "sha256": "593e35a508d0823fb19d6364821170a0571f5f18021788f5335a035d938573c7"
  }
 ]
