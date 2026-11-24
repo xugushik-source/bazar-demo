@@ -27,3 +27,7 @@ export function restaurantSql(){const V=forelVendor,s=x=>"'"+String(x).replaceAl
  return [...restaurantSections.map(([id,names,sort])=>`INSERT INTO categories(id,names,sort) VALUES(${s(id)},${j(names)},${sort}) ON CONFLICT(id) DO NOTHING;`),
   `INSERT INTO vendors(id,city_id,names,active) SELECT ${s(V.id)},${s(V.city_id)},${j(V.names)},1 WHERE EXISTS(SELECT 1 FROM cities WHERE id=${s(V.city_id)}) ON CONFLICT(id) DO NOTHING;`,
   ...forelProducts().map(p=>`INSERT INTO products(id,vendor_id,names,category,art,profile,price,cost,stock,active) SELECT ${s(p.id)},${s(V.id)},${j(p.names)},${s(p.section)},${s(p.art)},${j(p.profile)},${p.price},${p.cost},${p.profile.mode==='WEIGHED'?1000000:1000},1 WHERE EXISTS(SELECT 1 FROM vendors WHERE id=${s(V.id)}) ON CONFLICT(id) DO NOTHING;`)]}
+// Owner 24.11: «Форель» works 11:00–23:00, orders until 22:00. With the one-hour lead, a restaurant-only basket gets
+// delivery slots 12:00–23:00, so the last order for today is at 22:00; later orders go to tomorrow.
+export const forelHours={open_minute:660,close_minute:1380};
+export function forelHoursSql(){const h=forelHours;return [`UPDATE vendors SET open_minute=${h.open_minute},close_minute=${h.close_minute} WHERE id='${forelVendor.id}' AND (open_minute IS NOT ${h.open_minute} OR close_minute IS NOT ${h.close_minute});`]}
