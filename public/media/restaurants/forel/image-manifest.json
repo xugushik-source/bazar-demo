@@ -298,5 +298,374 @@
   "new_path": "public/media/restaurants/forel/sets/set-caucasian.jpg",
   "art": "restaurants/forel/sets/set-caucasian",
   "kind": "collage of the set's dishes (similar dishes)"
+ },
+ {
+  "product_key": "forel_pork_leg_baked",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2310",
+  "source_dish": "Запечённая свиная нога",
+  "new_path": "public/media/restaurants/forel/hot/pork-leg-baked.jpg",
+  "art": "restaurants/forel/hot/pork-leg-baked",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_rabbit_baked",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2311",
+  "source_dish": "Запечённый кролик",
+  "new_path": "public/media/restaurants/forel/hot/rabbit-baked.jpg",
+  "art": "restaurants/forel/hot/rabbit-baked",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chicken_boiled",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2312",
+  "source_dish": "Варёная домашняя курица",
+  "new_path": "public/media/restaurants/forel/hot/chicken-boiled.jpg",
+  "art": "restaurants/forel/hot/chicken-boiled",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_piglet_baked",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2313",
+  "source_dish": "Запечённый поросёнок",
+  "new_path": "public/media/restaurants/forel/hot/piglet-baked.jpg",
+  "art": "restaurants/forel/hot/piglet-baked",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pork_knuckle",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2314",
+  "source_dish": "Свиная рулька",
+  "new_path": "public/media/restaurants/forel/hot/pork-knuckle.jpg",
+  "art": "restaurants/forel/hot/pork-knuckle",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_beef_saddle",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2315",
+  "source_dish": "Седло из говядины",
+  "new_path": "public/media/restaurants/forel/hot/beef-saddle.jpg",
+  "art": "restaurants/forel/hot/beef-saddle",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_lamb_khashlama",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2316",
+  "source_dish": "Хашлама из баранины",
+  "new_path": "public/media/restaurants/forel/hot/lamb-khashlama.jpg",
+  "art": "restaurants/forel/hot/lamb-khashlama",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_beef_stroganoff",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2317",
+  "source_dish": "Бефстроганов",
+  "new_path": "public/media/restaurants/forel/hot/beef-stroganoff.jpg",
+  "art": "restaurants/forel/hot/beef-stroganoff",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pork_fried",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2318",
+  "source_dish": "Жареная свинина",
+  "new_path": "public/media/restaurants/forel/hot/pork-fried.jpg",
+  "art": "restaurants/forel/hot/pork-fried",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pork_pot",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2319",
+  "source_dish": "Свинина в горшочке",
+  "new_path": "public/media/restaurants/forel/hot/pork-pot.jpg",
+  "art": "restaurants/forel/hot/pork-pot",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_khashlama",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2320",
+  "source_dish": "Хашлама",
+  "new_path": "public/media/restaurants/forel/hot/khashlama.jpg",
+  "art": "restaurants/forel/hot/khashlama",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_oxtail",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2321",
+  "source_dish": "Говяжий хвост",
+  "new_path": "public/media/restaurants/forel/hot/oxtail.jpg",
+  "art": "restaurants/forel/hot/oxtail",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chkmeruli",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2322",
+  "source_dish": "Чкмерули",
+  "new_path": "public/media/restaurants/forel/hot/chkmeruli.jpg",
+  "art": "restaurants/forel/hot/chkmeruli",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_fish_kebab",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2323",
+  "source_dish": "Рыбный кебаб",
+  "new_path": "public/media/restaurants/forel/fish/fish-kebab.jpg",
+  "art": "restaurants/forel/fish/fish-kebab",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_ryabushka",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2324",
+  "source_dish": "Рябушка",
+  "new_path": "public/media/restaurants/forel/fish/ryabushka.jpg",
+  "art": "restaurants/forel/fish/ryabushka",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_sterlet",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2325",
+  "source_dish": "Стерлядь",
+  "new_path": "public/media/restaurants/forel/fish/sterlet.jpg",
+  "art": "restaurants/forel/fish/sterlet",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_trout_large",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2326",
+  "source_dish": "Крупная форель",
+  "new_path": "public/media/restaurants/forel/fish/trout-large.jpg",
+  "art": "restaurants/forel/fish/trout-large",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_lamb_ribs_shashlik",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2327",
+  "source_dish": "Шашлык из бараньих рёбер",
+  "new_path": "public/media/restaurants/forel/grill/lamb-ribs-shashlik.jpg",
+  "art": "restaurants/forel/grill/lamb-ribs-shashlik",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chicken_spit",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2328",
+  "source_dish": "Курица на вертеле",
+  "new_path": "public/media/restaurants/forel/grill/chicken-spit.jpg",
+  "art": "restaurants/forel/grill/chicken-spit",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_saddle_grill",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2329",
+  "source_dish": "Седло",
+  "new_path": "public/media/restaurants/forel/grill/saddle-grill.jpg",
+  "art": "restaurants/forel/grill/saddle-grill",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_quail",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2331",
+  "source_dish": "Перепёлка",
+  "new_path": "public/media/restaurants/forel/grill/quail.jpg",
+  "art": "restaurants/forel/grill/quail",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chicken_tabaka",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2332",
+  "source_dish": "Цыплёнок табака",
+  "new_path": "public/media/restaurants/forel/grill/chicken-tabaka.jpg",
+  "art": "restaurants/forel/grill/chicken-tabaka",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_pickles_banquet",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2333",
+  "source_dish": "Банкетное ассорти из солений",
+  "new_path": "public/media/restaurants/forel/cold/pickles-banquet.jpg",
+  "art": "restaurants/forel/cold/pickles-banquet",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_caviar",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2334",
+  "source_dish": "Икра",
+  "new_path": "public/media/restaurants/forel/cold/caviar.jpg",
+  "art": "restaurants/forel/cold/caviar",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_lemon",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2335",
+  "source_dish": "Лимон",
+  "new_path": "public/media/restaurants/forel/cold/lemon.jpg",
+  "art": "restaurants/forel/cold/lemon",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_olives",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2336",
+  "source_dish": "Оливки",
+  "new_path": "public/media/restaurants/forel/cold/olives.jpg",
+  "art": "restaurants/forel/cold/olives",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_crab_salad",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2337",
+  "source_dish": "Крабовый салат",
+  "new_path": "public/media/restaurants/forel/salads/crab-salad.jpg",
+  "art": "restaurants/forel/salads/crab-salad",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_kuchmachi",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2338",
+  "source_dish": "Кучмачи",
+  "new_path": "public/media/restaurants/forel/salads/kuchmachi.jpg",
+  "art": "restaurants/forel/salads/kuchmachi",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_svetofor",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2339",
+  "source_dish": "Светофор",
+  "new_path": "public/media/restaurants/forel/salads/svetofor.jpg",
+  "art": "restaurants/forel/salads/svetofor",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_moskovsky",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2340",
+  "source_dish": "Московский",
+  "new_path": "public/media/restaurants/forel/salads/moskovsky.jpg",
+  "art": "restaurants/forel/salads/moskovsky",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chakapuli",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2341",
+  "source_dish": "Чакапули",
+  "new_path": "public/media/restaurants/forel/soups/chakapuli.jpg",
+  "art": "restaurants/forel/soups/chakapuli",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_chicken_soup",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2342",
+  "source_dish": "Куриный суп",
+  "new_path": "public/media/restaurants/forel/soups/chicken-soup.jpg",
+  "art": "restaurants/forel/soups/chicken-soup",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_ostri",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2343",
+  "source_dish": "Остри",
+  "new_path": "public/media/restaurants/forel/soups/ostri.jpg",
+  "art": "restaurants/forel/soups/ostri",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_solyanka",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2344",
+  "source_dish": "Солянка",
+  "new_path": "public/media/restaurants/forel/soups/solyanka.jpg",
+  "art": "restaurants/forel/soups/solyanka",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_ukha",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2345",
+  "source_dish": "Уха",
+  "new_path": "public/media/restaurants/forel/soups/ukha.jpg",
+  "art": "restaurants/forel/soups/ukha",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_peas_egg",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2346",
+  "source_dish": "Горошек с яйцом",
+  "new_path": "public/media/restaurants/forel/sides/peas-egg.jpg",
+  "art": "restaurants/forel/sides/peas-egg",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_mushrooms_cheese",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2347",
+  "source_dish": "Грибы с сыром",
+  "new_path": "public/media/restaurants/forel/sides/mushrooms-cheese.jpg",
+  "art": "restaurants/forel/sides/mushrooms-cheese",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_potato_home",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2348",
+  "source_dish": "Картофель по-домашнему",
+  "new_path": "public/media/restaurants/forel/sides/potato-home.jpg",
+  "art": "restaurants/forel/sides/potato-home",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_bread_basket",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2349",
+  "source_dish": "Хлебная корзина",
+  "new_path": "public/media/restaurants/forel/bread/bread-basket.jpg",
+  "art": "restaurants/forel/bread/bread-basket",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_matsoni",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2350",
+  "source_dish": "Мацони",
+  "new_path": "public/media/restaurants/forel/sauces/matsoni.jpg",
+  "art": "restaurants/forel/sauces/matsoni",
+  "kind": "similar dish (not the restaurant's own serving)"
+ },
+ {
+  "product_key": "forel_sour_cream",
+  "source_project": "owner Google Drive «Базар/Фото ресторанных блюд»",
+  "source_file": "IMG_2351",
+  "source_dish": "Сметана",
+  "new_path": "public/media/restaurants/forel/sauces/sour-cream.jpg",
+  "art": "restaurants/forel/sauces/sour-cream",
+  "kind": "similar dish (not the restaurant's own serving)"
  }
 ]
