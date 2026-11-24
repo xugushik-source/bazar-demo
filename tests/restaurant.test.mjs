@@ -107,3 +107,10 @@ test('owner 24.11: «не рябушка, а ряпушка» — the fish is na
 
 test('owner 24.11: «мы будем точно так подавать» — no «similar dish» note on restaurant photos',()=>{
  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(!app.includes('photo-note')&&!app.includes('photoNote'))});
+
+test('owner 24.11: five dishes are closed (hidden, not deleted) — the rest of the restaurant and every set stay; migration equals the generator',async()=>{const e=await env();try{
+ const {forelHideSql,forelHidden}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0130_forel_hide5.sql',import.meta.url),'utf8').endsWith(forelHideSql().join('\n')+'\n'));
+ for(const s of forelHideSql())e.DB.exec(s);const c=await call(e,'catalog?city='+cid),mine=c.products.filter(p=>p.vendor_id==='akhalkalaki-forel');
+ assert.equal(mine.length,75);for(const k of forelHidden)assert.ok(!mine.some(p=>p.id===pid('forel_'+k)),k);
+ assert.equal((await e.DB.prepare("SELECT COUNT(*) n FROM products WHERE id LIKE 'akhalkalaki--forel_%'").first()).n,80,'still in the database');
+ for(const s of forelSets)assert.ok(setInfo(c.products,mine.find(p=>p.id===pid('forel_'+s[0]))).lines.every(l=>l.product),s[0])}finally{e.DB.close()}});
