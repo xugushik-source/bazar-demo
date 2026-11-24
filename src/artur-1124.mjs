@@ -69,7 +69,7 @@ export const arturProducts1124=[
 const artOf=key=>'artur-'+key.replaceAll('_','-');
 // Owner 24.11: brand packshots from retailer pages (docs/PHOTO_SOURCES.json); the rest show the section picture until found.
 export const arturPhotos1124=['barilla_bucatini','barilla_capellini','barilla_penne_rigate','barilla_pipe_rigate','barilla_risoni','barilla_spaghetti','barilla_stelline','barilla_tortiglioni',
- 'ferrero_rocher_16','ferrero_rocher_24','ferrero_collection_big','raffaello_150','raffaello_gift','raffaello_small'];
+ 'ferrero_rocher_16','ferrero_rocher_24','ferrero_collection_big','raffaello_150','raffaello_gift','raffaello_small','ferrero_collection_15','kinder_maxi'];
 export const arturArtsWithoutPhoto1124=arturProducts1124.filter(r=>!arturPhotos1124.includes(r[0])).map(r=>artOf(r[0]));
 export function arturSql1124(){const V=arturVendor,s=x=>"'"+String(x).replaceAll("'","''")+"'",j=o=>s(JSON.stringify(o));
  return [...arturProducts1124.map(([key,ru,hy,ka,category,cost,profile])=>`INSERT INTO products(id,vendor_id,names,category,art,profile,price,cost,stock,active) SELECT ${s(V.city_id+'--artur_'+key)},${s(V.id)},${j({ru,hy,ka})},${s(category)},${s(artOf(key))},${j(profile||{mode:'EACH',policy_version:1})},${retail1124(cost)},${cost},${profile?100000:100},1 WHERE EXISTS(SELECT 1 FROM vendors WHERE id=${s(V.id)}) AND EXISTS(SELECT 1 FROM categories WHERE id=${s(category)}) ON CONFLICT(id) DO NOTHING;`),
