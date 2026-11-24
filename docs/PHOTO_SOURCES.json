@@ -5251,5 +5251,222 @@
   "license": "owner-provided product photo",
   "file": "public/media/artur-kinder-maxi.jpg",
   "sha256": "2c88a319c4c110ca6097ba8e1f018e179854083fb83abb129b5f72d2604f3a49"
+ },
+ {
+  "key": "restaurants/forel/hot/ojakhuri",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/a1279bf24c3dab67.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/hot/ojakhuri.jpg",
+  "sha256": "4e82db1f8817345eaf11ade403d596ba4b7801db1c1a57e381e6984a9418e9dd"
+ },
+ {
+  "key": "restaurants/forel/hot/dolma",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/bf21157bf46fb5f7.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/hot/dolma.jpg",
+  "sha256": "ba8c4d22878d316b62b777f938890f7905e17b19a384af42dfb748fac01bcc35"
+ },
+ {
+  "key": "restaurants/forel/grill/trout-grill",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/749b0bf7db92b17d.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/grill/trout-grill.jpg",
+  "sha256": "0c8e4006d8e0cd28d6baf241ed309a4340d1517ba3d87fb1f93cf2cddf004063"
+ },
+ {
+  "key": "restaurants/forel/grill/chicken-breast-shashlik",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/f6b655bda38b6fd0.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/grill/chicken-breast-shashlik.jpg",
+  "sha256": "68f882ce7ca29c72989fa1b996653f00fbb5e56a4a86604b3ba6d31c15e433d1"
+ },
+ {
+  "key": "restaurants/forel/grill/pork-shashlik",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/f6d2bd33e234322f.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/grill/pork-shashlik.jpg",
+  "sha256": "ea1cb6ae2301965c9079cb614be1f1f87fabbc158508ff6a4d1e8486054d6d96"
+ },
+ {
+  "key": "restaurants/forel/grill/chicken-wings",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/fbc88dde84d9441f.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/grill/chicken-wings.jpg",
+  "sha256": "6dfa4baa6f3c81e81ba9e700d1f054ee897ee28790541434372338c2d777ac74"
+ },
+ {
+  "key": "restaurants/forel/grill/grilled-vegetables",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/20e268bd3f86b1b2.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/grill/grilled-vegetables.jpg",
+  "sha256": "a16bc60257e932d2f65284b89a765afaccca9ea0e20963757155c3a3fa4081cd"
+ },
+ {
+  "key": "restaurants/forel/grill/pork-ribs-shashlik",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/bb90e59974fdd0be.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/grill/pork-ribs-shashlik.jpg",
+  "sha256": "f49569661068aa90dd233237480a311fa14b322044c50b30e798dc5e7830af10"
+ },
+ {
+  "key": "restaurants/forel/cold/pickles",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/882d0a6f841fc20e.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/pickles.jpg",
+  "sha256": "9a58863fc1e8998284a76fec54fdec55683985309dc275eac6be46bbe6de042e"
+ },
+ {
+  "key": "restaurants/forel/cold/cheese-banquet",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/87146ce20f71df53.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/cheese-banquet.jpg",
+  "sha256": "42acb416a8bb01a7c2397440fa79bde03a9fd0addd9c1ca3adebbc069262a88e"
+ },
+ {
+  "key": "restaurants/forel/cold/pkhali",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/0e5d35a9e2c0298e.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/pkhali.jpg",
+  "sha256": "21e0312bdb76a1727abff4b9dc753c43c95251e5cc360053e1f8ab1590b46178"
+ },
+ {
+  "key": "restaurants/forel/cold/eggplant-walnuts",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/8ff9f5ae1bcf5f67.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/eggplant-walnuts.jpg",
+  "sha256": "a8a6fbcd1bc0e9df2c97a10837ad4f81e195226ab3758003ef406be27972e62f"
+ },
+ {
+  "key": "restaurants/forel/cold/basturma-sujuk",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/8b34fb0208a42303.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/basturma-sujuk.jpg",
+  "sha256": "add96e8b21f3f52076ac8ad2da2c8d8fdcb4d7ebdbe4c5ca4d7ddb679e342d13"
+ },
+ {
+  "key": "restaurants/forel/cold/meat-platter",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/74ca50c2ce49e3a1.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/meat-platter.jpg",
+  "sha256": "21e6cd1bd740d63b5d0e302df0499e1895d9fdb367470d9353fc8b5a76c24dda"
+ },
+ {
+  "key": "restaurants/forel/cold/vegetable-platter",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/9bbbfb2c8dd9eb92.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/vegetable-platter.jpg",
+  "sha256": "d74af4b93ff25a883159fdc9bcb8dc37e9f3f12474831faf22d985189c7abc0a"
+ },
+ {
+  "key": "restaurants/forel/cold/tongue-boiled",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/3a22ae9aeeb6078c.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/tongue-boiled.jpg",
+  "sha256": "4c8282de3f1d49b9ee92f96f679189538c34aa19d7fcb70254e94d0e2e0d641b"
+ },
+ {
+  "key": "restaurants/forel/cold/cheese",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/8c63cb59186397de.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/cold/cheese.jpg",
+  "sha256": "8cc2ac287009096a48861ab76019c0829b34adbb371f1249544ea565edacb001"
+ },
+ {
+  "key": "restaurants/forel/salads/caesar",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/23637b2bffc82920.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/salads/caesar.jpg",
+  "sha256": "bdcb5267cb782bd9b4d490a0619ccfe14df79508214514cb433105df19b03216"
+ },
+ {
+  "key": "restaurants/forel/salads/vegetable-salad",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/50da160bf795bf20.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/salads/vegetable-salad.jpg",
+  "sha256": "3c256203b5bc86b66101f35231d632dd047826871c474010c715c452435759e6"
+ },
+ {
+  "key": "restaurants/forel/salads/tongue-cucumber-salad",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/b1805f9d30ea065f.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/salads/tongue-cucumber-salad.jpg",
+  "sha256": "8fd9814ff2fe0e018fee3fdebcbd5be1d53f4f6647723851b7c2242c0e990edb"
+ },
+ {
+  "key": "restaurants/forel/soups/kharcho",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/97464f2e1c0b2e24.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/soups/kharcho.jpg",
+  "sha256": "9160e2e073a8fc0274a2540ffbb128dde421a6a92b9383f9947517a271b1bfa6"
+ },
+ {
+  "key": "restaurants/forel/sides/mushrooms-baked",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/6f25f02b04a739f2.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/sides/mushrooms-baked.jpg",
+  "sha256": "c3d6fad58a992b8adc4882c3d59cd08f5728fa3b8908aee5a5a89c9e6d039731"
+ },
+ {
+  "key": "restaurants/forel/sides/fries",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/5f20a87909b15bee.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/sides/fries.jpg",
+  "sha256": "d31624cc2a972f12254e07f32993c5509cbfe8224e54eeb8347fb5a05979f009"
+ },
+ {
+  "key": "restaurants/forel/sauces/satsebeli",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/cf27321efc2b0e82.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/sauces/satsebeli.jpg",
+  "sha256": "2dbc06058adbdc395811febb8fd76f71da832ce11e729461ec7a13702eee14e8"
+ },
+ {
+  "key": "restaurants/forel/sauces/tkemali",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/cacdfd997839a494.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/sauces/tkemali.jpg",
+  "sha256": "5060a69bfaa39cb4015b9716c67ab6b122841b1fd253e727742f7dbe1f16f85c"
+ },
+ {
+  "key": "restaurants/forel/sets/set-meat",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/30cd32762eb0a7ea.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/sets/set-meat.jpg",
+  "sha256": "74e17de741edd81f7520fbd3c97a425d4ff2875a6479310cb5ab719736873be1"
+ },
+ {
+  "key": "restaurants/forel/sets/set-chicken",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/4af2ac572d9d5d37.jpg",
+  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "file": "public/media/restaurants/forel/sets/set-chicken.jpg",
+  "sha256": "f4093af5edbc5ca3b01127dcd41e7dd277e79f2a0b607b0c2189da6604754db5"
+ },
+ {
+  "key": "restaurants/forel/sets/set-dinner-two",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/f6d2bd33e234322f.jpg (+3 more, collage)",
+  "license": "owner's own project (Shashlicniy_ray); collage of the set's dishes",
+  "file": "public/media/restaurants/forel/sets/set-dinner-two.jpg",
+  "sha256": "33c78dc035df1bbcbca4feed5267f10d94c4973ead5c6aa89d3e13d36ef2a5ab"
+ },
+ {
+  "key": "restaurants/forel/sets/set-feast",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/f6d2bd33e234322f.jpg (+3 more, collage)",
+  "license": "owner's own project (Shashlicniy_ray); collage of the set's dishes",
+  "file": "public/media/restaurants/forel/sets/set-feast.jpg",
+  "sha256": "7922a27ca3ed0be90ef640e12a5333a639aafe3d5c963fca25be0d59c10d6bb6"
+ },
+ {
+  "key": "restaurants/forel/sets/set-caucasian",
+  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/8ff9f5ae1bcf5f67.jpg (+3 more, collage)",
+  "license": "owner's own project (Shashlicniy_ray); collage of the set's dishes",
+  "file": "public/media/restaurants/forel/sets/set-caucasian.jpg",
+  "sha256": "a9e27882b12c31ada75f61408f2fa7dad344ca298bd3b5a569af8f1a4924fe7c"
+ },
+ {
+  "key": "restaurants/forel/placeholder",
+  "source": "drawn: neutral placeholder for dishes without a photo",
+  "license": "own drawing",
+  "file": "public/media/restaurants/forel/placeholder.jpg",
+  "sha256": "211a95f20c215d875f17cb6eaab70f855c698b6cf13e89aa3b40158c68b929bf"
  }
 ]

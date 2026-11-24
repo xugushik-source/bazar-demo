@@ -1,0 +1,75 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {LocalD1} from '../tools/sqlite.mjs';import {migrate} from '../tools/migrate.mjs';import {seed,createUser} from '../tools/seed.mjs';import {handle} from '../src/worker.mjs';import {q} from '../src/commerce.mjs';import {sha,token} from '../src/security.mjs';
+import {restaurantSql,forelProducts,forelCosts,saleOf,setCost}from '../src/restaurants.mjs';
+import {forelDishes,forelSets,restaurantCategoryIds,setInfo,illustrativeArts,isRestaurantCat}from '../public/restaurants.js';
+import {recommend}from '../public/merchandising.js';import {salesReport,lineRevenue}from '../src/sales-report.mjs';
+// Owner 24.11: restaurant «Форель» inside «Готовая еда» — 75 dishes, 5 sets, its own vendor, cost +20 % in whole lari.
+const cid='akhalkalaki',pid=k=>cid+'--'+k;
+const env=async()=>{const DB=new LocalD1();migrate(DB);await seed(DB,{karo:false});DB.exec('UPDATE cities SET first_order_free=0');DB.exec('DELETE FROM day_hours');for(const s of restaurantSql())DB.exec(s);
+ const owner={id:await createUser(DB,{email:'owner@test.invalid',name:'Владелец',password:'test-password-123456',owner:true}),owner:true,memberships:[]};return {DB,owner}};
+async function call(e,path,b,user=null){const headers=b?{'Content-Type':'application/json','X-Bazar-CSRF':'1'}:{};if(user){const session=token();await q(e.DB,'INSERT INTO sessions(hash,user_id,expires) VALUES(?,?,?)',await sha(session),user.id,Date.now()+100000).run();headers.cookie='bazar_session='+session}const r=await handle(new Request('https://bazar.test/api/'+path,{method:b?'POST':'GET',headers,...(b?{body:JSON.stringify(b)}:{})}),e);return {...await r.json(),http:r.status}}
+async function order(e,items){const base={city_id:cid,items,fulfillment:'delivery'},quote=await call(e,'quote',base);assert.equal(quote.http,200,JSON.stringify(quote));const b={...base,idem:crypto.randomUUID(),day:new Date(Date.now()+86400000).toISOString().slice(0,10),minute:600,method:'cash',customer:{name:'Тестовый покупатель',phone:'+995555000000',address:'Тестовый адрес, не доставлять'},expected_total:quote.total,maximum_total:quote.maximum_total,accepted_weight_rules:true,privacy_consent:true};const o=await call(e,'orders',b);assert.equal(o.http,201,JSON.stringify(o));return o}
+
+test('restaurant «Форель»: migration equals the generator; 75 dishes + 5 sets, sale = cost × 1.2 rounded up to whole lari',()=>{
+ assert.ok(fs.readFileSync(new URL('../migrations/0124_restaurant_forel.sql',import.meta.url),'utf8').endsWith(restaurantSql().join('\n')+'\n'));
+ const all=forelProducts();assert.equal(forelDishes.length,75);assert.equal(forelSets.length,5);assert.equal(all.length,80);
+ assert.equal(new Set(all.map(p=>p.id)).size,80);assert.equal(new Set(all.map(p=>p.names.ru)).size,80,'no duplicate names');
+ for(const p of all){assert.equal(p.price,Math.ceil(p.cost*1.2/100-1e-9)*100,p.key);assert.ok(p.names.ru&&p.names.ka&&p.names.hy,p.key);assert.ok(restaurantCategoryIds.includes(p.section))}
+ for(const [k,gel]of Object.entries(forelCosts))assert.equal(all.find(p=>p.key===k).cost,Math.round(gel*100),'cost not recomputed: '+k);
+ const by=k=>all.find(p=>p.key===k);assert.equal(by('pork_shashlik').price,1600);assert.equal(by('beef_saddle').price,7800);assert.equal(by('chicken_wings').price,900);assert.equal(by('lemon').price,300);
+ assert.deepEqual(forelSets.map(s=>setCost(s)),[5300,3050,4350,11200,6500]);assert.deepEqual(forelSets.map(s=>saleOf(setCost(s))),[6400,3700,5300,13500,7800]);
+ for(const s of forelSets)for(const [k]of s[4])assert.ok(forelCosts[k]!==undefined,'set component is a real dish: '+k);
+ assert.ok(!all.some(p=>/(^|[\s(,])(алкогол|вин[оа]|пиво|водк|коньяк|ча[йя]|кофе|лимонад|сок|вода|напит)/i.test(p.names.ru)),'no drinks, tea, coffee or alcohol in the restaurant');
+ assert.equal(all.filter(p=>p.profile.mode==='WEIGHED').length,12);for(const p of all.filter(p=>p.profile.mode==='WEIGHED'))assert.deepEqual([p.profile.minimum_g,p.profile.order_step_g],[1000,1000]);
+ for(const n of ['Рябушка','Седло','Икра','Кебаб'])assert.ok(all.some(p=>p.names.ru.startsWith(n)),'ambiguous name kept: '+n)});
+
+test('restaurant «Форель»: in the public catalogue with vendor and sections in three languages, never the purchase price',async()=>{const e=await env();try{
+ const c=await call(e,'catalog?city='+cid);const mine=c.products.filter(p=>p.vendor_id==='akhalkalaki-forel');assert.equal(mine.length,80);
+ assert.ok(mine.every(p=>!('cost'in p)&&p.price>0&&isRestaurantCat(p.category)));assert.ok(!JSON.stringify(c).includes('"cost"'),'no purchase price anywhere in the catalogue');
+ const v=c.vendors.find(v=>v.id==='akhalkalaki-forel');assert.deepEqual(v.names,{ru:'Форель',ka:'კალმახი',hy:'Իշխան'});
+ for(const id of restaurantCategoryIds){const cat=c.categories.find(x=>x.id===id);assert.ok(cat&&cat.names.ru.startsWith('Ресторанные блюда')&&cat.names.ka&&cat.names.hy,id)}
+ const trout=mine.find(p=>p.id===pid('forel_river_trout'));assert.equal(trout.profile.mode,'WEIGHED');assert.equal(trout.price,7600,'per kg');
+ const tiles=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.match(tiles,/\['restaurant',restaurantCategoryIds\]/);
+ const i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.equal(i18n.match(/group_restaurant:/g).length,3)}finally{e.DB.close()}});
+
+test('restaurant «Форель»: a mixed basket is split by vendor; the restaurant line keeps its cost; a dish by the kilo is paid by weight',async()=>{const e=await env();try{
+ const o=await order(e,[{product_id:pid('apple_loose'),selection:{grams:1000}},{product_id:pid('forel_pork_shashlik'),selection:{count:2}},{product_id:pid('forel_river_trout'),selection:{grams:1000}}]);
+ const id=o.id||o.order?.id;const lines=(await q(e.DB,'SELECT vendor_id,cost,reserved,quote FROM order_lines WHERE order_id=?',id).all()).results;
+ const rs=lines.filter(l=>l.vendor_id==='akhalkalaki-forel');assert.equal(rs.length,2);assert.ok(lines.some(l=>l.vendor_id!=='akhalkalaki-forel'),'the shop line stays with its own vendor');
+ assert.deepEqual(rs.map(l=>l.cost).sort((a,b)=>a-b),[1300,6300]);
+ const groups=(await q(e.DB,'SELECT vendor_id FROM order_groups WHERE order_id=?',id).all()).results.map(g=>g.vendor_id);assert.ok(groups.includes('akhalkalaki-forel')&&groups.length>=2,'one group per vendor');
+ // accounting: deliver it and read the owner report
+ assert.equal(rs.find(l=>l.cost===6300).reserved,1100,'before weighing the kilo dish reserves +10 %');
+ e.DB.exec(`UPDATE order_lines SET reserved=1000 WHERE order_id='${id}' AND product_id='${pid('forel_river_trout')}'`);// what the scales recorded
+ e.DB.exec(`UPDATE orders SET status='COMPLETED' WHERE id='${id}'`);const r=await salesReport(e.DB,cid);const f=r.vendors.find(v=>v.id==='akhalkalaki-forel');
+ assert.equal(f.revenue,2*1600+7600);assert.equal(f.cost,2*1300+6300);assert.equal(f.gross_profit,f.revenue-f.cost);assert.equal(f.quantity,2);assert.equal(f.weighed_g,1000);
+ assert.ok(r.categories.find(c=>c.id==='rf_rs_grill'));assert.equal(r.total.revenue,r.vendors.reduce((s,v)=>s+v.revenue,0));
+ const forbidden=await call(e,'manage/sales?city='+cid);assert.notEqual(forbidden.http,200,'the report is for the owner only');
+ const ok=await call(e,'manage/sales?city='+cid,null,e.owner);assert.equal(ok.http,200);assert.ok(ok.vendors.some(v=>v.id==='akhalkalaki-forel'))}finally{e.DB.close()}});
+
+test('restaurant «Форель»: a set shows its composition and the saving; sold sets are counted apart',async()=>{const e=await env();try{
+ const c=await call(e,'catalog?city='+cid),set=k=>c.products.find(p=>p.id===pid('forel_'+k));
+ const meat=setInfo(c.products,set('set_meat'));assert.ok(meat.lines.length>=3&&meat.lines.every(l=>l.product));assert.equal(meat.saving,meat.separate-set('set_meat').price);
+ assert.deepEqual(['set_meat','set_chicken','set_dinner_two','set_feast','set_caucasian'].map(k=>setInfo(c.products,set(k)).saving),[100,100,0,200,200]);
+ assert.equal(setInfo(c.products,set('pork_shashlik')),null,'a single dish is not a set');
+ const o=await order(e,[{product_id:pid('forel_set_feast'),selection:{count:1}}]);e.DB.exec(`UPDATE orders SET status='COMPLETED' WHERE id='${o.id||o.order?.id}'`);
+ const r=await salesReport(e.DB,cid);assert.equal(r.sets.length,1);assert.equal(r.sets[0].revenue,13500);assert.equal(r.sets[0].cost,11200)}finally{e.DB.close()}});
+
+test('restaurant «Форель»: upsells — sauces, sides and the shop drinks to shashlik, lemon to fish, sets only to a big order; never a sauce to water',async()=>{const e=await env();try{
+ const c=await call(e,'catalog?city='+cid),ids=r=>r.map(x=>(x.product||x).id);
+ const grill=recommend(c.products,cid,[{product_id:pid('forel_pork_shashlik')}],{limit:20});assert.ok(grill.length,'shashlik gets suggestions');
+ assert.ok(ids(grill).some(i=>/forel_(satsebeli|tkemali)/.test(i)));assert.ok(!ids(grill).some(i=>/forel_set_/.test(i)),'one dish is not a big order');
+ const fish=recommend(c.products,cid,[{product_id:pid('forel_trout_grill')}],{limit:20});assert.ok(ids(fish).includes(pid('forel_lemon')));
+ const big=recommend(c.products,cid,[{product_id:pid('forel_pork_shashlik')},{product_id:pid('forel_kebab')},{product_id:pid('forel_trout_grill')}],{limit:30});assert.ok(ids(big).some(i=>/forel_set_/.test(i)),'a big order is offered a set');
+ const water=recommend(c.products,cid,[{product_id:pid('kri_nabeglavi_050')}],{limit:20});assert.ok(!ids(water).some(i=>i.includes('forel_')),'a drink never pulls restaurant food')}finally{e.DB.close()}});
+
+test('restaurant «Форель»: photos — every illustrative photo exists and is listed with its source; dishes without one fall back to the placeholder',async()=>{
+ const sources=JSON.parse(fs.readFileSync(new URL('../docs/PHOTO_SOURCES.json',import.meta.url),'utf8')),files=new Set(sources.map(s=>s.file));
+ const manifest=JSON.parse(fs.readFileSync(new URL('../public/media/restaurants/forel/image-manifest.json',import.meta.url),'utf8'));assert.equal(manifest.length,illustrativeArts.size);
+ for(const a of illustrativeArts){const f='public/media/'+a+'.jpg';assert.ok(fs.existsSync(new URL('../'+f,import.meta.url)),a);assert.ok(files.has(f),a)}
+ const {photoPath}=await import('../public/photos.js');const missing=forelProducts().filter(p=>!illustrativeArts.has(p.art));assert.ok(missing.length>0);
+ for(const p of missing)assert.match(photoPath(p.art,p.section),/restaurants\/forel\/placeholder\.jpg/,p.key);
+ assert.match(photoPath('restaurants/forel/grill/pork-shashlik','rf_rs_grill'),/grill\/pork-shashlik\.jpg\?v=/)});
+
+test('restaurant «Форель»: «Забота о близких» reads the same catalogue, so the dishes are orderable there too',()=>{
+ const z=fs.readFileSync(new URL('../public/zabota.html',import.meta.url),'utf8')+(fs.existsSync(new URL('../public/zabota.js',import.meta.url))?fs.readFileSync(new URL('../public/zabota.js',import.meta.url),'utf8'):'');assert.match(z,/catalog/)});
