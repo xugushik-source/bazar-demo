@@ -89,3 +89,8 @@ test('owner 24.11: Karo (fruit and vegetables) delivers in the evening by its ow
   const fs=await import('node:fs'),{karoHoursSql1124}=await import('../src/karo.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0127_karo_until_20.sql',import.meta.url),'utf8').endsWith(karoHoursSql1124().join('\n')+'\n'));
   if(other){const m=await call(e,`slots?city=${cid}&day=${day}&products=${karo},${other}`);assert.ok(Math.max(...m.slots.map(s=>s.minute))<=1060,'with Artur: the usual 18:00 cap')}
   const c=await call(e,'catalog?city='+cid);assert.deepEqual(c.city.evening_vendors,['akhalkalaki-karo'])}finally{if(prev!==undefined)process.env.BAZAR_IGNORE_ORDER_HOURS=prev}}finally{e.DB.close()}});
+
+test('owner 24.11: home page — tiles right after the search, popular goods instead of all of them, no banners, «Забота» in the header',()=>{
+ const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+ assert.match(app,/filter='home'/);assert.match(app,/class=\"home-more\"/);assert.match(app,/zabota-link/);assert.ok(!html.includes('>Забота о близких</a></div>'),'the big «Забота» strip is gone from the top');
+ assert.ok(!app.includes('${ownHoursHTML()}'),'no big hours block; the hours are on the tiles');assert.ok(!app.includes('soon-line'))});

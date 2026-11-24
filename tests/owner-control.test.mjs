@@ -115,7 +115,7 @@ test('owner 11.11: «Доставка готовой еды» — five empty sub
  const {readyFoodSql,readyFoodCategories}=await import('../src/ready-food.mjs'),fs=await import('node:fs');
  const c=await call(e,'catalog?city='+cid);
  for(const [id] of readyFoodCategories){const x=c.categories.find(k=>k.id===id);assert.ok(x&&x.names.ru&&x.names.hy&&x.names.ka,id);assert.equal(c.products.filter(p=>p.category===id).length,id==='rf_pizza'?5:0,'no invented dishes: only the owner\'s four (11.11)')}
- assert.ok(c.categories.find(k=>k.id==='cakes'),'cakes stay separate');const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.ok(app.includes('ready-soon'));assert.equal((i18n.match(/readyFood:/g)||[]).length,3);
+ assert.ok(c.categories.find(k=>k.id==='cakes'),'cakes stay separate');const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.ok(!app.includes('ready-soon'),'owner 24.11: no «скоро» card — ready food and the restaurant already sell');assert.equal((i18n.match(/readyFood:/g)||[]).length,3);
  assert.ok(fs.readFileSync(new URL('../migrations/0100_ready_food.sql',import.meta.url),'utf8').endsWith(readyFoodSql().join('\n')+'\n'))}finally{DB.close()}});
 
 test('owner 11.11: home tiles use light thumbnails that exist for every tile photo',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
@@ -172,7 +172,7 @@ test('owner 11.11: ready food is ordered until 19:30 and delivered up to the sup
   assert.equal(last(await slots(DB,cid,day,'akhalkalaki--rf_pizza_02,akhalkalaki--rf_pizza_05')),1200,'pizza alone: 20:00');
   assert.equal(last(await slots(DB,cid,day,'akhalkalaki--rf_pizza_02,akhalkalaki--cakes_01')),1200,'owner 11.11: cakes count as evening food');assert.ok(last(await slots(DB,cid,day,'akhalkalaki--rf_pizza_02,akhalkalaki--artur_hh_160'))<=1180,'with other goods: the usual gap before closing');
   const c=await call({DB},'catalog?city='+cid);assert.equal(c.city.ready_to,1170);
-  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.ok(app.includes('readyEvening()')&&!app.includes('ordersOpen(basketReady())'),'owner 17.11: checkout is never blocked by the hour');for(const k of ['readyEvening','readyOnlyNow'])assert.equal((i18n.match(new RegExp(k+':','g'))||[]).length,3,k)}finally{DB.close()}});
+  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.ok(!app.includes('ordersOpen(basketReady())'),'owner 17.11: checkout is never blocked by the hour');assert.ok(app.includes('tile-eve')&&!app.includes("t('readyEvening')"),'owner 24.11: evening hours on the tiles, not a banner');for(const k of ['readyEvening','readyOnlyNow'])assert.equal((i18n.match(new RegExp(k+':','g'))||[]).length,3,k)}finally{DB.close()}});
 
 test('owner 12.11: a copy served by a Cloudflare Worker (bazar.xugushik.workers.dev) uses its own API; only the GitHub copy follows deployment.json',async()=>{const fs=await import('node:fs'),app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
  assert.ok(app.includes("if(u.origin!==location.origin&&!location.hostname.endsWith('.workers.dev'))apiBase=u.origin"))});
