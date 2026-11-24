@@ -5237,5 +5237,19 @@
   "author": "retailer page",
   "file": "public/media/artur-raffaello-small.jpg",
   "sha256": "593e35a508d0823fb19d6364821170a0571f5f18021788f5335a035d938573c7"
+ },
+ {
+  "key": "artur-ferrero-collection-15",
+  "source": "owner: photo sent by the owner 24.11",
+  "license": "owner-provided product photo",
+  "file": "public/media/artur-ferrero-collection-15.jpg",
+  "sha256": "03c94290cd2619ec09e7f7b04d3810ec6efed9d683013933fddb9fcb675f50eb"
+ },
+ {
+  "key": "artur-kinder-maxi",
+  "source": "owner: photo sent by the owner 24.11",
+  "license": "owner-provided product photo",
+  "file": "public/media/artur-kinder-maxi.jpg",
+  "sha256": "2c88a319c4c110ca6097ba8e1f018e179854083fb83abb129b5f72d2604f3a49"
  }
 ]
