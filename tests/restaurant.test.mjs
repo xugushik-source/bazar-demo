@@ -21,7 +21,7 @@ test('restaurant «Форель»: migration equals the generator; 75 dishes + 5
  for(const s of forelSets)for(const [k]of s[4])assert.ok(forelCosts[k]!==undefined,'set component is a real dish: '+k);
  assert.ok(!all.some(p=>/(^|[\s(,])(алкогол|вин[оа]|пиво|водк|коньяк|ча[йя]|кофе|лимонад|сок|вода|напит)/i.test(p.names.ru)),'no drinks, tea, coffee or alcohol in the restaurant');
  assert.equal(all.filter(p=>p.profile.mode==='WEIGHED').length,12);for(const p of all.filter(p=>p.profile.mode==='WEIGHED'))assert.deepEqual([p.profile.minimum_g,p.profile.order_step_g],[1000,1000]);
- for(const n of ['Рябушка','Седло','Икра','Кебаб'])assert.ok(all.some(p=>p.names.ru.startsWith(n)),'ambiguous name kept: '+n)});
+ for(const n of ['Ряпушка','Седло','Икра','Кебаб'])assert.ok(all.some(p=>p.names.ru.startsWith(n)),'ambiguous name kept: '+n)});
 
 test('restaurant «Форель»: in the public catalogue with vendor and sections in three languages, never the purchase price',async()=>{const e=await env();try{
  const c=await call(e,'catalog?city='+cid);const mine=c.products.filter(p=>p.vendor_id==='akhalkalaki-forel');assert.equal(mine.length,80);
@@ -99,3 +99,8 @@ test('owner 24.11: the grill «Седло» is «Корейка свиная» i
  const {forelRenameSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0128_forel_koreika.sql',import.meta.url),'utf8').endsWith(forelRenameSql().join('\n')+'\n'));
  for(const s of forelRenameSql())e.DB.exec(s);const c=await call(e,'catalog?city='+cid),by=k=>c.products.find(p=>p.id===pid('forel_'+k));
  assert.deepEqual(by('saddle_grill').names,{ru:'Корейка свиная',ka:'ღორის კორეიკა',hy:'Խոզի կորեյկա'});assert.equal(by('saddle_grill').price,6500);assert.equal(by('beef_saddle').names.ru,'Седло из говядины')}finally{e.DB.close()}});
+
+test('owner 24.11: «не рябушка, а ряпушка» — the fish is named right in three languages; migration equals the generator',async()=>{const e=await env();try{
+ const {forelRenameSql}=await import('../src/restaurants.mjs');assert.ok(fs.readFileSync(new URL('../migrations/0129_forel_ryapushka.sql',import.meta.url),'utf8').endsWith(forelRenameSql(1).join('\n')+'\n'));
+ for(const s of forelRenameSql(1))e.DB.exec(s);const c=await call(e,'catalog?city='+cid),f=c.products.find(p=>p.id===pid('forel_ryabushka'));
+ assert.deepEqual(f.names,{ru:'Ряпушка',ka:'რიაპუშკა',hy:'Ռյապուշկա'});assert.equal(f.price,3300);assert.ok(!JSON.stringify(c.products.map(p=>p.names)).includes('Рябушк'))}finally{e.DB.close()}});
