@@ -71,7 +71,7 @@
       <label for="rname" id="l-rname"></label>
       <input id="rname" type="text" autocomplete="off">
       <label for="rphone" id="l-rphone"></label>
-      <input id="rphone" type="tel" placeholder="+995 5xx xxx xxx">
+      <input id="rphone" type="tel" placeholder="+995 5xx xxx xxx" autocomplete="off" inputmode="tel">
     </fieldset>
 
     <!-- Шаг 2 -->
@@ -136,7 +136,7 @@
       <label for="pname" id="l-pname"></label>
       <input id="pname" type="text" autocomplete="name">
       <label for="pphone" id="l-pphone"></label>
-      <input id="pphone" type="tel" placeholder="+995 5xx xxx xxx">
+      <input id="pphone" type="tel" placeholder="+995 5xx xxx xxx" autocomplete="tel" inputmode="tel">
       <div class="sum" id="quote"></div>
       <div class="hint" id="h-pay"></div>
       <label class="check"><input type="checkbox" id="c-privacy"><span id="t-privacy"></span></label>
@@ -304,8 +304,8 @@ function renderStatic(){
   $('st-deliv-title').textContent=t().delivTitle;$('st-lead').textContent=t().leadNote;
   const sched=$('sched');sched.innerHTML='';
   [['weekly',t().weekly],['every',t().every],['dates',t().dates]].forEach(([v,label])=>{const o=document.createElement('option');o.value=v;o.textContent=label;sched.appendChild(o)});
-  const time=$('time');time.innerHTML='';SLOTS.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=hhmm(m);if(m===600)o.selected=true;time.appendChild(o)});
-  const days=$('days');days.innerHTML='';t().days.forEach((d,i)=>{const label=document.createElement('label');label.className='check';const cb=document.createElement('input');cb.type='checkbox';cb.value=i+1;cb.onchange=()=>{cb.checked?state.days.add(i+1):state.days.delete(i+1);updateSummary()};label.append(cb,' '+d);days.appendChild(label)});
+  const time=$('time'),was=time.value;time.innerHTML='';SLOTS.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=hhmm(m);if(was?String(m)===was:m===600)o.selected=true;time.appendChild(o)});
+  const days=$('days');days.innerHTML='';t().days.forEach((d,i)=>{const label=document.createElement('label');label.className='check';const cb=document.createElement('input');cb.type='checkbox';cb.value=i+1;cb.checked=state.days.has(i+1);cb.onchange=()=>{cb.checked?state.days.add(i+1):state.days.delete(i+1);updateSummary()};label.append(cb,' '+d);days.appendChild(label)});
   $('zone').innerHTML='';
   document.querySelectorAll('[data-lang]').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.lang===lang?'true':'false')});
   renderZones();renderProducts();renderSchedule();showStep();
@@ -434,6 +434,7 @@ async function next(){
 }
 
 function showDone(r){
+  try{localStorage.removeItem(DRAFT)}catch{}
   $('view-new').classList.add('hidden');$('view-done').classList.remove('hidden');
   const link=location.origin+location.pathname+'#id='+r.program.id+'&key='+r.key;
   $('done-link').textContent=link;
@@ -500,6 +501,16 @@ async function showStatus(){
   return true;
 }
 
+// Owner 25.11: «чтобы заполненное сохранялось» — everything typed or chosen stays on this phone until the order is sent.
+// The consent boxes are not kept: they are ticked anew for every order.
+const DRAFT='zabota-draft-v1',DRAFT_FIELDS=['rname','rphone','zone','address','sched','every','start','rfrom','runtil','time','budget','pname','pphone'];let draftReady=false;
+function saveDraft(){if(!draftReady||!$('view-done').classList.contains('hidden'))return;try{const v={};for(const id of DRAFT_FIELDS)v[id]=$(id).value;localStorage.setItem(DRAFT,JSON.stringify({v,basket:state.basket,days:[...state.days],dates:state.dates,step:state.step}))}catch{}}
+function loadDraft(){let d;try{d=JSON.parse(localStorage.getItem(DRAFT)||'null')}catch{}if(!d)return;
+ for(const id of DRAFT_FIELDS){const el=$(id),v=d.v?.[id];if(v==null||v==='')continue;if(el.tagName==='SELECT'&&![...el.options].some(o=>o.value===v))continue;el.value=v}
+ const ids=new Set(state.products.map(p=>p.id));state.basket=Object.fromEntries(Object.entries(d.basket||{}).filter(([id,n])=>ids.has(id)&&n>0));
+ state.days=new Set(d.days||[]);state.dates=(d.dates||[]).filter(x=>x>=new Date().toISOString().slice(0,10));
+ document.querySelectorAll('#days input').forEach(cb=>cb.checked=state.days.has(Number(cb.value)));$('dlist').textContent=state.dates.join(', ');
+ renderSchedule();renderProducts();updateSummary();state.step=Math.min(Math.max(Number(d.step)||1,1),6);showStep()}
 async function init(){
   renderStatic();
   $('zone').onchange=updateSummary;
@@ -513,9 +524,11 @@ async function init(){
     state.zones=c.city.zones||[];state.products=c.products||[];state.categories=(c.categories||[]).filter(x=>x.active!==0);
     renderStatic();
     $('psearch').oninput=renderProducts;
+    loadDraft();draftReady=true;
   }catch(e){$('err').textContent=say(e.code)}
   if(!(await showStatus())){}
   window.addEventListener('hashchange',()=>{showStatus()});
+  for(const ev of ['input','change','click'])document.addEventListener(ev,()=>setTimeout(saveDraft,0));
 }
 init();
 </script>

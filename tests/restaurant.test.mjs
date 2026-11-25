@@ -117,3 +117,9 @@ test('owner 24.11: five dishes are closed (hidden, not deleted) — the rest of 
 
 test('owner 25.11: «Забота о близких» has a way back to the shop in three languages',()=>{
  const z=fs.readFileSync(new URL('../public/zabota.html',import.meta.url),'utf8');assert.match(z,/id="t-back" href="\.\/"/);for(const w of ['← Назад в Базар','← Վերադառնալ Բազար','← უკან ბაზარში'])assert.ok(z.includes(w),w)});
+
+test('owner 25.11: «Забота» keeps the draft until the order is sent; the phone suggests the payer\'s own name and phone, never for the recipient',()=>{
+ const z=fs.readFileSync(new URL('../public/zabota.html',import.meta.url),'utf8');
+ assert.match(z,/localStorage\.setItem\(DRAFT/);assert.match(z,/function showDone\(r\)\{\n  try\{localStorage\.removeItem\(DRAFT\)/);assert.ok(!/DRAFT_FIELDS=\[[^\]]*c-privacy/.test(z),'consents are ticked anew');
+ assert.match(z,/id="pname" type="text" autocomplete="name"/);assert.match(z,/id="pphone"[^>]*autocomplete="tel"/);assert.match(z,/id="rphone"[^>]*autocomplete="off"/);assert.match(z,/id="rname"[^>]*autocomplete="off"/);
+ const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(app.includes('autocomplete="name"')&&app.includes('autocomplete="tel"')&&app.includes('autocomplete="street-address"'))});
