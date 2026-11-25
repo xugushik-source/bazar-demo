@@ -114,3 +114,6 @@ test('owner 24.11: five dishes are closed (hidden, not deleted) — the rest of 
  assert.equal(mine.length,75);for(const k of forelHidden)assert.ok(!mine.some(p=>p.id===pid('forel_'+k)),k);
  assert.equal((await e.DB.prepare("SELECT COUNT(*) n FROM products WHERE id LIKE 'akhalkalaki--forel_%'").first()).n,80,'still in the database');
  for(const s of forelSets)assert.ok(setInfo(c.products,mine.find(p=>p.id===pid('forel_'+s[0]))).lines.every(l=>l.product),s[0])}finally{e.DB.close()}});
+
+test('owner 25.11: «Забота о близких» has a way back to the shop in three languages',()=>{
+ const z=fs.readFileSync(new URL('../public/zabota.html',import.meta.url),'utf8');assert.match(z,/id="t-back" href="\.\/"/);for(const w of ['← Назад в Базар','← Վերադառնալ Բազար','← უკან ბაზარში'])assert.ok(z.includes(w),w)});

@@ -35,6 +35,7 @@
   .z .stepper button{width:44px;height:44px;font-size:22px;border-radius:10px}
   .z .stepper span{min-width:70px;text-align:center;font-weight:700}
   .z .btns{display:flex;gap:10px;justify-content:space-between;margin-top:14px}
+  .z .back-link{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--green);color:var(--green);background:#fff;font-size:17px;font-weight:700;text-decoration:none;min-height:44px}
   .z .btn{background:var(--green);color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:18px;font-weight:700;cursor:pointer;min-height:52px}
   .z .btn.alt{background:#fff;color:var(--green);border:2px solid var(--green)}
   .z .btn:disabled{opacity:.5;cursor:default}
@@ -51,6 +52,7 @@
 </head>
 <body>
 <main class="z">
+  <a class="back-link" id="t-back" href="./">← Назад в Базар</a>
   <div class="lang" role="group" aria-label="Язык">
     <button class="btn alt" data-lang="ru">Русский</button>
     <button class="btn alt" data-lang="hy">Հայերեն</button>
@@ -175,11 +177,12 @@
     </fieldset>
   </section>
 </main>
+<script>document.getElementById('t-back').addEventListener('click',e=>{try{const r=document.referrer&&new URL(document.referrer);if(r&&r.origin===location.origin&&!r.pathname.endsWith('zabota.html')&&history.length>1){e.preventDefault();history.back()}}catch{}});</script>
 
 <script>
 // Тексты ru/hy/ka. Армянский и грузинский — черновики, их нужно проверить носителю языка до публикации.
 const T={
-ru:{title:'Забота о близких',sub:'Выбирайте продукты для родителей и близких. Мы доставим их по вашему графику — в Ахалкалаки и сёла.',
+ru:{back:'← Назад в Базар',title:'Забота о близких',sub:'Выбирайте продукты для родителей и близких. Мы доставим их по вашему графику — в Ахалкалаки и сёла.',
  steps:n=>`Шаг ${n} из 6`,prev:'Назад',next:'Далее',send:'Оформить программу',
  s1:'Кому доставляем?',rname:'Имя получателя',rphone:'Телефон получателя',
  s2:'Куда доставляем?',zone:'Населённый пункт',address:'Адрес',addrHint:'Улица, дом, подъезд, ориентир.',
@@ -201,7 +204,7 @@ ru:{title:'Забота о близких',sub:'Выбирайте продук�
  st:{ACTIVE:'Активна',PAUSED:'На паузе',CANCELLED:'Отменена'},
  ds:{PLANNED:'Запланирована',ORDERED:'Оформлена',SKIPPED:'Пропущена',CANCELLED:'Отменена',FAILED:'Нужна помощь оператора',WAITING_FUNDS:'Ждёт пополнения',WAITING_APPROVAL:'Ждёт вашего согласия на цену',WAITING_STOCK:'Товар временно недоступен',WAITING_SLOT:'Нет свободного времени',WAITING_CHANGE:'Нужно изменить заказ'},
  wpart:'₾'},
-hy:{title:'Հոգատարություն մերձավորների համար',sub:'Ընտրեք ապրանքներ ձեր ծնողների և մերձավորների համար։ Մենք կառաքենք դրանք ձեր ժամանակացույցով՝ Ախալքալաքում և գյուղերում։',
+hy:{back:'← Վերադառնալ Բազար',title:'Հոգատարություն մերձավորների համար',sub:'Ընտրեք ապրանքներ ձեր ծնողների և մերձավորների համար։ Մենք կառաքենք դրանք ձեր ժամանակացույցով՝ Ախալքալաքում և գյուղերում։',
  steps:n=>`Քայլ ${n} 6-ից`,prev:'Հետ',next:'Հաջորդ',send:'Ձևակերպել ծրագիրը',
  s1:'Ում ենք առաքում?',rname:'Ստացողի անունը',rphone:'Ստացողի հեռախոսը',
  s2:'Ուր ենք առաքում?',zone:'Բնակավայր',address:'Հասցե',addrHint:'Փողոց, տուն, մուտք, orientir։',
@@ -223,7 +226,7 @@ hy:{title:'Հոգատարություն մերձավորների համար',sub
  st:{ACTIVE:'Ակտիվ',PAUSED:'Դադարեցված',CANCELLED:'Չեղարկված'},
  ds:{PLANNED:'Նախատեսված',ORDERED:'Ձևակերպված',SKIPPED:'Բաց թողնված',CANCELLED:'Չեղարկված',FAILED:'Պետք է օպերատորի օգնությունը',WAITING_FUNDS:'Սպասում է լրացման',WAITING_APPROVAL:'Սպասում է ձեր համաձայնությանը գնի վերաբերյալ',WAITING_STOCK:'Ապրանքը ժամանակավոր հասանելի չէ',WAITING_SLOT:'Ազատ ժամանակ չկա',WAITING_CHANGE:'Պատվերը պետք է փոխվի'},
  wpart:'₾'},
-ka:{title:'ზრუნვა ახლობლებზე',sub:'აირჩიეთ პროდუქტები მშობლებისა და ახლობლებისთვის. ჩვენ მივიტანთ თქვენი გრაფიკით — ახალქალაქში და სოფლებში.',
+ka:{back:'← უკან ბაზარში',title:'ზრუნვა ახლობლებზე',sub:'აირჩიეთ პროდუქტები მშობლებისა და ახლობლებისთვის. ჩვენ მივიტანთ თქვენი გრაფიკით — ახალქალაქში და სოფლებში.',
  steps:n=>`ნაბიჯი ${n} 6-დან`,prev:'უკან',next:'შემდეგი',send:'პროგრამის გაფორმება',
  s1:'ვისთვის ვაწვდით?',rname:'მიმღების სახელი',rphone:'მიმღების ტელეფონი',
  s2:'სად ვაწვდით?',zone:'დასახლება',address:'მისამართი',addrHint:'ქუჩა, სახლი, სადარბაზო, ორიენტირი.',
@@ -285,7 +288,7 @@ function supported(p){const m=p.profile?.mode;return (m==='WEIGHED'||isCounted(p
 
 function renderStatic(){
   document.documentElement.lang=lang;
-  $('t-title').textContent=t().title;$('t-sub').textContent=t().sub;
+  $('t-back').textContent=t().back;$('t-title').textContent=t().title;$('t-sub').textContent=t().sub;
   $('s1-title').textContent=t().s1;$('l-rname').textContent=t().rname;$('l-rphone').textContent=t().rphone;
   $('s2-title').textContent=t().s2;$('l-zone').textContent=t().zone;$('l-address').textContent=t().address;$('h-address').textContent=t().addrHint;
   $('s3-title').textContent=t().s3;$('h-products').textContent=t().prodHint;$('psearch').placeholder=t().psearch;
