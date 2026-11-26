@@ -329,3 +329,8 @@ test('owner 25.11: in the restaurant chat the owner presses «Указать в�
  const o2=await order(f,'+995555000002');await act(f,o2,'confirm');await drain(f);
  await click(f,g,o2,'weigh',888);await click(f,g,o2,'weigh',1);assert.equal((await f.DB.prepare("SELECT COUNT(*) n FROM tg_dialogs WHERE action='weigh_step'").first()).n,1,'one weighing per chat');
  await say(1,'0,95',reply);assert.match(last().text,/✅ Яблоки: 0,95 кг/)}finally{f.DB.close()}});
+test('owner 25.11: the bot sends every card of an order at once after an action, not two at a time',async()=>{const src=(await import('node:fs')).readFileSync(new URL('../src/telegram.mjs',import.meta.url),'utf8');
+ assert.match(src,/export async function drainTelegram\(env,origin,limit=25\)/);assert.match(src,/await drainTelegram\(env,origin,50\);/);
+ const f=await fixture();try{f.DB.exec('UPDATE cities SET simple_flow=1');await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200);await bind(f,f.owner,1,'OWNER');await bind(f,f.owner,1,'DRIVER',null,-300);
+  const o=await order(f);await act(f,o,'confirm');const r=await drainTelegram(f.env,'https://bazar.test');assert.ok(r.sent>=3,'all chats get the card in one go: '+r.sent);
+  assert.equal((await f.DB.prepare('SELECT COUNT(*) n FROM tg_jobs WHERE revision>done_revision').first()).n,0,'nothing left waiting')}finally{f.DB.close()}});
