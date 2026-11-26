@@ -181,7 +181,13 @@ html.big body{zoom:1.2}
 .how-strip li{white-space:normal;overflow-wrap:anywhere;min-width:0}
 .tools{flex-wrap:wrap}.tools .zabota-link{order:99;flex:1 1 100%;justify-content:center;max-width:100%;white-space:normal;text-align:center}
 .ask-link{display:inline-block;margin:4px 0 0;font-size:14px;font-weight:600;color:var(--green);text-decoration:underline}
-/* Owner 26.11: «Ресторан Базара» is the featured tile — first, full width, in the shop's green with a gold edge. Presentation only: same button, same filter. */
-.category-row button.featured{order:-1;grid-column:1/-1;background:var(--green);color:#fffdf6;border:2px solid #d4b068;box-shadow:0 4px 16px #24402f40}.category-row button.featured span{font-weight:800;font-size:1.08em;flex:1}.category-row button.featured .tile-sub{position:static;display:block;color:#e9e3cc!important;font-size:12px!important;font-weight:500;background:none;padding:0;margin:2px 0 0}.category-row button.featured .tile-eve{background:#d4b068;color:#243f31!important}
-.category-row button.featured span{color:#fffdf6!important;padding:4px 8px 0}.category-row button.featured img{width:100%;height:150px;object-fit:cover}.category-row button.featured .tile-sub{padding:0 8px 8px}.category-row button:not(.featured) span{font-size:13.5px;line-height:1.2;hyphens:manual;overflow-wrap:normal}
-@media(min-width:700px){.category-row button.featured{grid-column:span 2}.category-row button.featured img{height:140px}}
+/* Owner 26.11: «Ресторан Базара» and «Забота о близких» — two cards at the very top of the catalogue; the restaurant's tile in the row is hidden (it stays in the page so the filter keeps working). Labels in the tiles do not break words. */
+.category-row button[data-filter="restaurant"]{display:none}.category-row button span{font-size:13.5px;line-height:1.2;hyphens:manual;overflow-wrap:normal}
+.top-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
+.top-card{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;min-height:136px;padding:12px;border:2px solid #d4b068;border-radius:14px;overflow:hidden;text-align:left;text-decoration:none;cursor:pointer}
+.top-restaurant{background:var(--green);color:#fffdf6}.top-restaurant img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.top-restaurant::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(20,44,31,.05) 25%,rgba(20,44,31,.9))}.top-restaurant>*{position:relative;z-index:1}.top-restaurant img{z-index:0}
+.top-restaurant .tc-eve{position:absolute;top:8px;left:8px;z-index:1;background:#d4b068;color:#243f31;font-weight:700;border-radius:999px;padding:2px 8px;font-size:11px}
+.top-card .tc-title{font-weight:800;font-size:17px;line-height:1.2}.top-card .tc-sub{font-size:12px;line-height:1.3}.top-restaurant .tc-sub{color:#e9e3cc}
+.top-care{background:#fff3cd;border-color:#e0c36a;color:var(--ink)}.top-care .tc-heart{font-size:34px;line-height:1;margin-bottom:auto}.top-care .tc-sub{color:#6a5a1c}
+.top-card.active{outline:3px solid #d4b068;outline-offset:2px}
+@media(min-width:700px){.top-cards{grid-template-columns:2fr 1fr}.top-card{min-height:150px}}

@@ -182,3 +182,6 @@ Object.assign(words.ka,{askStock:'დაზუსტება WhatsApp-ში'})
 Object.assign(words.ru,{restaurantSub:'Горячие блюда, шашлыки, пицца'});
 Object.assign(words.hy,{restaurantSub:'Տաք ուտեստներ, խորոված, պիցցա'});
 Object.assign(words.ka,{restaurantSub:'ცხელი კერძები, მწვადი, პიცა'});
+Object.assign(words.ru,{zabotaSub:'Продукты родителям и близким по вашему графику'});
+Object.assign(words.hy,{zabotaSub:'Մթերք ծնողներին և հարազատներին ձեր գրաֆիկով'});
+Object.assign(words.ka,{zabotaSub:'პროდუქტები მშობლებს და ახლობლებს თქვენი გრაფიკით'});
