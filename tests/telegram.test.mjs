@@ -315,3 +315,17 @@ test('owner 22.11: a courier who has not checked in cannot take an order — by 
 test('owner 22.11: the courier is told plainly that he must check in; the answer fits the 200 characters Telegram allows for a pop-up',async()=>{const {botWords}=await import('../src/bot-words.mjs');
  for(const l of ['ru','hy','ka']){assert.ok(botWords[l].noShift.length<=200,l+' pop-up too long: '+botWords[l].noShift.length);assert.match(botWords[l].noShift,/\/shift DAY/);assert.match(botWords[l].rollHello,/❗/,l+': the morning roll call says check-in is required')}
  assert.match(botWords.ru.noShift,/не отметились/);assert.match(botWords.ru.rollHello,/Кто не отметился — заказы брать не сможет/)});
+test('owner 25.11: in the restaurant chat the owner presses «Указать вес», a staff member answers, the owner confirms; the owner pressing again always starts afresh',async()=>{const f=await fixture();try{f.DB.exec('UPDATE cities SET simple_flow=1');
+ const g=await bind(f,f.owner,1,'SUPPLIER','akhalkalaki-garden',-200);await bind(f,f.owner,1,'OWNER');const o=await order(f);await act(f,o,'confirm');await drain(f);
+ const last=()=>f.sent.filter(x=>x.method==='sendMessage').at(-1),count=()=>f.sent.filter(x=>x.method==='sendMessage').length,
+  say=async (from,text,extra={})=>{const data={update_id:++f.update,message:{message_id:f.update,text,chat:{id:-200,type:'supergroup'},from:{id:from,first_name:'Вови'},...extra}};assert.equal((await webhook(f,data)).status,200)},
+  reply={reply_to_message:{message_id:1,from:{id:42,is_bot:true,first_name:'Базар'}}};
+ await click(f,g,o,'weigh',1);assert.match(last().text,/1\/1 · Яблоки — заказано 1 кг/,'the owner starts the weighing');
+ let n=count();await say(888,'2.7');assert.equal(count(),n,'a remark that is not a reply stays a remark');
+ await say(888,'1,1',reply);assert.match(last().text,/✅ Яблоки: 1,1 кг — в допуске/,'the staff member\'s reply is taken');assert.match(last().text,/Проверьте вес/);
+ await click(f,g,o,'weigh_ok',1);assert.match(last().text,/Вес записан/,'the owner confirms what the staff typed');
+ assert.deepEqual(JSON.parse((await q(f.DB,'SELECT weighing FROM orders WHERE id=?',o.id).first()).weighing).map(a=>a.net_g),[1100]);
+ // priority: a staff member starts, the owner presses again — the staff's half-typed answers are gone, the owner's count
+ const o2=await order(f,'+995555000002');await act(f,o2,'confirm');await drain(f);
+ await click(f,g,o2,'weigh',888);await click(f,g,o2,'weigh',1);assert.equal((await f.DB.prepare("SELECT COUNT(*) n FROM tg_dialogs WHERE action='weigh_step'").first()).n,1,'one weighing per chat');
+ await say(1,'0,95',reply);assert.match(last().text,/✅ Яблоки: 0,95 кг/)}finally{f.DB.close()}});
