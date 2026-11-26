@@ -5324,17 +5324,17 @@
  },
  {
   "key": "restaurants/forel/cold/pkhali",
-  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/0e5d35a9e2c0298e.jpg",
-  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "source": "owner-provided photo, 26.11.2026 (sent in the chat)",
+  "license": "owner's own photo for his shop",
   "file": "public/media/restaurants/forel/cold/pkhali.jpg",
-  "sha256": "21e0312bdb76a1727abff4b9dc753c43c95251e5cc360053e1f8ab1590b46178"
+  "sha256": "0a9c4e3afa31bab0143f4fcef877059172932575fc6f8d12ed06f634363da2f7"
  },
  {
   "key": "restaurants/forel/cold/eggplant-walnuts",
-  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/8ff9f5ae1bcf5f67.jpg",
-  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "source": "owner-provided photo, 26.11.2026 (sent in the chat)",
+  "license": "owner's own photo for his shop",
   "file": "public/media/restaurants/forel/cold/eggplant-walnuts.jpg",
-  "sha256": "a8a6fbcd1bc0e9df2c97a10837ad4f81e195226ab3758003ef406be27972e62f"
+  "sha256": "3590114a597431e6dd9b57d937ce76c509bef24b1d1687bce8f3290cd6f419e0"
  },
  {
   "key": "restaurants/forel/cold/basturma-sujuk",
