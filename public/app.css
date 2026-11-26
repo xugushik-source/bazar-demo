@@ -180,3 +180,4 @@ html.big body{zoom:1.2}
 .call-fab{padding:0!important;width:50px;height:50px;justify-content:center;right:10px}.call-fab span:last-child{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.call-fab span:first-child{font-size:22px!important}
 .how-strip li{white-space:normal;overflow-wrap:anywhere;min-width:0}
 .tools{flex-wrap:wrap}.tools .zabota-link{order:99;flex:1 1 100%;justify-content:center;max-width:100%;white-space:normal;text-align:center}
+.ask-link{display:inline-block;margin:4px 0 0;font-size:14px;font-weight:600;color:var(--green);text-decoration:underline}
