@@ -64,3 +64,8 @@ export const forelReopen=['tongue_boiled','chakapuli','kharcho'];
 export const forelRemoved=['lamb_ribs_shashlik'];
 export const forelReopenSql=()=>{const id=k=>`'${forelVendor.city_id}--${forelKey(k)}'`;
  return [...forelReopen.map(k=>`DELETE FROM day_closures WHERE product_id=${id(k)};`),...forelRemoved.map(k=>`UPDATE products SET active=0 WHERE id=${id(k)};`)]};
+
+// Owner 26.11 (later): «Бараньи рёбра открой» — the lamb ribs shashlik was only hidden, not deleted, so it comes back as it was (migration 0135 undoes the hiding of 0133).
+export const forelLambBack=['lamb_ribs_shashlik'];
+export const forelLambBackSql=()=>{const id=k=>`'${forelVendor.city_id}--${forelKey(k)}'`;
+ return [...forelLambBack.map(k=>`UPDATE products SET active=1 WHERE id=${id(k)};`),...forelLambBack.map(k=>`DELETE FROM day_closures WHERE product_id=${id(k)};`)]};
