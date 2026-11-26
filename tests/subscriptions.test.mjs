@@ -498,3 +498,19 @@ test('owner 22.11: the owner records money received outside the site: amount but
     await assert.rejects(()=>ownerCareCallback(e.DB,{},call_,link,doit,null,'x'),x=>x.code==='FORBIDDEN');
   }finally{e.DB.close()}
 });
+
+test('owner 26.11: the owner\'s own test programmes are cancelled by the migration (programme, unlocked deliveries, event); programmes of other payers stay; migration equals the generator',async()=>{
+  const e=await env();
+  try{
+    const {cancelOwnerTestsSql,testReason}=await import('../src/cancel-owner-tests-1126.mjs'),fs=await import('node:fs');
+    const file=fs.readFileSync(new URL('../migrations/0134_cancel_owner_test_programmes.sql',import.meta.url),'utf8').split('\n').slice(1).filter(Boolean).join('\n');assert.equal(file,cancelOwnerTestsSql().join('\n'));
+    const mine=await newProgram(e,{payer:{name:'Арут',phone:'591244075'}}),mine2=await newProgram(e,{payer:{name:'Арут',phone:'+995 591 244 075'}}),other=await newProgram(e);
+    const ordered=await q(e.DB,'SELECT id FROM subscription_deliveries WHERE program_id=? ORDER BY day LIMIT 1',mine.id).first();
+    await q(e.DB,"UPDATE subscription_deliveries SET status='CLAIMED' WHERE id=?",ordered.id).run();// a delivery already in work is left alone
+    for(const s of cancelOwnerTestsSql())e.DB.exec(s);for(const s of cancelOwnerTestsSql())e.DB.exec(s);// the second run changes nothing
+    for(const p of [mine,mine2]){const v=await current(e,p);assert.equal(v.status,'CANCELLED');assert.equal(v.cancel_reason,testReason);assert.ok(v.events.some(x=>x.event==='STATUS_CANCEL'&&x.actor==='SYSTEM'))}
+    const d=(await q(e.DB,'SELECT status FROM subscription_deliveries WHERE program_id=?',mine.id).all()).results.map(r=>r.status);assert.ok(d.includes('CLAIMED'),'the delivery in work stays');assert.ok(d.filter(x=>x!=='CLAIMED').every(x=>x==='CANCELLED'),'the rest are cancelled');
+    assert.equal((await current(e,other)).status,'ACTIVE','someone else\'s programme is untouched');
+    assert.equal((await q(e.DB,"SELECT COUNT(*) n FROM subscription_events WHERE program_id=? AND event='STATUS_CANCEL'",mine.id).first()).n,1,'one event, not two');
+  }finally{e.DB.close()}
+});

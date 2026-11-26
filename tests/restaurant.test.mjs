@@ -160,3 +160,14 @@ test('owner 26.11: a pre-order dish is never hidden by «нет в наличи�
  await close('chicken_boiled',day(3));const r=await place('chicken_boiled',day(3));assert.equal(r.http,409);assert.match(JSON.stringify(r),/CLOSED_TODAY/,'the restaurant said «not that day»: refused for that day');
  assert.equal((await place('chicken_boiled',day(4))).http,201,'another day is fine');
  const o=await place('pork_shashlik',day(2));assert.equal(o.http,409);assert.match(JSON.stringify(o),/CLOSED_TODAY/,'the hidden ordinary dish still cannot be ordered')}finally{e.DB.close()}});
+
+test('owner 26.11: tongue, chakapuli and kharcho are back (closures removed), the lamb ribs shashlik is closed for good, other closures stay; migration equals the generator',async()=>{const e=await env();try{
+ const {forelReopenSql,forelReopen,forelRemoved}=await import('../src/restaurants.mjs');
+ const file=fs.readFileSync(new URL('../migrations/0133_forel_reopen_1126.sql',import.meta.url),'utf8').split('\n').slice(1).filter(Boolean).join('\n');assert.equal(file,forelReopenSql().join('\n'));
+ const FOREVER='9999-12-31',close=k=>e.DB.prepare("INSERT OR REPLACE INTO day_closures(product_id,day,vendor_id,closed_by,at) VALUES(?,?,'akhalkalaki-forel','test','2026-11-26T00:00:00.000Z')").bind(pid('forel_'+k),FOREVER).run();
+ for(const k of [...forelReopen,'pork_shashlik'])await close(k);// the restaurant marked them «нет в наличии»; the shashlik stays closed
+ let c=await call(e,'catalog?city='+cid);assert.ok(!forelReopen.some(k=>c.products.some(p=>p.id===pid('forel_'+k))),'hidden before');
+ for(const s of forelReopenSql())e.DB.exec(s);for(const s of forelReopenSql())e.DB.exec(s);// the second run changes nothing
+ c=await call(e,'catalog?city='+cid);for(const k of forelReopen)assert.ok(c.products.some(p=>p.id===pid('forel_'+k)),k+' is back');
+ for(const k of forelRemoved)assert.ok(!c.products.some(p=>p.id===pid('forel_'+k)),k+' is gone');assert.ok(await q(e.DB,'SELECT id FROM products WHERE id=?',pid('forel_lamb_ribs_shashlik')).first(),'closed, not deleted');
+ assert.ok(!c.products.some(p=>p.id===pid('forel_pork_shashlik')),'another closure is untouched')}finally{e.DB.close()}});

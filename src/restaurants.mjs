@@ -57,3 +57,10 @@ export const forelMenuSql=()=>{const city=forelVendor.city_id,id=k=>`'${city}--$
   ...forelAsk.map(k=>`UPDATE products SET profile=json_object('mode','REQUEST','policy_version',COALESCE(json_extract(profile,'$.policy_version'),1),'ask_availability',1,'restore',json(profile)) WHERE id=${id(k)} AND json_extract(profile,'$.mode')<>'REQUEST';`),
   ...forelHidden2.map(k=>`UPDATE products SET active=0 WHERE id=${id(k)};`),
   `UPDATE products SET profile=json_set(profile,'$.prep_minutes',${forelPrepDefault}) WHERE id LIKE '${city}--forel!_%' ESCAPE '!' AND json_extract(profile,'$.lead_minutes') IS NULL AND json_extract(profile,'$.mode')<>'REQUEST' AND json_extract(profile,'$.prep_minutes') IS NULL;`]};
+
+// Owner 26.11: tongue, chakapuli and kharcho are there at any time (the restaurant had marked them unavailable): their closures are removed.
+// «Бараньей грудинки нет такого» — the lamb ribs shashlik does not exist: closed for good (hidden, not deleted).
+export const forelReopen=['tongue_boiled','chakapuli','kharcho'];
+export const forelRemoved=['lamb_ribs_shashlik'];
+export const forelReopenSql=()=>{const id=k=>`'${forelVendor.city_id}--${forelKey(k)}'`;
+ return [...forelReopen.map(k=>`DELETE FROM day_closures WHERE product_id=${id(k)};`),...forelRemoved.map(k=>`UPDATE products SET active=0 WHERE id=${id(k)};`)]};
