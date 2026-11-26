@@ -171,3 +171,12 @@ test('owner 26.11: tongue, chakapuli and kharcho are back (closures removed), th
  c=await call(e,'catalog?city='+cid);for(const k of forelReopen)assert.ok(c.products.some(p=>p.id===pid('forel_'+k)),k+' is back');
  for(const k of forelRemoved)assert.ok(!c.products.some(p=>p.id===pid('forel_'+k)),k+' is gone');assert.ok(await q(e.DB,'SELECT id FROM products WHERE id=?',pid('forel_lamb_ribs_shashlik')).first(),'closed, not deleted');
  assert.ok(!c.products.some(p=>p.id===pid('forel_pork_shashlik')),'another closure is untouched')}finally{e.DB.close()}});
+
+test('owner 26.11: the lamb ribs shashlik is back as it was (hidden by 0133, shown by 0135); the sets show it again; migration equals the generator',async()=>{const e=await env();try{
+ const {forelReopenSql,forelLambBackSql,forelLambBack}=await import('../src/restaurants.mjs');
+ const file=fs.readFileSync(new URL('../migrations/0135_forel_lamb_ribs_back.sql',import.meta.url),'utf8').split('\n').slice(1).filter(Boolean).join('\n');assert.equal(file,forelLambBackSql().join('\n'));
+ const before=await q(e.DB,'SELECT names,price,profile,active FROM products WHERE id=?',pid('forel_lamb_ribs_shashlik')).first();
+ for(const s of forelReopenSql())e.DB.exec(s);let c=await call(e,'catalog?city='+cid);assert.ok(!c.products.some(p=>p.id===pid('forel_lamb_ribs_shashlik')),'hidden by 0133');
+ for(const s of forelLambBackSql())e.DB.exec(s);for(const s of forelLambBackSql())e.DB.exec(s);
+ c=await call(e,'catalog?city='+cid);const back=c.products.find(p=>p.id===pid('forel_lamb_ribs_shashlik'));assert.ok(back,'shown again');assert.equal(back.price,before.price);assert.equal(back.names.ru,'Шашлык из бараньих рёбер');
+ const mine=c.products.filter(p=>p.vendor_id==='akhalkalaki-forel');for(const s of forelSets.filter(s=>s[4].some(([k])=>forelLambBack.includes(k))))assert.ok(setInfo(c.products,mine.find(p=>p.id===pid('forel_'+s[0]))).lines.every(l=>l.product),s[0]+': the set shows all its dishes')}finally{e.DB.close()}});
