@@ -93,7 +93,7 @@ test('owner 24.11: Karo (fruit and vegetables) delivers in the evening by its ow
 
 test('owner 24.11: home page — tiles right after the search, popular goods instead of all of them, no banners, «Забота» in the header',()=>{
  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
- assert.match(app,/filter='home'/);assert.match(app,/class=\"home-more\"/);assert.match(app,/zabota-link/);assert.ok(!html.includes('>Забота о близких</a></div>'),'the big «Забота» strip is gone from the top');
+ assert.match(app,/filter='home'/);assert.match(app,/class=\"home-more\"/);/* owner 26.11: «Забота» moved from the header into the top cards, next to the restaurant */assert.match(app,/class="top-card top-care" href="\.\/zabota\.html"/);assert.ok(!/class="zabota-link"/.test(app));assert.ok(!html.includes('>Забота о близких</a></div>'),'the big «Забота» strip is gone from the top');
  assert.ok(!app.includes('${ownHoursHTML()}'),'no big hours block; the hours are on the tiles');assert.ok(!app.includes('soon-line'))});
 
 test('owner 24.11: the grill «Седло» is «Корейка свиная» in three languages; the beef saddle stays; migration equals the generator',async()=>{const e=await env();try{
