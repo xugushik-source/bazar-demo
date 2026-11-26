@@ -29,7 +29,8 @@ test('restaurant «Форель»: in the public catalogue with vendor and secti
  const v=c.vendors.find(v=>v.id==='akhalkalaki-forel');assert.deepEqual(v.names,{ru:'Форель',ka:'კალმახი',hy:'Իշխան'});
  for(const id of restaurantCategoryIds){const cat=c.categories.find(x=>x.id===id);assert.ok(cat&&cat.names.ru.startsWith('Ресторанные блюда')&&cat.names.ka&&cat.names.hy,id)}
  const trout=mine.find(p=>p.id===pid('forel_river_trout'));assert.equal(trout.profile.mode,'WEIGHED');assert.equal(trout.price,7600,'per kg');
- const tiles=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.match(tiles,/\['restaurant',restaurantCategoryIds\]/);
+ const tiles=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');// owner 26.11: «Готовая еда» (pizza…) is part of the restaurant tile now: the group holds every restaurant section and the ready-food ones
+ assert.match(tiles,/\['restaurant',restaurantGroupIds\]/);assert.match(tiles,/restaurantGroupIds=\['rf_pizza',\.\.\.restaurantCategoryIds,/);assert.ok(!/\['readyfood',/.test(tiles),'no separate «Готовая еда» tile');
  const i18n=fs.readFileSync(new URL('../public/i18n.js',import.meta.url),'utf8');assert.equal(i18n.match(/group_restaurant:/g).length,3)}finally{e.DB.close()}});
 
 test('restaurant «Форель»: a mixed basket is split by vendor; the restaurant line keeps its cost; a dish by the kilo is paid by weight',async()=>{const e=await env();try{
@@ -123,3 +124,27 @@ test('owner 25.11: «Забота» keeps the draft until the order is sent; the
  assert.match(z,/localStorage\.setItem\(DRAFT/);assert.match(z,/function showDone\(r\)\{\n  try\{localStorage\.removeItem\(DRAFT\)/);assert.ok(!/DRAFT_FIELDS=\[[^\]]*c-privacy/.test(z),'consents are ticked anew');
  assert.match(z,/id="pname" type="text" autocomplete="name"/);assert.match(z,/id="pphone"[^>]*autocomplete="tel"/);assert.match(z,/id="rphone"[^>]*autocomplete="off"/);assert.match(z,/id="rname"[^>]*autocomplete="off"/);
  const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');assert.ok(app.includes('autocomplete="name"')&&app.includes('autocomplete="tel"')&&app.includes('autocomplete="street-address"'))});
+
+import {clock}from '../src/commerce.mjs';
+test('owner 26.11: restaurant list of 16 — pre-order times are enforced across days, the vendace is «ask first» with its price, the river trout is closed, names and 30 minutes of cooking; migration equals the generator',async()=>{const e=await env();try{
+ const {forelMenuSql,forelLead,forelAsk,forelHidden2}=await import('../src/restaurants.mjs');
+ const file=fs.readFileSync(new URL('../migrations/0132_forel_menu_1126.sql',import.meta.url),'utf8').split('\n').slice(1).filter(Boolean).join('\n');assert.equal(file,forelMenuSql().join('\n'));
+ for(const s of forelMenuSql())e.DB.exec(s);for(const s of forelMenuSql())e.DB.exec(s);// the second run changes nothing
+ const c=await call(e,'catalog?city='+cid),by=k=>c.products.find(p=>p.id===pid('forel_'+k));
+ for(const [k,m] of Object.entries(forelLead)){assert.equal(by(k).profile.lead_minutes,m,k);assert.equal(by(k).profile.prep_minutes,undefined,k+': a pre-order dish has no «30 minutes» note')}
+ assert.deepEqual(Object.fromEntries(Object.entries(forelLead).map(([k,m])=>[k,m/60])),{beef_saddle:6,chicken_boiled:5,pork_knuckle:6,pork_leg_baked:6,rabbit_baked:4,fish_kebab:3,oxtail:24,piglet_baked:24,sterlet:48});
+ for(const k of forelHidden2)assert.equal(by(k),undefined,k+' is not offered');assert.ok(await q(e.DB,"SELECT id FROM products WHERE id=?",pid('forel_river_trout')).first(),'closed, not deleted');
+ for(const k of forelAsk){const p=by(k);assert.equal(p.profile.mode,'REQUEST');assert.equal(p.profile.ask_availability,1);assert.equal(p.price,3300,'the price stays');assert.equal(JSON.parse((await q(e.DB,'SELECT profile FROM products WHERE id=?',pid('forel_'+k)).first()).profile).restore.mode,'WEIGHED')}
+ assert.equal(by('kebab').names.ru,'Кебаб из говядины');assert.equal(by('olives').names.ru,'Оливки чёрные с лимоном');assert.equal(by('pkhali').names.ru,'Пхали из баклажана и перца');assert.equal(by('eggplant_walnuts').names.ru,'Баклажанные рулеты, 6 штук');
+ for(const k of ['kebab','olives','pkhali','eggplant_walnuts'])assert.ok(by(k).names.ka&&by(k).names.hy,k+' has all three languages');
+ assert.equal(by('pork_shashlik').profile.prep_minutes,30);assert.equal(by('set_meat').profile.prep_minutes,30);
+ // the delivery times respect the lead, across days
+ const now=clock('Asia/Tbilisi'),day=n=>new Date(Date.now()+n*86400000).toISOString().slice(0,10);
+ const slotsOf=async(k,d)=>(await call(e,`slots?city=${cid}&day=${d}&products=${pid('forel_'+k)}`)).slots.map(s=>s.minute);
+ assert.deepEqual(await slotsOf('sterlet',day(0)),[]);assert.deepEqual(await slotsOf('sterlet',day(1)),[],'two days ahead: tomorrow is too early');assert.ok((await slotsOf('sterlet',day(3))).length>0);
+ for(const m of await slotsOf('beef_saddle',day(0)))assert.ok(m>=now.minute+360,'6 hours from now: '+m);
+ // the server refuses what the picker would not offer
+ const mk=(k,d,g)=>({city_id:cid,items:[{product_id:pid('forel_'+k),selection:{grams:g||1000}}],fulfillment:'delivery'});
+ const place=async(k,d)=>{const base=mk(k,d),quote=await call(e,'quote',base);assert.equal(quote.http,200,JSON.stringify(quote));return call(e,'orders',{...base,idem:crypto.randomUUID(),day:d,minute:720,method:'cash',customer:{name:'Тест',phone:'+995555000000',address:'Тестовый адрес, не доставлять'},expected_total:quote.total,maximum_total:quote.maximum_total,accepted_weight_rules:true,privacy_consent:true})};
+ const early=await place('sterlet',day(1));assert.equal(early.http,409);assert.match(JSON.stringify(early),/BULK_LEAD_TIME/);
+ assert.equal((await place('sterlet',day(3))).http,201)}finally{e.DB.close()}});

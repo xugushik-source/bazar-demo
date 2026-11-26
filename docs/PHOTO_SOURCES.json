@@ -5331,10 +5331,10 @@
  },
  {
   "key": "restaurants/forel/cold/eggplant-walnuts",
-  "source": "https://github.com/xugushik-source/Shashlicniy_ray/blob/main/static/media/8ff9f5ae1bcf5f67.jpg",
-  "license": "owner's own project (Shashlicniy_ray); similar dish, not the restaurant's own serving",
+  "source": "https://commons.wikimedia.org/wiki/File:Badrijani_(cropped).jpg",
+  "license": "CC BY-SA 2.0, salvagekat (Wikimedia Commons); real eggplant rolls with walnut filling; credit shown on the product",
   "file": "public/media/restaurants/forel/cold/eggplant-walnuts.jpg",
-  "sha256": "a8a6fbcd1bc0e9df2c97a10837ad4f81e195226ab3758003ef406be27972e62f"
+  "sha256": "166efdbc05d21127fc69a6eae0be02c33e7e44e28e138daebbdc54658ee3f254"
  },
  {
   "key": "restaurants/forel/cold/basturma-sujuk",

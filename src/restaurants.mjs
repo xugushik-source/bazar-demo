@@ -22,7 +22,9 @@ const each={mode:'EACH',policy_version:1};
 // Owner 24.11 (later): «вместо седло у нас называют корейку свиную» — the grill «Седло» is pork loin. The beef saddle stays.
 // Migration 0124 keeps the names it was made with; renames go in their own migration (0128).
 // One batch per migration: 0128 — «Корейка свиная»; 0129 — owner 24.11 «не рябушка, а ряпушка» (vendace).
-export const forelRenameBatches=[{saddle_grill:{ru:'Корейка свиная',ka:'ღორის კორეიკა',hy:'Խոզի կորեյկա'}},{ryabushka:{ru:'Ряпушка',ka:'რიაპუშკა',hy:'Ռյապուշկա'}}];
+export const forelRenameBatches=[{saddle_grill:{ru:'Корейка свиная',ka:'ღორის კორეიკა',hy:'Խոզի կորեյկա'}},{ryabushka:{ru:'Ряпушка',ka:'რიაპუშკა',hy:'Ռյապուշկա'}},
+ // 0132 — owner 26.11: «Кебаб из говядины», «Баклажан рулеты 6 штук», «Оливки только чёрные с лимоном», «Пхали из баклажана и перца»
+ {kebab:{ru:'Кебаб из говядины',ka:'საქონლის ხორცის ქაბაბი',hy:'Տավարի մսի քաբաբ'},eggplant_walnuts:{ru:'Баклажанные рулеты, 6 штук',ka:'ბადრიჯნის რულეტები, 6 ცალი',hy:'Սմբուկի ռուլետներ, 6 հատ'},olives:{ru:'Оливки чёрные с лимоном',ka:'შავი ზეთისხილი ლიმონით',hy:'Սև ձիթապտուղ կիտրոնով'},pkhali:{ru:'Пхали из баклажана и перца',ka:'ფხალი ბადრიჯნისა და წიწაკისგან',hy:'Փխալի սմբուկից և պղպեղից'}}];
 export const forelRenames=Object.assign({},...forelRenameBatches);
 export const forelRenameSql=(batch=0)=>Object.entries(forelRenameBatches[batch]).map(([k,n])=>`UPDATE products SET names='${JSON.stringify(n).replaceAll("'","''")}' WHERE id='${forelVendor.city_id}--${forelKey(k)}';`);
 export function forelProducts({renamed=true}={}){
@@ -41,3 +43,17 @@ export function forelHoursSql(){const h=forelHours;return [`UPDATE vendors SET o
 // Owner 24.11: «эти 5 … их закрывай просто» — hidden (active=0), not deleted: turning one back on is a single UPDATE.
 export const forelHidden=['ham','summer_dolma','fish_assorted','greens','bean_salad'];
 export const forelHideSql=()=>forelHidden.map(k=>`UPDATE products SET active=0 WHERE id='${forelVendor.city_id}--${forelKey(k)}';`);
+
+// Owner 26.11 (list of 16): pre-order times, «ask first», one closed dish, 30 minutes of cooking for everything else. Generated into migration 0132.
+// lead_minutes = how long before the delivery the dish must be ordered (the delivery times at checkout respect it); the dishes with neither a lead
+// time nor «ask» get prep_minutes 30 (shown on the card). A dish that must be asked about keeps its price and its old profile in profile.restore.
+export const forelLead={beef_saddle:360,chicken_boiled:300,pork_knuckle:360,pork_leg_baked:360,rabbit_baked:240,fish_kebab:180,oxtail:1440,piglet_baked:1440,sterlet:2880};
+export const forelAsk=['ryabushka'];
+export const forelHidden2=['river_trout'];
+export const forelPrepDefault=30;
+export const forelMenuSql=()=>{const city=forelVendor.city_id,id=k=>`'${city}--${forelKey(k)}'`;
+ return [...forelRenameSql(2),
+  ...Object.entries(forelLead).map(([k,m])=>`UPDATE products SET profile=json_set(profile,'$.lead_minutes',${m}) WHERE id=${id(k)};`),
+  ...forelAsk.map(k=>`UPDATE products SET profile=json_object('mode','REQUEST','policy_version',COALESCE(json_extract(profile,'$.policy_version'),1),'ask_availability',1,'restore',json(profile)) WHERE id=${id(k)} AND json_extract(profile,'$.mode')<>'REQUEST';`),
+  ...forelHidden2.map(k=>`UPDATE products SET active=0 WHERE id=${id(k)};`),
+  `UPDATE products SET profile=json_set(profile,'$.prep_minutes',${forelPrepDefault}) WHERE id LIKE '${city}--forel!_%' ESCAPE '!' AND json_extract(profile,'$.lead_minutes') IS NULL AND json_extract(profile,'$.mode')<>'REQUEST' AND json_extract(profile,'$.prep_minutes') IS NULL;`]};
