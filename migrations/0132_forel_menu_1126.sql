@@ -11,6 +11,7 @@ UPDATE products SET profile=json_set(profile,'$.lead_minutes',240) WHERE id='akh
 UPDATE products SET profile=json_set(profile,'$.lead_minutes',180) WHERE id='akhalkalaki--forel_fish_kebab';
 UPDATE products SET profile=json_set(profile,'$.lead_minutes',1440) WHERE id='akhalkalaki--forel_oxtail';
 UPDATE products SET profile=json_set(profile,'$.lead_minutes',1440) WHERE id='akhalkalaki--forel_piglet_baked';
+UPDATE products SET profile=json_set(profile,'$.lead_minutes',1440) WHERE id='akhalkalaki--forel_dolma';
 UPDATE products SET profile=json_set(profile,'$.lead_minutes',2880) WHERE id='akhalkalaki--forel_sterlet';
 UPDATE products SET profile=json_object('mode','REQUEST','policy_version',COALESCE(json_extract(profile,'$.policy_version'),1),'ask_availability',1,'restore',json(profile)) WHERE id='akhalkalaki--forel_ryabushka' AND json_extract(profile,'$.mode')<>'REQUEST';
 UPDATE products SET active=0 WHERE id='akhalkalaki--forel_river_trout';

@@ -47,7 +47,7 @@ export const forelHideSql=()=>forelHidden.map(k=>`UPDATE products SET active=0 W
 // Owner 26.11 (list of 16): pre-order times, «ask first», one closed dish, 30 minutes of cooking for everything else. Generated into migration 0132.
 // lead_minutes = how long before the delivery the dish must be ordered (the delivery times at checkout respect it); the dishes with neither a lead
 // time nor «ask» get prep_minutes 30 (shown on the card). A dish that must be asked about keeps its price and its old profile in profile.restore.
-export const forelLead={beef_saddle:360,chicken_boiled:300,pork_knuckle:360,pork_leg_baked:360,rabbit_baked:240,fish_kebab:180,oxtail:1440,piglet_baked:1440,sterlet:2880};
+export const forelLead={beef_saddle:360,chicken_boiled:300,pork_knuckle:360,pork_leg_baked:360,rabbit_baked:240,fish_kebab:180,oxtail:1440,piglet_baked:1440,dolma:1440,sterlet:2880};
 export const forelAsk=['ryabushka'];
 export const forelHidden2=['river_trout'];
 export const forelPrepDefault=30;

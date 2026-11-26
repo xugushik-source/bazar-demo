@@ -132,7 +132,7 @@ test('owner 26.11: restaurant list of 16 — pre-order times are enforced across
  for(const s of forelMenuSql())e.DB.exec(s);for(const s of forelMenuSql())e.DB.exec(s);// the second run changes nothing
  const c=await call(e,'catalog?city='+cid),by=k=>c.products.find(p=>p.id===pid('forel_'+k));
  for(const [k,m] of Object.entries(forelLead)){assert.equal(by(k).profile.lead_minutes,m,k);assert.equal(by(k).profile.prep_minutes,undefined,k+': a pre-order dish has no «30 minutes» note')}
- assert.deepEqual(Object.fromEntries(Object.entries(forelLead).map(([k,m])=>[k,m/60])),{beef_saddle:6,chicken_boiled:5,pork_knuckle:6,pork_leg_baked:6,rabbit_baked:4,fish_kebab:3,oxtail:24,piglet_baked:24,sterlet:48});
+ assert.deepEqual(Object.fromEntries(Object.entries(forelLead).map(([k,m])=>[k,m/60])),{beef_saddle:6,chicken_boiled:5,pork_knuckle:6,pork_leg_baked:6,rabbit_baked:4,fish_kebab:3,oxtail:24,piglet_baked:24,dolma:24,sterlet:48});
  for(const k of forelHidden2)assert.equal(by(k),undefined,k+' is not offered');assert.ok(await q(e.DB,"SELECT id FROM products WHERE id=?",pid('forel_river_trout')).first(),'closed, not deleted');
  for(const k of forelAsk){const p=by(k);assert.equal(p.profile.mode,'REQUEST');assert.equal(p.profile.ask_availability,1);assert.equal(p.price,3300,'the price stays');assert.equal(JSON.parse((await q(e.DB,'SELECT profile FROM products WHERE id=?',pid('forel_'+k)).first()).profile).restore.mode,'WEIGHED')}
  assert.equal(by('kebab').names.ru,'Кебаб из говядины');assert.equal(by('olives').names.ru,'Оливки чёрные с лимоном');assert.equal(by('pkhali').names.ru,'Пхали из баклажана и перца');assert.equal(by('eggplant_walnuts').names.ru,'Баклажанные рулеты, 6 штук');
