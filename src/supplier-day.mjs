@@ -6,4 +6,5 @@ export async function closedToday(db,day){try{return new Set((await db.prepare('
 // Owner 26.11: a dish that is ordered ahead (profile.lead_minutes) is never hidden by «нет в наличии» / «нет сегодня»: it is always there, by pre-order. Only a closure
 // for the very day of delivery still counts when the order is placed (the restaurant may say «not that day»); the permanent one (FOREVER) does not.
 export async function closedOnDay(db,day){try{return new Set((await db.prepare('SELECT product_id FROM day_closures WHERE day=?').bind(day).all()).results.map(r=>r.product_id))}catch{return new Set()}}
-export const isPreorder=profile=>Number((typeof profile==='string'?(()=>{try{return JSON.parse(profile)}catch{return {}}})():profile)?.lead_minutes)>0;
+// «Ask first» dishes (profile.ask_availability, mode REQUEST: only WhatsApp / a call, never the cart) are shown the same way — the vendace.
+export const isPreorder=profile=>{const o=typeof profile==='string'?(()=>{try{return JSON.parse(profile)}catch{return {}}})():profile;return Number(o?.lead_minutes)>0||o?.ask_availability===1};
