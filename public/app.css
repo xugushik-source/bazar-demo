@@ -181,3 +181,7 @@ html.big body{zoom:1.2}
 .how-strip li{white-space:normal;overflow-wrap:anywhere;min-width:0}
 .tools{flex-wrap:wrap}.tools .zabota-link{order:99;flex:1 1 100%;justify-content:center;max-width:100%;white-space:normal;text-align:center}
 .ask-link{display:inline-block;margin:4px 0 0;font-size:14px;font-weight:600;color:var(--green);text-decoration:underline}
+/* Owner 26.11: «Ресторан Базара» is the featured tile — first, full width, in the shop's green with a gold edge. Presentation only: same button, same filter. */
+.category-row button.featured{order:-1;grid-column:1/-1;background:var(--green);color:#fffdf6;border:2px solid #d4b068;box-shadow:0 4px 16px #24402f40}.category-row button.featured span{font-weight:800;font-size:1.08em;flex:1}.category-row button.featured .tile-sub{position:static;display:block;color:#e9e3cc!important;font-size:12px!important;font-weight:500;background:none;padding:0;margin:2px 0 0}.category-row button.featured .tile-eve{background:#d4b068;color:#243f31!important}
+.category-row button.featured span{color:#fffdf6!important;padding:4px 8px 0}.category-row button.featured img{width:100%;height:150px;object-fit:cover}.category-row button.featured .tile-sub{padding:0 8px 8px}.category-row button:not(.featured) span{font-size:13.5px;line-height:1.2;hyphens:manual;overflow-wrap:normal}
+@media(min-width:700px){.category-row button.featured{grid-column:span 2}.category-row button.featured img{height:140px}}
